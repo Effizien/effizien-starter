@@ -5,14 +5,15 @@ Procedures someone can follow under pressure, at 2am, without having built the s
 A runbook is not documentation of how something works — it is an ordered list of commands
 and checks with expected output, written so the reader does not have to reason.
 
-> **Not yet built.** The launch and handoff kit — pre-launch checklist, DNS cutover with
-> rollback, post-launch monitoring — is WP9. This file records what belongs here so the
-> gap is visible rather than assumed filled.
+> **Partly built.** `rebrand.md` exists (WP3). The launch and handoff kit — pre-launch
+> checklist, DNS cutover with rollback, post-launch monitoring — is WP9. This file records
+> what belongs here so the gap is visible rather than assumed filled.
 
 ## Expected contents
 
 | Runbook | Covers |
 |---|---|
+| `rebrand.md` ✅ | Changing a client's brand colours through the token pipeline |
 | `deploy.md` | Normal deploy, what a healthy build looks like, how to verify after |
 | `rollback.md` | Reverting a bad production deploy — Vercel *Promote to Production* on the last good build, not a revert-and-rebuild |
 | `dns-cutover.md` | Domain switch on launch day, TTL lowering beforehand, verification, and the abort path |
