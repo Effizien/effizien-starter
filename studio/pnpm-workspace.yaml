@@ -1,0 +1,10 @@
+# pnpm settings for the standalone Studio.
+#
+# Separate from the root file because studio/ is an independent app, not a
+# workspace member — the root config does not reach it.
+
+# The Sanity Studio builds on Vite, which needs esbuild's platform binary. That
+# binary is linked by a postinstall script, and pnpm blocks those by default as
+# a supply-chain protection. Approved deliberately, per package.
+allowBuilds:
+  esbuild: true
