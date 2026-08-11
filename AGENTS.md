@@ -42,6 +42,7 @@ client a Turborepo when their site is one app is a bad handoff.
 | `pnpm studio` | Sanity Studio on :3333 |
 | `pnpm check` | typecheck → lint → build. **Run before every commit.** |
 | `pnpm typegen` | regenerate `sanity.types.ts` from schema + queries |
+| `pnpm tokens` | rebuild `src/app/tokens.css` from `tokens/`; gates WCAG AA contrast |
 | `pnpm lint:fix` | Biome autofix |
 
 ## Stack
@@ -68,8 +69,9 @@ file is being written.
   leaf that needs it. Never import a server-only module into a client component.
 - **New schema type** (`studio/schemaTypes/`): kebab-case filename, named export
   matching it, added to `index.ts`. Model the content before writing the page.
-- **Design tokens:** never hardcode a hex, spacing value, or font size. Use the tokens in
-  `src/app/globals.css`.
+- **Design tokens:** never hardcode a hex, spacing value, or font size. Edit `tokens/`
+  and run `pnpm tokens` — `src/app/tokens.css` is generated. Only `tokens/semantic/` may
+  reference the raw ramp; a component pointing at `--brand-500` cannot be rebranded.
 - **shadcn components:** add with `--base radix`. The CLI's default base is now Base UI,
   which is the wrong primitive layer for this project.
 - **After changing a GROQ query or schema:** run `pnpm typegen`.
@@ -96,7 +98,7 @@ Non-negotiable. If a request conflicts with one, say so before building.
 
 - Don't add a dependency without justifying it. Lean, justified tooling over sprawl.
 - Don't ship code from a Figma Make concept. Extract direction and tokens; build properly.
-- Don't hand-edit `sanity.types.ts` or `schema.json` — both are generated.
+- Don't hand-edit `sanity.types.ts`, `schema.json`, or `src/app/tokens.css` — all generated.
 - Don't add a `tailwind.config.js`. Tailwind v4 is configured in CSS.
 - Don't relax `pnpm check` to get a build out. If types or lint fail, the code is wrong.
 - Don't put site-specific context in Obsidian or Drive. It belongs in this repo.

@@ -1,0 +1,7 @@
+{
+  "radius": {
+    "$type": "dimension",
+    "$value": "0.625rem",
+    "$description": "Emits --radius exactly, because the @theme block in globals.css derives every other radius from it (--radius-sm through --radius-4xl) with calc(). Renaming this token breaks all of them silently — Tailwind simply drops the utility rather than erroring. Changing the value restyles the whole UI's corner treatment, which is usually what a rebrand actually wants."
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "$type": "color",
+  "background": {
+    "$value": "{brand.950}"
+  },
+  "foreground": {
+    "$value": "{brand.50}"
+  },
+  "card": {
+    "$value": "{brand.900}"
+  },
+  "card-foreground": {
+    "$value": "{brand.50}"
+  },
+  "popover": {
+    "$value": "{brand.900}"
+  },
+  "popover-foreground": {
+    "$value": "{brand.50}"
+  },
+  "primary": {
+    "$value": "{brand.200}"
+  },
+  "primary-foreground": {
+    "$value": "{brand.900}"
+  },
+  "secondary": {
+    "$value": "{brand.800}"
+  },
+  "secondary-foreground": {
+    "$value": "{brand.50}"
+  },
+  "muted": {
+    "$value": "{brand.800}"
+  },
+  "muted-foreground": {
+    "$value": "{brand.400}"
+  },
+  "accent": {
+    "$value": "{brand.800}"
+  },
+  "accent-foreground": {
+    "$value": "{brand.50}"
+  },
+  "destructive": {
+    "$value": "{red.400}"
+  },
+  "border": {
+    "$value": "oklch(1 0 0 / 10%)"
+  },
+  "input": {
+    "$value": "oklch(1 0 0 / 15%)"
+  },
+  "ring": {
+    "$value": "{brand.500}"
+  },
+  "chart-1": {
+    "$value": "{brand.300}"
+  },
+  "chart-2": {
+    "$value": "{brand.500}"
+  },
+  "chart-3": {
+    "$value": "{brand.600}"
+  },
+  "chart-4": {
+    "$value": "{brand.700}"
+  },
+  "chart-5": {
+    "$value": "{brand.800}"
+  },
+  "sidebar": {
+    "$value": "{brand.900}"
+  },
+  "sidebar-foreground": {
+    "$value": "{brand.50}"
+  },
+  "sidebar-primary": {
+    "$value": "{brand.200}"
+  },
+  "sidebar-primary-foreground": {
+    "$value": "{brand.900}"
+  },
+  "sidebar-accent": {
+    "$value": "{brand.800}"
+  },
+  "sidebar-accent-foreground": {
+    "$value": "{brand.50}"
+  },
+  "sidebar-border": {
+    "$value": "oklch(1 0 0 / 10%)"
+  },
+  "sidebar-ring": {
+    "$value": "{brand.500}"
+  }
+}
