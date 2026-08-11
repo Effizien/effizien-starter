@@ -281,7 +281,8 @@ export const GENERIC_ASSIGNMENT =
   /\b(?<id>[A-Za-z0-9_]{0,40}(?:TOKEN|SECRET|PASSWORD|PASSWD|APIKEY|API_KEY|PRIVATE_KEY|CREDENTIALS?))\b\s*(?:=|:|=>|:=)\s*(?<q>["'`])(?<val>[^"'`\n]{16,200})\k<q>/g
 
 /** Identifier prefixes that suppress the generic rule (public by construction). */
-export const GENERIC_SUPPRESS_PREFIXES = /^(?:NEXT_PUBLIC_|SANITY_STUDIO_|VITE_|STORYBOOK_|PUBLIC_)/
+export const GENERIC_SUPPRESS_PREFIXES =
+  /^(?:NEXT_PUBLIC_|SANITY_STUDIO_|VITE_|STORYBOOK_|PUBLIC_)/
 
 /**
  * Bash intent rules. These do not detect secrets at all — they detect a secret
@@ -310,7 +311,8 @@ export const BASH_INTENT_RULES = [
     label: 'removing .gitignore from the index',
     tier: TIER.BLOCK,
     re: /\bgit\s+rm\b[^\n;&|]*--cached[^\n;&|]*\.gitignore/,
-    advice: 'Removing .gitignore from the index exposes every ignored file on the next `git add -A`.',
+    advice:
+      'Removing .gitignore from the index exposes every ignored file on the next `git add -A`.',
   },
   {
     id: 'read-env-file',
