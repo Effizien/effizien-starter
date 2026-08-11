@@ -32,16 +32,16 @@ import { spawnSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import {
-  TIER,
-  PATTERNS,
-  PUBLIC_IDENTIFIERS,
-  PLACEHOLDER_VALUES,
-  SKIP_PATHS,
-  DOC_PATHS,
+  BASH_INTENT_RULES,
   BENIGN_VALUE_SHAPES,
+  DOC_PATHS,
   GENERIC_ASSIGNMENT,
   GENERIC_SUPPRESS_PREFIXES,
-  BASH_INTENT_RULES,
+  PATTERNS,
+  PLACEHOLDER_VALUES,
+  PUBLIC_IDENTIFIERS,
+  SKIP_PATHS,
+  TIER,
 } from './patterns.mjs'
 
 const HOOK_EVENT = 'PreToolUse'
@@ -171,9 +171,9 @@ function scanContent(rawText, cls, { bash = false } = {}) {
     if (!rule.re) continue
     if (bash && !rule.scanBash) continue
 
-    rule.re.lastIndex = 0
-    let m
-    while ((m = rule.re.exec(text)) !== null) {
+    // matchAll rather than an exec loop: it needs no manual lastIndex reset,
+    // which is the classic way a /g regex silently skips matches.
+    for (const m of text.matchAll(rule.re)) {
       const value = m[1] ?? m[0]
       if (matchesAny(PLACEHOLDER_VALUES, value)) continue
       if (rule.minEntropy && entropy(value) < rule.minEntropy) continue
@@ -218,9 +218,7 @@ function scanContent(rawText, cls, { bash = false } = {}) {
 function scanGeneric(text, cls) {
   if (cls.isDoc) return []
   const out = []
-  GENERIC_ASSIGNMENT.lastIndex = 0
-  let m
-  while ((m = GENERIC_ASSIGNMENT.exec(text)) !== null) {
+  for (const m of text.matchAll(GENERIC_ASSIGNMENT)) {
     const { id, val } = m.groups
     if (GENERIC_SUPPRESS_PREFIXES.test(id)) continue
     if (matchesAny(PUBLIC_IDENTIFIERS, id)) continue
@@ -241,7 +239,7 @@ function scanGeneric(text, cls) {
 // Decisions
 // ---------------------------------------------------------------------------
 
-function decideFileWrite(toolName, filePath, content, cwd) {
+function decideFileWrite(filePath, content, cwd) {
   const abs = path.isAbsolute(filePath) ? filePath : path.resolve(cwd, filePath)
   const cls = classifyPath(path.relative(cwd, abs) || path.basename(abs))
   if (cls.skip) respond('allow')
@@ -280,7 +278,9 @@ function decideFileWrite(toolName, filePath, content, cwd) {
 
   const blocking = findings.filter((f) => f.tier === TIER.BLOCK)
   const list = (fs) =>
-    [...new Set(fs.map((f) => `  • ${f.label}${f.detail ? `\n    ${f.detail}` : ''}`))].join('\n')
+    [
+      ...new Set(fs.map((f) => `  • ${f.label}${f.detail ? `\n    ${f.detail}` : ''}`)),
+    ].join('\n')
 
   if (blocking.length > 0) {
     return respond(
@@ -346,14 +346,14 @@ try {
 
   switch (tool) {
     case 'Write':
-      decideFileWrite(tool, input.file_path, input.content, cwd)
+      decideFileWrite(input.file_path, input.content, cwd)
       break
     case 'Edit':
       // Only the incoming text can introduce a secret; old_string is already there.
-      decideFileWrite(tool, input.file_path, input.new_string, cwd)
+      decideFileWrite(input.file_path, input.new_string, cwd)
       break
     case 'NotebookEdit':
-      decideFileWrite(tool, input.notebook_path, input.new_source, cwd)
+      decideFileWrite(input.notebook_path, input.new_source, cwd)
       break
     case 'Bash':
     case 'PowerShell':
@@ -367,7 +367,7 @@ try {
   // Never exit non-zero: 1 is a NON-BLOCKING error and the write would proceed.
   respond(
     'ask',
-    `The secret-scanning hook failed to run (${err && err.message ? err.message : 'unknown error'}). ` +
+    `The secret-scanning hook failed to run (${err?.message ?? 'unknown error'}). ` +
       `It could not check this operation, so it is asking rather than assuming it is safe. ` +
       `Fix .claude/hooks/secret-guard.mjs before continuing.`,
   )
