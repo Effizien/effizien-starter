@@ -1,0 +1,25 @@
+# pnpm settings.
+#
+# This is NOT a workspace. The `packages` field is deliberately omitted, so only
+# the root package is included and studio/ stays an independent app with its own
+# dependency tree — which is what D-011 (single repo, no monorepo tooling) and
+# Sanity's own standalone-Studio guidance both call for.
+#
+# The file exists because pnpm 11 no longer reads the `pnpm` field in
+# package.json; settings moved here.
+
+# pnpm blocks postinstall scripts by default — a supply-chain protection, since a
+# postinstall runs arbitrary code at install time. esbuild's is legitimate: it
+# links the platform-specific binary, and the Next.js build fails without it.
+# Approve deliberately, one package at a time; never blanket-allow.
+allowBuilds:
+  esbuild: true
+
+# next-sanity declares `sanity` and `styled-components` as peers for its
+# next-sanity/studio entry points. The Studio here is standalone, so the app
+# never imports those, and pulling them in would put the entire Studio into the
+# app's dependency tree — defeating the reason for splitting them.
+peerDependencyRules:
+  ignoreMissing:
+    - sanity
+    - styled-components

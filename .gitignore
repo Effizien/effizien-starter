@@ -40,6 +40,9 @@ next-env.d.ts
 /build
 /dist
 
+# Standalone Sanity Studio build output
+/studio/dist
+
 # Vercel
 .vercel
 
