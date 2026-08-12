@@ -99,11 +99,34 @@ them as `unknown`. That is why `src/sanity/queries.ts` is a single file.
 **TypeGen types slug lists as `Array<string | null>`** — it cannot see that
 `defined(slug.current)` already excluded the nulls. Filter, do not assert.
 
-**The dataset is empty.** No documents of any type. So the projection is verified
-structurally (TypeGen evaluated it against the real `schema.json`) and semantically, but
-not against live content. The sharing-image path and `stega: false` behaviour are
-**unverified** — both need real documents. Seeding a handful of test documents was
-offered and not yet taken up.
+**A stale Next fetch cache will lie to you about content.** After seeding, the site kept
+rendering the *old* site-settings fallback through two dev-server restarts, while the
+Sanity CDN returned the new values correctly. Cause: `SITE_SETTINGS_QUERY` had run during
+an earlier `pnpm build` when the dataset was empty and was cached as `null`; the page
+queries were never cached because those documents did not exist yet. `rm -rf .next` fixed
+it. **After any content change that should be visible, clear `.next` before concluding
+the code is wrong** — the symptom looks exactly like a broken query.
+
+**The dataset now has seed content** (added 2026-08-12, published): `siteSettings`
+(siteName "Effizien"), `homePage`, four `page` documents — `about` (no seo at all),
+`pricing` (title + description override), `thank-you` (`searchVisibility: hidden`),
+`why-flat-roofs-fail` (external `canonicalUrl`) — plus `person-jane` and one `post`,
+`how-long-a-flat-roof-lasts`, with excerpt, publishedAt and author.
+
+Two things caught while seeding: the dataset had a **draft-only** `siteSettings` before
+any of this, which a published-perspective query reports as an empty dataset; and a
+reference to a document that exists only as a draft is rejected, so authors must be
+published before the posts that reference them.
+
+**Verified end to end against that content:** title template `%s · Effizien` from
+`siteSettings`, home page title absolute (no suffix), `seo.title`/`seo.description`
+overrides, `excerpt` → description on the post, site-description fallback on pages with
+neither, external canonical passed through untouched, `noindex, follow` on the hidden
+page, `og:site_name`, and **no stega characters in any `<title>`**.
+
+**Still unverified: the sharing-image path.** It needs one real image asset and the
+Sanity MCP has no asset-upload tool. Cheapest fix is to drag any image into the sharing
+image field of `siteSettings` in the Studio once, then re-check `og:image`.
 
 ### Verifying GROQ without content
 
