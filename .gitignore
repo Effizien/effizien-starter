@@ -43,6 +43,14 @@ next-env.d.ts
 # Standalone Sanity Studio build output
 /studio/dist
 
+# Scratch workspaces. Agents building schema types create throwaway Studio copies
+# to typecheck against before returning code; they are not deliverables and must
+# not be committed or linted.
+/studio/.wp4-*/
+/studio/__probe/
+/studio/.typecheck-tmp/
+/studio/sanity.config.wp4.ts
+
 # Vercel
 .vercel
 

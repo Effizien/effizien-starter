@@ -43,6 +43,7 @@ client a Turborepo when their site is one app is a bad handoff.
 | `pnpm check` | typecheck → lint → build. **Run before every commit.** |
 | `pnpm typegen` | regenerate `sanity.types.ts` from schema + queries |
 | `pnpm tokens` | rebuild `src/app/tokens.css` from `tokens/`; gates WCAG AA contrast |
+| `pnpm studio:build` | production-build the Studio — the real check that the schema resolves |
 | `pnpm lint:fix` | Biome autofix |
 
 ## Stack
@@ -68,7 +69,12 @@ file is being written.
 - **New component:** Server Component by default; `'use client'` only on the smallest
   leaf that needs it. Never import a server-only module into a client component.
 - **New schema type** (`studio/schemaTypes/`): kebab-case filename, named export
-  matching it, added to `index.ts`. Model the content before writing the page.
+  matching it, registered in `index.ts`. Model the content before writing the page.
+  Prefer composing the existing `page` + page builder over adding a document type — a
+  new type must have fields a generic page does not.
+- **Archetype** is one line in `studio/archetype.ts`. Types belonging to one archetype
+  never go in the base model: hardcoding `post` into the shared link targets is what
+  made selecting another archetype fail with `Unknown type: post`.
 - **Design tokens:** never hardcode a hex, spacing value, or font size. Edit `tokens/`
   and run `pnpm tokens` — `src/app/tokens.css` is generated. Only `tokens/semantic/` may
   reference the raw ramp; a component pointing at `--brand-500` cannot be rebranded.
