@@ -1,9 +1,13 @@
 import { visionTool } from '@sanity/vision'
+import type { SanityDefinedAction } from 'sanity'
 import { defineConfig } from 'sanity'
 import { presentationTool } from 'sanity/presentation'
 import { structureTool } from 'sanity/structure'
 
+import { SINGLETON_TYPES } from './document-types'
+import { locations, mainDocuments } from './presentation'
 import { schemaTypes } from './schemaTypes'
+import { structure } from './structure'
 
 /* Studio env vars are prefixed SANITY_STUDIO_ — that is the CLI's own
    convention and the only prefix it injects into the Studio bundle. They are
@@ -20,6 +24,28 @@ if (!projectId) {
   )
 }
 
+/** Document actions withheld from singletons.
+ *
+ * The Studio offers Delete and Duplicate on every document, and neither makes
+ * sense for a document the frontend fetches by a fixed `_id`. Duplicate creates
+ * a second Site settings that nothing reads; Delete and Unpublish take the home
+ * page off the root route. Both sit one menu click away from an editor who was
+ * looking for "Discard changes".
+ *
+ * Everything else stays. Publish, Discard changes and restore-from-history are
+ * how an editor undoes their own mistake, and removing them would trade one
+ * support call for another.
+ *
+ * `satisfies` checks the names against Sanity's built-in action ids at compile
+ * time — a renamed built-in becomes a type error here rather than a filter that
+ * silently stops matching. */
+const SINGLETON_DISABLED_ACTIONS: ReadonlySet<string> = new Set<string>([
+  'delete',
+  'duplicate',
+  'unpublish',
+  'unpublishVersion',
+] satisfies SanityDefinedAction[])
+
 export default defineConfig({
   name: 'default',
   title: 'Effizien Starter',
@@ -27,17 +53,29 @@ export default defineConfig({
   dataset,
 
   plugins: [
-    structureTool(),
+    /* `structure` replaces the default alphabetical list of document types with
+       something a client can navigate, and is where singletons are pinned to a
+       fixed document id. See structure.ts. */
+    structureTool({ structure }),
     /* Presentation gives editors click-to-edit against the live Next.js app.
-       previewUrl.origin must point at the running app, and that app's URL has
+       The preview origin must point at the running app, and that app's URL has
        to be in the project's CORS origins with credentials — `pnpm cors` in
        this directory does the localhost one. */
     presentationTool({
       previewUrl: {
-        origin: process.env.SANITY_STUDIO_PREVIEW_URL ?? 'http://localhost:3000',
+        /* `initial`, not the deprecated `origin`: same meaning, and `origin` is
+           scheduled for removal. */
+        initial: process.env.SANITY_STUDIO_PREVIEW_URL ?? 'http://localhost:3000',
         previewMode: {
           enable: '/api/draft-mode/enable',
         },
+      },
+      /* Which document a previewed URL belongs to, and which URLs a document
+         appears at. Without these the tool renders the site but cannot connect
+         either direction to a document. See presentation.ts. */
+      resolve: {
+        mainDocuments,
+        locations,
       },
     }),
     /* Vision runs GROQ against the real dataset. Test a query here before
@@ -48,5 +86,31 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+  },
+
+  document: {
+    /* Two of the three mechanisms that make a singleton a singleton; the third
+       is the fixed document id in structure.ts. All three read the same list in
+       document-types.ts, so adding a singleton is one edit. */
+
+    /* Remove the destructive actions from singletons. `action` is undefined on
+       actions contributed by plugins, which are left alone — this filter only
+       withholds the built-ins it names. */
+    actions: (prev, { schemaType }) =>
+      SINGLETON_TYPES.has(schemaType)
+        ? prev.filter(
+            (action) => !action.action || !SINGLETON_DISABLED_ACTIONS.has(action.action),
+          )
+        : prev,
+
+    /* Keep singletons out of every "Create" affordance: the navbar button, the
+       button at the top of a list pane, and "Create new" on a reference input.
+       All three are fed by this one list of templates.
+
+       A document type's default initial-value template carries the type name as
+       its id, which is what this matches. A hand-written template for a
+       singleton — the localised-home-page case — would need adding here too. */
+    newDocumentOptions: (prev) =>
+      prev.filter((template) => !SINGLETON_TYPES.has(template.templateId)),
   },
 })
