@@ -36,9 +36,11 @@ export type ArticleList = {
   source?: "latest" | "selected";
   topic?: CategoryReference;
   limit?: number;
-  articles?: Array<{
-    _key: string;
-  } & PostReference>;
+  articles?: Array<
+    {
+      _key: string;
+    } & PostReference
+  >;
   action?: Action;
 };
 
@@ -61,32 +63,39 @@ export type SimpleRichText = Array<{
   }>;
   style?: "normal";
   listItem?: "bullet" | "number";
-  markDefs?: Array<{
-    _key: string;
-  } & Link>;
+  markDefs?: Array<
+    {
+      _key: string;
+    } & Link
+  >;
   level?: number;
   _type: "block";
   _key: string;
 }>;
 
-export type RichText = Array<{
-  children?: Array<{
-    marks?: Array<string>;
-    text?: string;
-    _type: "span";
-    _key: string;
-  }>;
-  style?: "normal" | "heading" | "subheading" | "blockquote";
-  listItem?: "bullet" | "number";
-  markDefs?: Array<{
-    _key: string;
-  } & Link>;
-  level?: number;
-  _type: "block";
-  _key: string;
-} | {
-  _key: string;
-} & MediaImage>;
+export type RichText = Array<
+  | {
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal" | "heading" | "subheading" | "blockquote";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<
+        {
+          _key: string;
+        } & Link
+      >;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }
+  | ({
+      _key: string;
+    } & MediaImage)
+>;
 
 export type Testimonial = {
   _type: "testimonial";
@@ -120,36 +129,44 @@ export type CallToAction = {
   _type: "callToAction";
   heading?: string;
   body?: string;
-  actions?: Array<{
-    _key: string;
-  } & Action>;
+  actions?: Array<
+    {
+      _key: string;
+    } & Action
+  >;
 };
 
 export type Testimonials = {
   _type: "testimonials";
   heading?: string;
   intro?: string;
-  items?: Array<{
-    _key: string;
-  } & Testimonial>;
+  items?: Array<
+    {
+      _key: string;
+    } & Testimonial
+  >;
 };
 
 export type Faqs = {
   _type: "faqs";
   heading?: string;
   intro?: string;
-  items?: Array<{
-    _key: string;
-  } & FaqItem>;
+  items?: Array<
+    {
+      _key: string;
+    } & FaqItem
+  >;
 };
 
 export type Features = {
   _type: "features";
   heading?: string;
   intro?: string;
-  items?: Array<{
-    _key: string;
-  } & FeatureItem>;
+  items?: Array<
+    {
+      _key: string;
+    } & FeatureItem
+  >;
 };
 
 export type TextSection = {
@@ -163,31 +180,49 @@ export type Hero = {
   heading?: string;
   lede?: string;
   image?: MediaImage;
-  actions?: Array<{
-    _key: string;
-  } & Action>;
+  actions?: Array<
+    {
+      _key: string;
+    } & Action
+  >;
   alignment?: "start" | "center";
 };
 
-export type PageBuilder = Array<{
-  _key: string;
-} & Hero | {
-  _key: string;
-} & TextSection | {
-  _key: string;
-} & Features | {
-  _key: string;
-} & Faqs | {
-  _key: string;
-} & Testimonials | {
-  _key: string;
-} & CallToAction | {
-  _key: string;
-} & ArticleList>;
+export type PageBuilder = Array<
+  | ({
+      _key: string;
+    } & Hero)
+  | ({
+      _key: string;
+    } & TextSection)
+  | ({
+      _key: string;
+    } & Features)
+  | ({
+      _key: string;
+    } & Faqs)
+  | ({
+      _key: string;
+    } & Testimonials)
+  | ({
+      _key: string;
+    } & CallToAction)
+  | ({
+      _key: string;
+    } & ArticleList)
+>;
 
 export type SocialLink = {
   _type: "socialLink";
-  platform?: "linkedin" | "instagram" | "facebook" | "youtube" | "x" | "tiktok" | "bluesky" | "github";
+  platform?:
+    | "linkedin"
+    | "instagram"
+    | "facebook"
+    | "youtube"
+    | "x"
+    | "tiktok"
+    | "bluesky"
+    | "github";
   url?: string;
 };
 
@@ -200,9 +235,11 @@ export type NavigationLink = {
 export type NavigationGroup = {
   _type: "navigationGroup";
   label?: string;
-  links?: Array<{
-    _key: string;
-  } & NavigationLink>;
+  links?: Array<
+    {
+      _key: string;
+    } & NavigationLink
+  >;
 };
 
 export type HomePageReference = {
@@ -244,9 +281,11 @@ export type Post = {
   slug?: Slug;
   publishedAt?: string;
   author?: PersonReference;
-  topics?: Array<{
-    _key: string;
-  } & CategoryReference>;
+  topics?: Array<
+    {
+      _key: string;
+    } & CategoryReference
+  >;
   excerpt?: string;
   mainImage?: MediaImage;
   body?: RichText;
@@ -297,9 +336,11 @@ export type Person = {
   role?: string;
   image?: MediaImage;
   bio?: SimpleRichText;
-  socialLinks?: Array<{
-    _key: string;
-  } & SocialLink>;
+  socialLinks?: Array<
+    {
+      _key: string;
+    } & SocialLink
+  >;
 };
 
 export type Slug = {
@@ -327,9 +368,11 @@ export type SiteSettings = {
   _rev: string;
   siteName?: string;
   logo?: MediaImage;
-  socialLinks?: Array<{
-    _key: string;
-  } & SocialLink>;
+  socialLinks?: Array<
+    {
+      _key: string;
+    } & SocialLink
+  >;
   description?: string;
   socialImage?: MediaImage;
   contactEmail?: string;
@@ -343,16 +386,22 @@ export type Navigation = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  header?: Array<{
-    _key: string;
-  } & NavigationLink | {
-    _key: string;
-  } & NavigationGroup>;
-  footer?: Array<{
-    _key: string;
-  } & NavigationLink | {
-    _key: string;
-  } & NavigationGroup>;
+  header?: Array<
+    | ({
+        _key: string;
+      } & NavigationLink)
+    | ({
+        _key: string;
+      } & NavigationGroup)
+  >;
+  footer?: Array<
+    | ({
+        _key: string;
+      } & NavigationLink)
+    | ({
+        _key: string;
+      } & NavigationGroup)
+  >;
 };
 
 export type HomePage = {
@@ -491,5 +540,350 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type AllSanitySchemaTypes = CategoryReference | PostReference | ArticleList | Category | SimpleRichText | RichText | Testimonial | FaqItem | FeatureItem | Action | CallToAction | Testimonials | Faqs | Features | TextSection | Hero | PageBuilder | SocialLink | NavigationLink | NavigationGroup | HomePageReference | PageReference | Link | PersonReference | Post | SanityImageAssetReference | Seo | MediaImage | Person | Slug | Redirect | SiteSettings | Navigation | HomePage | Page | SanityImageCrop | SanityImageHotspot | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
+export type AllSanitySchemaTypes =
+  | CategoryReference
+  | PostReference
+  | ArticleList
+  | Category
+  | SimpleRichText
+  | RichText
+  | Testimonial
+  | FaqItem
+  | FeatureItem
+  | Action
+  | CallToAction
+  | Testimonials
+  | Faqs
+  | Features
+  | TextSection
+  | Hero
+  | PageBuilder
+  | SocialLink
+  | NavigationLink
+  | NavigationGroup
+  | HomePageReference
+  | PageReference
+  | Link
+  | PersonReference
+  | Post
+  | SanityImageAssetReference
+  | Seo
+  | MediaImage
+  | Person
+  | Slug
+  | Redirect
+  | SiteSettings
+  | Navigation
+  | HomePage
+  | Page
+  | SanityImageCrop
+  | SanityImageHotspot
+  | SanityImagePaletteSwatch
+  | SanityImagePalette
+  | SanityImageDimensions
+  | SanityImageMetadata
+  | SanityFileAsset
+  | SanityAssetSourceData
+  | SanityImageAsset
+  | Geopoint;
 
+// Source: ../src/sanity/queries.ts
+// Variable: SITE_SETTINGS_QUERY
+// Query: *[_id == "siteSettings"][0]{  siteName,  description,  socialImage,  logo,  socialLinks,  contactEmail,  contactPhone,  postalAddress}
+export type SITE_SETTINGS_QUERY_RESULT =
+  | {
+      siteName: null;
+      description: null;
+      socialImage: null;
+      logo: null;
+      socialLinks: null;
+      contactEmail: null;
+      contactPhone: null;
+      postalAddress: null;
+    }
+  | {
+      siteName: null;
+      description: null;
+      socialImage: null;
+      logo: null;
+      socialLinks: Array<
+        {
+          _key: string;
+        } & SocialLink
+      > | null;
+      contactEmail: null;
+      contactPhone: null;
+      postalAddress: null;
+    }
+  | {
+      siteName: null;
+      description: string | null;
+      socialImage: null;
+      logo: null;
+      socialLinks: null;
+      contactEmail: null;
+      contactPhone: null;
+      postalAddress: null;
+    }
+  | {
+      siteName: string | null;
+      description: string | null;
+      socialImage: MediaImage | null;
+      logo: MediaImage | null;
+      socialLinks: Array<
+        {
+          _key: string;
+        } & SocialLink
+      > | null;
+      contactEmail: string | null;
+      contactPhone: string | null;
+      postalAddress: string | null;
+    }
+  | null;
+
+// Source: ../src/sanity/queries.ts
+// Variable: HOME_PAGE_QUERY
+// Query: *[_id == "homePage"][0]{  _id,  _type,  title,  "seo": {    "title": coalesce(seo.title, title),    "description": coalesce(seo.description, excerpt),    "image": coalesce(seo.image, mainImage),    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),    "noIndex": seo.searchVisibility == "hidden",    "canonicalUrl": seo.canonicalUrl  }}
+export type HOME_PAGE_QUERY_RESULT =
+  | {
+      _id: "homePage";
+      _type: "category";
+      title: string | null;
+      seo: {
+        title: string | null;
+        description: null;
+        image: null;
+        imageAlt: string | null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "homePage";
+      title: string | null;
+      seo: {
+        title: string | null;
+        description: string | null;
+        image: {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
+        } | null;
+        imageAlt: string | null;
+        noIndex: false | true;
+        canonicalUrl: string | null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "navigation";
+      title: null;
+      seo: {
+        title: null;
+        description: null;
+        image: null;
+        imageAlt: null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "page";
+      title: string | null;
+      seo: {
+        title: string | null;
+        description: string | null;
+        image: {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
+        } | null;
+        imageAlt: string | null;
+        noIndex: false | true;
+        canonicalUrl: string | null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "person";
+      title: null;
+      seo: {
+        title: null;
+        description: null;
+        image: null;
+        imageAlt: null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "post";
+      title: string | null;
+      seo: {
+        title: string | null;
+        description: string | null;
+        image:
+          | MediaImage
+          | {
+              asset?: SanityImageAssetReference;
+              media?: unknown;
+              hotspot?: SanityImageHotspot;
+              crop?: SanityImageCrop;
+              alt?: string;
+              _type: "image";
+            }
+          | null;
+        imageAlt: string | null;
+        noIndex: false | true;
+        canonicalUrl: string | null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "redirect";
+      title: null;
+      seo: {
+        title: null;
+        description: null;
+        image: null;
+        imageAlt: null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "sanity.fileAsset";
+      title: string | null;
+      seo: {
+        title: string | null;
+        description: null;
+        image: null;
+        imageAlt: string | null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "sanity.imageAsset";
+      title: string | null;
+      seo: {
+        title: string | null;
+        description: null;
+        image: null;
+        imageAlt: string | null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "siteSettings";
+      title: null;
+      seo: {
+        title: null;
+        description: null;
+        image: null;
+        imageAlt: null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | null;
+
+// Source: ../src/sanity/queries.ts
+// Variable: PAGE_QUERY
+// Query: *[_type == "page" && slug.current == $slug][0]{  _id,  _type,  title,  "slug": slug.current,  "seo": {    "title": coalesce(seo.title, title),    "description": coalesce(seo.description, excerpt),    "image": coalesce(seo.image, mainImage),    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),    "noIndex": seo.searchVisibility == "hidden",    "canonicalUrl": seo.canonicalUrl  }}
+export type PAGE_QUERY_RESULT = {
+  _id: string;
+  _type: "page";
+  title: string | null;
+  slug: string | null;
+  seo: {
+    title: string | null;
+    description: string | null;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    imageAlt: string | null;
+    noIndex: false | true;
+    canonicalUrl: string | null;
+  };
+} | null;
+
+// Source: ../src/sanity/queries.ts
+// Variable: POST_QUERY
+// Query: *[_type == "post" && slug.current == $slug][0]{  _id,  _type,  title,  "slug": slug.current,  publishedAt,  _updatedAt,  excerpt,  mainImage,  author->{name, role},  topics[]->{title},  "seo": {    "title": coalesce(seo.title, title),    "description": coalesce(seo.description, excerpt),    "image": coalesce(seo.image, mainImage),    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),    "noIndex": seo.searchVisibility == "hidden",    "canonicalUrl": seo.canonicalUrl  }}
+export type POST_QUERY_RESULT = {
+  _id: string;
+  _type: "post";
+  title: string | null;
+  slug: string | null;
+  publishedAt: string | null;
+  _updatedAt: string;
+  excerpt: string | null;
+  mainImage: MediaImage | null;
+  author: {
+    name: string | null;
+    role: string | null;
+  } | null;
+  topics: Array<{
+    title: string | null;
+  }> | null;
+  seo: {
+    title: string | null;
+    description: string | null;
+    image:
+      | MediaImage
+      | {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
+        }
+      | null;
+    imageAlt: string | null;
+    noIndex: false | true;
+    canonicalUrl: string | null;
+  };
+} | null;
+
+// Source: ../src/sanity/queries.ts
+// Variable: PAGE_SLUGS_QUERY
+// Query: *[_type == "page" && defined(slug.current)] | order(_id) [0...1000].slug.current
+export type PAGE_SLUGS_QUERY_RESULT = Array<string | null>;
+
+// Source: ../src/sanity/queries.ts
+// Variable: POST_SLUGS_QUERY
+// Query: *[_type == "post" && defined(slug.current)] | order(_id) [0...1000].slug.current
+export type POST_SLUGS_QUERY_RESULT = Array<string | null>;
+
+// Query TypeMap
+import "@sanity/client";
+declare module "@sanity/client" {
+  interface SanityQueries {
+    '*[_id == "siteSettings"][0]{\n  siteName,\n  description,\n  socialImage,\n  logo,\n  socialLinks,\n  contactEmail,\n  contactPhone,\n  postalAddress\n}': SITE_SETTINGS_QUERY_RESULT;
+    '*[_id == "homePage"][0]{\n  _id,\n  _type,\n  title,\n  "seo": {\n    "title": coalesce(seo.title, title),\n    "description": coalesce(seo.description, excerpt),\n    "image": coalesce(seo.image, mainImage),\n    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),\n    "noIndex": seo.searchVisibility == "hidden",\n    "canonicalUrl": seo.canonicalUrl\n  }\n}': HOME_PAGE_QUERY_RESULT;
+    '*[_type == "page" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  "seo": {\n    "title": coalesce(seo.title, title),\n    "description": coalesce(seo.description, excerpt),\n    "image": coalesce(seo.image, mainImage),\n    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),\n    "noIndex": seo.searchVisibility == "hidden",\n    "canonicalUrl": seo.canonicalUrl\n  }\n}': PAGE_QUERY_RESULT;
+    '*[_type == "post" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  publishedAt,\n  _updatedAt,\n  excerpt,\n  mainImage,\n  author->{name, role},\n  topics[]->{title},\n  "seo": {\n    "title": coalesce(seo.title, title),\n    "description": coalesce(seo.description, excerpt),\n    "image": coalesce(seo.image, mainImage),\n    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),\n    "noIndex": seo.searchVisibility == "hidden",\n    "canonicalUrl": seo.canonicalUrl\n  }\n}': POST_QUERY_RESULT;
+    '*[_type == "page" && defined(slug.current)] | order(_id) [0...1000].slug.current': PAGE_SLUGS_QUERY_RESULT;
+    '*[_type == "post" && defined(slug.current)] | order(_id) [0...1000].slug.current': POST_SLUGS_QUERY_RESULT;
+  }
+}

@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { draftMode } from 'next/headers'
 import { VisualEditing } from 'next-sanity/visual-editing'
 
-import { SanityLive } from '@/sanity/lib/live'
+import { siteUrl } from '@/lib/seo/site-url'
+import { SanityLive, sanityFetch } from '@/sanity/lib/live'
+import { SITE_SETTINGS_QUERY } from '@/sanity/queries'
 
 import './globals.css'
 
@@ -12,19 +14,40 @@ import './globals.css'
 const fontSans = Geist({ subsets: ['latin'], variable: '--font-sans' })
 const fontMono = Geist_Mono({ subsets: ['latin'], variable: '--font-mono' })
 
-/* metadataBase makes every canonical, Open Graph and Twitter URL absolute.
-   Without it Next emits relative URLs, which most crawlers and every social
-   scraper resolve incorrectly. Per-route metadata is added in WP5. */
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
+/** The site name suffix, applied once.
+ *
+ * `studio/schemaTypes/objects/seo.ts` is explicit that the " — Acme Roofing"
+ * suffix is a template set here and fed from `siteSettings`, never typed into a
+ * page title. Typing it per page is how half a site ends up with it and half
+ * without.
+ *
+ * This is why the root layout fetches: the template needs `siteName`, and a
+ * hardcoded default would be wrong on every cloned site from the first commit.
+ * `metadataBase` makes every URL Next emits absolute — without it Next produces
+ * relative URLs that most crawlers and every social scraper resolve wrongly.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  /* stega: false. Stega characters are invisible on the page but real inside
+     <title>, and they are copied into every search result and share card. */
+  const { data: site } = await sanityFetch({
+    query: SITE_SETTINGS_QUERY,
+    stega: false,
+  })
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: 'Effizien Starter',
-    template: '%s · Effizien Starter',
-  },
-  description:
-    'Production website starter — Next.js App Router, Sanity, and Vercel, with SEO, GEO and WCAG 2.2 AA designed in from the start.',
+  /* An empty dataset is the normal state of a freshly scaffolded site, so this
+     falls back rather than throwing. The repo name is a visible placeholder —
+     it shows up in the browser tab until Site settings is filled in, which is
+     the intended nudge. */
+  const siteName = site?.siteName ?? 'effizien-starter'
+
+  return {
+    metadataBase: new URL(siteUrl),
+    title: {
+      default: siteName,
+      template: `%s · ${siteName}`,
+    },
+    description: site?.description ?? undefined,
+  }
 }
 
 export default async function RootLayout({
