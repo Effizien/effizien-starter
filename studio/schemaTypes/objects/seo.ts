@@ -2,6 +2,7 @@ import { SearchIcon } from '@sanity/icons/Search'
 import { defineField, defineType } from 'sanity'
 
 import { FIELD_GROUP } from '../shared/field-groups'
+import { shareImageDimensionWarning } from '../shared/image-dimensions'
 import { SEO_LIMITS } from '../shared/seo-limits'
 import { hasText } from '../shared/validation'
 
@@ -81,23 +82,6 @@ import { hasText } from '../shared/validation'
  * translation metadata at query time; they are not content and do not belong in
  * this object.
  */
-
-/** Pixel dimensions, read out of the asset id.
- *
- * A Sanity asset id encodes them: `image-<hash>-1200x630-png`. Reading them here
- * costs nothing, where asking the API would mean a network round trip inside a
- * validator that runs on every keystroke.
- */
-function imageDimensions(
-  ref: string | undefined,
-): { width: number; height: number } | null {
-  if (!ref) return null
-  const match = /^image-[^-]+-(\d+)x(\d+)-[a-z0-9]+$/i.exec(ref)
-  const width = match?.[1]
-  const height = match?.[2]
-  if (!width || !height) return null
-  return { width: Number(width), height: Number(height) }
-}
 
 type ImageValue = { asset?: { _ref?: string } } | undefined
 
@@ -214,23 +198,11 @@ export const seo = defineType({
             }),
         }),
       ],
-      validation: (rule) =>
-        rule
-          .custom((value) => {
-            const dimensions = imageDimensions((value as ImageValue)?.asset?._ref)
-            if (!dimensions) return true
-
-            const { width, height } = SEO_LIMITS.openGraphImage
-            if (dimensions.width >= width && dimensions.height >= height) return true
-
-            return (
-              `This image is ${dimensions.width}×${dimensions.height}. Social networks ` +
-              `render the card at ${width}×${height} and will scale this one up to fit, ` +
-              'which is what makes a shared link look blurry. Upload a larger version if ' +
-              'you have one.'
-            )
-          })
-          .warning(),
+      /* Shared with `siteSettings.socialImage`, which needs the identical check
+         — see `shared/image-dimensions.ts`. A warning, never an error: the
+         image renders, it just renders badly, and the editor may not have a
+         larger version. */
+      validation: (rule) => rule.custom(shareImageDimensionWarning()).warning(),
     }),
 
     defineField({

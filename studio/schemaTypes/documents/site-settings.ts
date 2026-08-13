@@ -2,6 +2,7 @@ import { CogIcon } from '@sanity/icons/Cog'
 import { defineArrayMember, defineField, defineType } from 'sanity'
 
 import { LIMIT } from '../shared/editorial-guardrails'
+import { shareImageDimensionWarning } from '../shared/image-dimensions'
 
 /** Things that are true of the whole site. A singleton — see `SINGLETONS` in
  *  `studio/document-types.ts`.
@@ -155,6 +156,15 @@ export const siteSettings = defineType({
       group: 'sharing',
       description:
         'Shown when someone shares a link to this site on social media or in a chat app, for any page that has not set its own. 1200 × 630 pixels. Keep any text on it large — it is often displayed the size of a postage stamp.',
+      /* The same check the per-page sharing image runs, and the field with the
+         stronger case for it: this one is the fallback for every page that has
+         not set its own, so a small image here is what most shared links from
+         the whole site look like. The description above already asks for
+         1200 × 630; without this, nothing notices when it does not arrive.
+         Found during WP5, with a 128 × 128 favicon set here and the frontend
+         dutifully upscaling it. */
+      validation: (rule) =>
+        rule.custom(shareImageDimensionWarning({ siteWide: true })).warning(),
     }),
 
     defineField({
