@@ -47,6 +47,10 @@ type SeoImage = {
   readonly asset?: { readonly _ref?: string } | null
   readonly hotspot?: unknown
   readonly crop?: unknown
+  /** The site-wide default image carries its own description, written by the
+   *  editor who uploaded it. The per-page one is projected separately as
+   *  `imageAlt`, because it coalesces through several fields. */
+  readonly alt?: string | null
 }
 
 /** The site-wide defaults a page falls back to. */
@@ -106,9 +110,15 @@ export function buildMetadata({
      neither gets no image tags at all rather than an empty one — a share card
      with a broken image reads worse than a share card with none. */
   const imageUrl = shareImageUrl(seo?.image) ?? shareImageUrl(site?.socialImage)
+
+  /* The alt has to describe whichever image actually won, which is why this
+     branches on the same condition the line above resolves. Falling back to the
+     site name when the site-wide image is used would silently discard the
+     description its editor wrote — and the person who uploaded that image is
+     the one who knows what is in it. */
   const imageAlt = seo?.image?.asset?._ref
     ? (seo.imageAlt ?? title ?? undefined)
-    : (site?.siteName ?? undefined)
+    : (site?.socialImage?.alt ?? site?.siteName ?? undefined)
 
   const images = imageUrl
     ? [{ url: imageUrl, width: OG_IMAGE.width, height: OG_IMAGE.height, alt: imageAlt }]
