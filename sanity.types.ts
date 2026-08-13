@@ -493,6 +493,16 @@ export type Geopoint = {
 
 export type AllSanitySchemaTypes = CategoryReference | PostReference | ArticleList | Category | SimpleRichText | RichText | Testimonial | FaqItem | FeatureItem | Action | CallToAction | Testimonials | Faqs | Features | TextSection | Hero | PageBuilder | SocialLink | NavigationLink | NavigationGroup | HomePageReference | PageReference | Link | PersonReference | Post | SanityImageAssetReference | Seo | MediaImage | Person | Slug | Redirect | SiteSettings | Navigation | HomePage | Page | SanityImageCrop | SanityImageHotspot | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
 
+// Source: ../src/lib/redirects.ts
+// Variable: REDIRECTS_QUERY
+// Query: *[_type == "redirect" && defined(source)]{  source,  destination,  outcome,  "permanent": outcome == "permanent"}
+export type REDIRECTS_QUERY_RESULT = Array<{
+  source: string;
+  destination: string | null;
+  outcome: "gone" | "permanent" | "temporary" | null;
+  permanent: false | true;
+}>;
+
 // Source: ../src/sanity/queries.ts
 // Variable: SITE_SETTINGS_QUERY
 // Query: *[_id == "siteSettings"][0]{  siteName,  description,  socialImage,  logo,  socialLinks,  contactEmail,  contactPhone,  postalAddress}
@@ -839,6 +849,7 @@ export type LLMS_FULL_QUERY_RESULT = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
+    "*[_type == \"redirect\" && defined(source)]{\n  source,\n  destination,\n  outcome,\n  \"permanent\": outcome == \"permanent\"\n}": REDIRECTS_QUERY_RESULT;
     "*[_id == \"siteSettings\"][0]{\n  siteName,\n  description,\n  socialImage,\n  logo,\n  socialLinks,\n  contactEmail,\n  contactPhone,\n  postalAddress\n}": SITE_SETTINGS_QUERY_RESULT;
     "*[_id == \"homePage\"][0]{\n  _id,\n  _type,\n  title,\n  \"seo\": {\n    \"title\": coalesce(seo.title, title),\n    \"description\": coalesce(seo.description, excerpt),\n    \"image\": coalesce(seo.image, mainImage),\n    \"imageAlt\": coalesce(seo.image.alt, mainImage.alt, title),\n    \"noIndex\": seo.searchVisibility == \"hidden\",\n    \"canonicalUrl\": seo.canonicalUrl\n  }\n}": HOME_PAGE_QUERY_RESULT;
     "*[_type == \"page\" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  \"slug\": slug.current,\n  \"seo\": {\n    \"title\": coalesce(seo.title, title),\n    \"description\": coalesce(seo.description, excerpt),\n    \"image\": coalesce(seo.image, mainImage),\n    \"imageAlt\": coalesce(seo.image.alt, mainImage.alt, title),\n    \"noIndex\": seo.searchVisibility == \"hidden\",\n    \"canonicalUrl\": seo.canonicalUrl\n  }\n}": PAGE_QUERY_RESULT;

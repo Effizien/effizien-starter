@@ -72,6 +72,8 @@ route — the editor's only controls are in *SEO & sharing* on each document.
 | AI files | `/llms.txt` and `/llms-full.txt`, generated at build |
 | Search Console | [property link] · setup procedure: `docs/runbooks/search-console-and-analytics.md` |
 | Analytics | GA4 `[G-XXXXXXXXXX]` |
+| Redirects | Edited in the Studio under **Redirects**. Take effect on the **next deploy** |
+| Instant indexing | IndexNow — Bing, Yandex, Seznam, Naver. **Not Google**, which still crawls |
 | Audit | `docs/runbooks/seo-geo-audit.md` — run before launch and a week after |
 
 **The one variable that matters:** `NEXT_PUBLIC_SITE_URL`. Every canonical, Open Graph

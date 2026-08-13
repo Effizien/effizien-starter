@@ -91,8 +91,9 @@ curl -s $SITE/blog/some-article | grep -o 'application/ld+json' | wc -l
 
 ## 5. Redirects
 
-> ⚠️ **Not yet implemented.** WP5 chunk 5 builds the redirect map and the `410` route.
-> These checks are written now so the gap is visible rather than assumed filled.
+Redirects are read from Sanity at **build time**, so a rule published after a deploy takes
+effect on the next one. That is what the Studio tells the editor; if this audit finds a
+missing redirect that exists in the CMS, redeploy before investigating anything else.
 
 - [ ] Every URL in the client's old-site inventory returns `301` to a live page, or `410`
 - [ ] No redirect chains — one hop, not two
@@ -107,6 +108,10 @@ while read -r url; do printf '%s → %s\n' "$url" "$(curl -sI -o /dev/null -w '%
 **This is the highest-stakes section of the whole audit on a replacement site.** Losing
 search equity at launch is the most damaging and most preventable failure in this
 business.
+
+Expect `301` and `302`, not `308`/`307` — see the note in `src/lib/redirects.ts`. A `410`
+returns a plain page and answers `HEAD` as well as `GET`, which is what link checkers
+use.
 
 ## 6. GEO surface
 
