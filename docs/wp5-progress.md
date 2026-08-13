@@ -13,8 +13,8 @@ Branch: `wp5/seo-geo-module` · Last updated 2026-08-12
 | Chunk | Scope | Status |
 |---|---|---|
 | 1 | Metadata spine — GROQ projection, `buildMetadata`, site URL, route shells | ✅ `62763c7` |
-| 2 | Typed JSON-LD helpers | ⬜ next |
-| 3 | `sitemap.ts` + `robots.ts` with AI crawler policy | ⬜ |
+| 2 | Typed JSON-LD helpers | ✅ `dd3b7b4` |
+| 3 | `sitemap.ts` + `robots.ts` with AI crawler policy | ✅ this commit |
 | 4 | `llms.txt` / `llms-full.txt` + portable-text→markdown | ⬜ |
 | 5 | Redirect map + IndexNow | ⬜ |
 | 6 | GSC/GA4 runbook, audit checklist, ADRs, handoff | ⬜ |
@@ -127,6 +127,29 @@ page, `og:site_name`, and **no stega characters in any `<title>`**.
 **Still unverified: the sharing-image path.** It needs one real image asset and the
 Sanity MCP has no asset-upload tool. Cheapest fix is to drag any image into the sharing
 image field of `siteSettings` in the Studio once, then re-check `og:image`.
+
+**Verified in chunk 2:** with `seo.title` set to a different string on the seeded post,
+the page `<title>` takes the override while `Article.headline` keeps the post's own
+title — WP4's content-versus-presentation rule, demonstrated rather than asserted. The
+`JsonLd` escaping was verified by putting a literal `</script><img src=x onerror=…>` in
+an excerpt: the raw sequence never reaches the HTML, the escaped form does, and all
+three blocks still parse. Payload reverted; the `seo.title` override was kept as seed
+data because it keeps that path exercised.
+
+**Verified in chunk 3, and worth keeping:**
+
+- **`VERCEL_ENV`, not `NODE_ENV`, is the production signal.** `NODE_ENV` is `production`
+  during any `next build`, including on a laptop, so it cannot distinguish a real deploy.
+  Three files now depend on this: `lib/seo/site-url.ts`, `app/robots.ts`, `next.config.ts`.
+- **`VERCEL_ENV=production pnpm build` with a localhost site URL fails the build**, with
+  the intended message. Run it before a launch as a cheap rehearsal.
+- **GROQ treats `null != "hidden"` as true**, so the sitemap filter includes documents
+  saved before the field existed. Verified with groq-js. Note the two rules are
+  deliberately different shapes: `noIndex` asks "did the editor hide this?" and must be
+  false when absent; the sitemap asks "may this be listed?" and must be true when absent.
+- **Crawling and indexing are separate permissions.** `Disallow` stops a fetch; a linked
+  URL can still be indexed without a snippet. Preview deploys need both — `robots.ts`
+  disallows, and `next.config.ts` sends `X-Robots-Tag: noindex`. Neither alone is enough.
 
 ### Verifying GROQ without content
 

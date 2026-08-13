@@ -119,3 +119,43 @@ export const PAGE_SLUGS_QUERY = defineQuery(
 export const POST_SLUGS_QUERY = defineQuery(
   `*[_type == "post" && defined(slug.current)] | order(_id) [0...1000].slug.current`,
 )
+
+/* ── Sitemap ────────────────────────────────────────────────────────────────*/
+
+/** Everything that belongs in the sitemap, grouped by type.
+ *
+ * **Grouped rather than flattened, because `ROUTE` owns addresses.** GROQ could
+ * concatenate a path here — `"/blog/" + slug.current` — and that string would
+ * immediately be a second definition of where an article lives, free to drift
+ * from `studio/presentation.ts` and `src/lib/routes.ts` with nothing failing.
+ * The query returns slugs; `src/app/sitemap.ts` turns them into addresses with
+ * the same functions every other route uses.
+ *
+ * **`!= "hidden"`, which is not the same shape as the `noIndex` projection.**
+ * Both are correct. `noIndex` asks "did the editor hide this?" and must answer
+ * no when the field is absent; the sitemap asks "may this be listed?" and must
+ * answer yes when the field is absent. Verified with groq-js against documents
+ * carrying no `seo` object at all: GROQ treats a null as not-equal, so legacy
+ * documents survive the filter and appear in the sitemap.
+ *
+ * **Posts filter `publishedAt <= now()`.** `documents/post.ts` promises an
+ * editor that a future date schedules an article. A sitemap listing a piece
+ * that is not yet on the blog breaks that promise in the one place a search
+ * engine is guaranteed to look.
+ *
+ * **Bounded at 5,000 per type.** Well under the 50,000-URL / 50MB limit for a
+ * single sitemap file. A site that outgrows this needs `generateSitemaps` to
+ * shard, not a bigger number here.
+ */
+export const SITEMAP_QUERY = defineQuery(`{
+  "home": *[_id == "homePage" && seo.searchVisibility != "hidden"][0]{ _updatedAt },
+  "pages": *[_type == "page"
+      && defined(slug.current)
+      && seo.searchVisibility != "hidden"]
+    | order(_id) [0...5000]{ "slug": slug.current, _updatedAt },
+  "posts": *[_type == "post"
+      && defined(slug.current)
+      && seo.searchVisibility != "hidden"
+      && publishedAt <= now()]
+    | order(_id) [0...5000]{ "slug": slug.current, _updatedAt }
+}`)

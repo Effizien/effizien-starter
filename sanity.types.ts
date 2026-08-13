@@ -755,6 +755,23 @@ export type PAGE_SLUGS_QUERY_RESULT = Array<string | null>;
 // Query: *[_type == "post" && defined(slug.current)] | order(_id) [0...1000].slug.current
 export type POST_SLUGS_QUERY_RESULT = Array<string | null>;
 
+// Source: ../src/sanity/queries.ts
+// Variable: SITEMAP_QUERY
+// Query: {  "home": *[_id == "homePage" && seo.searchVisibility != "hidden"][0]{ _updatedAt },  "pages": *[_type == "page"      && defined(slug.current)      && seo.searchVisibility != "hidden"]    | order(_id) [0...5000]{ "slug": slug.current, _updatedAt },  "posts": *[_type == "post"      && defined(slug.current)      && seo.searchVisibility != "hidden"      && publishedAt <= now()]    | order(_id) [0...5000]{ "slug": slug.current, _updatedAt }}
+export type SITEMAP_QUERY_RESULT = {
+  home: {
+    _updatedAt: string;
+  } | null;
+  pages: Array<{
+    slug: string | null;
+    _updatedAt: string;
+  }>;
+  posts: Array<{
+    slug: string | null;
+    _updatedAt: string;
+  }>;
+};
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -765,6 +782,7 @@ declare module "@sanity/client" {
     "*[_type == \"post\" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  \"slug\": slug.current,\n  publishedAt,\n  _updatedAt,\n  excerpt,\n  mainImage,\n  author->{name, role},\n  topics[]->{title},\n  \"seo\": {\n    \"title\": coalesce(seo.title, title),\n    \"description\": coalesce(seo.description, excerpt),\n    \"image\": coalesce(seo.image, mainImage),\n    \"imageAlt\": coalesce(seo.image.alt, mainImage.alt, title),\n    \"noIndex\": seo.searchVisibility == \"hidden\",\n    \"canonicalUrl\": seo.canonicalUrl\n  }\n}": POST_QUERY_RESULT;
     "*[_type == \"page\" && defined(slug.current)] | order(_id) [0...1000].slug.current": PAGE_SLUGS_QUERY_RESULT;
     "*[_type == \"post\" && defined(slug.current)] | order(_id) [0...1000].slug.current": POST_SLUGS_QUERY_RESULT;
+    "{\n  \"home\": *[_id == \"homePage\" && seo.searchVisibility != \"hidden\"][0]{ _updatedAt },\n  \"pages\": *[_type == \"page\"\n      && defined(slug.current)\n      && seo.searchVisibility != \"hidden\"]\n    | order(_id) [0...5000]{ \"slug\": slug.current, _updatedAt },\n  \"posts\": *[_type == \"post\"\n      && defined(slug.current)\n      && seo.searchVisibility != \"hidden\"\n      && publishedAt <= now()]\n    | order(_id) [0...5000]{ \"slug\": slug.current, _updatedAt }\n}": SITEMAP_QUERY_RESULT;
   }
 }
 

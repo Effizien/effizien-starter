@@ -1,5 +1,10 @@
 import type { NextConfig } from 'next'
 
+/* Same signal `src/lib/seo/site-url.ts` and `src/app/robots.ts` use. `NODE_ENV`
+   is "production" during any `next build`, including on a laptop, so it cannot
+   tell a real deployment from a local one. */
+const isProductionDeployment = process.env.VERCEL_ENV === 'production'
+
 const nextConfig: NextConfig = {
   /* Fail the build on type errors rather than shipping broken code. This is the
      default, stated explicitly because the usual "fix" someone reaches for under
@@ -28,6 +33,23 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+
+      /* Keep preview deployments out of the index.
+         `src/app/robots.ts` already disallows crawling everywhere but
+         production, and that is not sufficient on its own: `Disallow` stops a
+         crawler fetching a page, but a URL linked from anywhere else can still
+         be listed — without a snippet, under the preview domain, competing with
+         the real site. `noindex` is the part that actually keeps it out.
+         Crawling and indexing are separate permissions, and a staging site
+         needs both denied. */
+      ...(isProductionDeployment
+        ? []
+        : [
+            {
+              source: '/:path*',
+              headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+            },
+          ]),
     ]
   },
 }
