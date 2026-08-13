@@ -60,6 +60,44 @@ Full map in `docs/content-model.md`. Schema source: `studio/schemaTypes/`.
 After any schema or query change, run `pnpm typegen` — `sanity.types.ts` is generated and
 committed, so a stale one means the types no longer describe the data.
 
+## Search and AI visibility
+
+Nothing here needs configuring per page. It is wired to the content and runs on every
+route — the editor's only controls are in *SEO & sharing* on each document.
+
+| | |
+|---|---|
+| Sitemap | `[https://…]/sitemap.xml` — generated from published content, nothing to upload |
+| Robots | `[https://…]/robots.txt` — AI crawlers **allowed** by default (ADR-002) |
+| AI files | `/llms.txt` and `/llms-full.txt`, generated at build |
+| Search Console | [property link] · setup procedure: `docs/runbooks/search-console-and-analytics.md` |
+| Analytics | GA4 `[G-XXXXXXXXXX]` |
+| Redirects | Edited in the Studio under **Redirects**. Take effect on the **next deploy** |
+| Instant indexing | IndexNow — Bing, Yandex, Seznam, Naver. **Not Google**, which still crawls |
+| Audit | `docs/runbooks/seo-geo-audit.md` — run before launch and a week after |
+
+**The one variable that matters:** `NEXT_PUBLIC_SITE_URL`. Every canonical, Open Graph
+and sitemap URL is built from it. A production deploy with it unset or pointing at
+localhost **fails the build on purpose** rather than shipping a site that tells Google
+its content lives somewhere unreachable.
+
+**Preview deploys are not indexable**, by two mechanisms — `robots.txt` disallows and an
+`X-Robots-Tag: noindex` header is sent. Crawling and indexing are separate permissions
+and a staging copy needs both denied.
+
+**Two editor controls can remove a page from Google**, both under *SEO & sharing →
+Advanced*. When a page is missing from search, check these before anything else:
+
+- **Search engines → Hidden** takes the page out of Google *and* out of the sitemap.
+  Correct for thank-you pages; surprising everywhere else.
+- **Canonical URL** points search engines at a different page as the original. It is for
+  republished content only. Empty is almost always right.
+
+**What we do not claim.** The site is built to be found; nobody can promise rankings. The
+AI-visibility files (`llms.txt`) are cheap and durable, and no major provider has
+confirmed reading them — we ship them as insurance, not as a lever. See
+`docs/runbooks/seo-geo-audit.md` for the full version of what this does and does not do.
+
 ## Who can edit what
 
 | Person | Sanity role | Notes |

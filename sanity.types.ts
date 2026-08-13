@@ -493,3 +493,372 @@ export type Geopoint = {
 
 export type AllSanitySchemaTypes = CategoryReference | PostReference | ArticleList | Category | SimpleRichText | RichText | Testimonial | FaqItem | FeatureItem | Action | CallToAction | Testimonials | Faqs | Features | TextSection | Hero | PageBuilder | SocialLink | NavigationLink | NavigationGroup | HomePageReference | PageReference | Link | PersonReference | Post | SanityImageAssetReference | Seo | MediaImage | Person | Slug | Redirect | SiteSettings | Navigation | HomePage | Page | SanityImageCrop | SanityImageHotspot | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
 
+// Source: ../src/lib/redirects.ts
+// Variable: REDIRECTS_QUERY
+// Query: *[_type == "redirect" && defined(source)]{  source,  destination,  outcome,  "permanent": outcome == "permanent"}
+export type REDIRECTS_QUERY_RESULT = Array<{
+  source: string;
+  destination: string | null;
+  outcome: "gone" | "permanent" | "temporary" | null;
+  permanent: false | true;
+}>;
+
+// Source: ../src/sanity/queries.ts
+// Variable: SITE_SETTINGS_QUERY
+// Query: *[_id == "siteSettings"][0]{  siteName,  description,  socialImage,  logo,  socialLinks,  contactEmail,  contactPhone,  postalAddress}
+export type SITE_SETTINGS_QUERY_RESULT = {
+  siteName: null;
+  description: null;
+  socialImage: null;
+  logo: null;
+  socialLinks: null;
+  contactEmail: null;
+  contactPhone: null;
+  postalAddress: null;
+} | {
+  siteName: null;
+  description: null;
+  socialImage: null;
+  logo: null;
+  socialLinks: Array<{
+    _key: string;
+  } & SocialLink> | null;
+  contactEmail: null;
+  contactPhone: null;
+  postalAddress: null;
+} | {
+  siteName: null;
+  description: string | null;
+  socialImage: null;
+  logo: null;
+  socialLinks: null;
+  contactEmail: null;
+  contactPhone: null;
+  postalAddress: null;
+} | {
+  siteName: string | null;
+  description: string | null;
+  socialImage: MediaImage | null;
+  logo: MediaImage | null;
+  socialLinks: Array<{
+    _key: string;
+  } & SocialLink> | null;
+  contactEmail: string | null;
+  contactPhone: string | null;
+  postalAddress: string | null;
+} | null;
+
+// Source: ../src/sanity/queries.ts
+// Variable: HOME_PAGE_QUERY
+// Query: *[_id == "homePage"][0]{  _id,  _type,  title,  "seo": {    "title": coalesce(seo.title, title),    "description": coalesce(seo.description, excerpt),    "image": coalesce(seo.image, mainImage),    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),    "noIndex": seo.searchVisibility == "hidden",    "canonicalUrl": seo.canonicalUrl  }}
+export type HOME_PAGE_QUERY_RESULT = {
+  _id: "homePage";
+  _type: "category";
+  title: string | null;
+  seo: {
+    title: string | null;
+    description: null;
+    image: null;
+    imageAlt: string | null;
+    noIndex: false;
+    canonicalUrl: null;
+  };
+} | {
+  _id: "homePage";
+  _type: "homePage";
+  title: string | null;
+  seo: {
+    title: string | null;
+    description: string | null;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    imageAlt: string | null;
+    noIndex: false | true;
+    canonicalUrl: string | null;
+  };
+} | {
+  _id: "homePage";
+  _type: "navigation";
+  title: null;
+  seo: {
+    title: null;
+    description: null;
+    image: null;
+    imageAlt: null;
+    noIndex: false;
+    canonicalUrl: null;
+  };
+} | {
+  _id: "homePage";
+  _type: "page";
+  title: string | null;
+  seo: {
+    title: string | null;
+    description: string | null;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    imageAlt: string | null;
+    noIndex: false | true;
+    canonicalUrl: string | null;
+  };
+} | {
+  _id: "homePage";
+  _type: "person";
+  title: null;
+  seo: {
+    title: null;
+    description: null;
+    image: null;
+    imageAlt: null;
+    noIndex: false;
+    canonicalUrl: null;
+  };
+} | {
+  _id: "homePage";
+  _type: "post";
+  title: string | null;
+  seo: {
+    title: string | null;
+    description: string | null;
+    image: MediaImage | {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    imageAlt: string | null;
+    noIndex: false | true;
+    canonicalUrl: string | null;
+  };
+} | {
+  _id: "homePage";
+  _type: "redirect";
+  title: null;
+  seo: {
+    title: null;
+    description: null;
+    image: null;
+    imageAlt: null;
+    noIndex: false;
+    canonicalUrl: null;
+  };
+} | {
+  _id: "homePage";
+  _type: "sanity.fileAsset";
+  title: string | null;
+  seo: {
+    title: string | null;
+    description: null;
+    image: null;
+    imageAlt: string | null;
+    noIndex: false;
+    canonicalUrl: null;
+  };
+} | {
+  _id: "homePage";
+  _type: "sanity.imageAsset";
+  title: string | null;
+  seo: {
+    title: string | null;
+    description: null;
+    image: null;
+    imageAlt: string | null;
+    noIndex: false;
+    canonicalUrl: null;
+  };
+} | {
+  _id: "homePage";
+  _type: "siteSettings";
+  title: null;
+  seo: {
+    title: null;
+    description: null;
+    image: null;
+    imageAlt: null;
+    noIndex: false;
+    canonicalUrl: null;
+  };
+} | null;
+
+// Source: ../src/sanity/queries.ts
+// Variable: PAGE_QUERY
+// Query: *[_type == "page" && slug.current == $slug][0]{  _id,  _type,  title,  "slug": slug.current,  "seo": {    "title": coalesce(seo.title, title),    "description": coalesce(seo.description, excerpt),    "image": coalesce(seo.image, mainImage),    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),    "noIndex": seo.searchVisibility == "hidden",    "canonicalUrl": seo.canonicalUrl  }}
+export type PAGE_QUERY_RESULT = {
+  _id: string;
+  _type: "page";
+  title: string | null;
+  slug: string | null;
+  seo: {
+    title: string | null;
+    description: string | null;
+    image: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    imageAlt: string | null;
+    noIndex: false | true;
+    canonicalUrl: string | null;
+  };
+} | null;
+
+// Source: ../src/sanity/queries.ts
+// Variable: POST_QUERY
+// Query: *[_type == "post" && slug.current == $slug][0]{  _id,  _type,  title,  "slug": slug.current,  publishedAt,  _updatedAt,  excerpt,  mainImage,  author->{name, role},  topics[]->{title},  "seo": {    "title": coalesce(seo.title, title),    "description": coalesce(seo.description, excerpt),    "image": coalesce(seo.image, mainImage),    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),    "noIndex": seo.searchVisibility == "hidden",    "canonicalUrl": seo.canonicalUrl  }}
+export type POST_QUERY_RESULT = {
+  _id: string;
+  _type: "post";
+  title: string | null;
+  slug: string | null;
+  publishedAt: string | null;
+  _updatedAt: string;
+  excerpt: string | null;
+  mainImage: MediaImage | null;
+  author: {
+    name: string | null;
+    role: string | null;
+  } | null;
+  topics: Array<{
+    title: string | null;
+  }> | null;
+  seo: {
+    title: string | null;
+    description: string | null;
+    image: MediaImage | {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+    } | null;
+    imageAlt: string | null;
+    noIndex: false | true;
+    canonicalUrl: string | null;
+  };
+} | null;
+
+// Source: ../src/sanity/queries.ts
+// Variable: PAGE_SLUGS_QUERY
+// Query: *[_type == "page" && defined(slug.current)] | order(_id) [0...1000].slug.current
+export type PAGE_SLUGS_QUERY_RESULT = Array<string | null>;
+
+// Source: ../src/sanity/queries.ts
+// Variable: POST_SLUGS_QUERY
+// Query: *[_type == "post" && defined(slug.current)] | order(_id) [0...1000].slug.current
+export type POST_SLUGS_QUERY_RESULT = Array<string | null>;
+
+// Source: ../src/sanity/queries.ts
+// Variable: SITEMAP_QUERY
+// Query: {  "home": *[_id == "homePage" && seo.searchVisibility != "hidden"][0]{ _updatedAt },  "pages": *[_type == "page" && defined(slug.current) && seo.searchVisibility != "hidden"]    | order(_id) [0...5000]{ "slug": slug.current, _updatedAt },  "posts": *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"      && publishedAt <= now()]    | order(_id) [0...5000]{ "slug": slug.current, _updatedAt }}
+export type SITEMAP_QUERY_RESULT = {
+  home: {
+    _updatedAt: string;
+  } | null;
+  pages: Array<{
+    slug: string | null;
+    _updatedAt: string;
+  }>;
+  posts: Array<{
+    slug: string | null;
+    _updatedAt: string;
+  }>;
+};
+
+// Source: ../src/sanity/queries.ts
+// Variable: LLMS_QUERY
+// Query: {  "site": *[_id == "siteSettings"][0]{ siteName, description },  "home": *[_id == "homePage" && seo.searchVisibility != "hidden"][0]{    title,    "description": seo.description  },  "pages": *[_type == "page" && defined(slug.current) && seo.searchVisibility != "hidden"]    | order(title asc) [0...1000]{      title,      "slug": slug.current,      "description": seo.description    },  "posts": *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"      && publishedAt <= now()]    | order(publishedAt desc) [0...1000]{      title,      "slug": slug.current,      publishedAt,      "description": coalesce(seo.description, excerpt)    }}
+export type LLMS_QUERY_RESULT = {
+  site: {
+    siteName: null;
+    description: null;
+  } | {
+    siteName: null;
+    description: string | null;
+  } | {
+    siteName: string | null;
+    description: string | null;
+  } | null;
+  home: {
+    title: null;
+    description: null;
+  } | {
+    title: string | null;
+    description: null;
+  } | {
+    title: string | null;
+    description: string | null;
+  } | null;
+  pages: Array<{
+    title: string | null;
+    slug: string | null;
+    description: string | null;
+  }>;
+  posts: Array<{
+    title: string | null;
+    slug: string | null;
+    publishedAt: string | null;
+    description: string | null;
+  }>;
+};
+
+// Source: ../src/sanity/queries.ts
+// Variable: LLMS_FULL_QUERY
+// Query: {  "site": *[_id == "siteSettings"][0]{ siteName, description },  "posts": *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"      && publishedAt <= now()]    | order(publishedAt desc) [0...200]{      title,      "slug": slug.current,      publishedAt,      "description": coalesce(seo.description, excerpt),      author->{ name },      body    }}
+export type LLMS_FULL_QUERY_RESULT = {
+  site: {
+    siteName: null;
+    description: null;
+  } | {
+    siteName: null;
+    description: string | null;
+  } | {
+    siteName: string | null;
+    description: string | null;
+  } | null;
+  posts: Array<{
+    title: string | null;
+    slug: string | null;
+    publishedAt: string | null;
+    description: string | null;
+    author: {
+      name: string | null;
+    } | null;
+    body: RichText | null;
+  }>;
+};
+
+// Query TypeMap
+import "@sanity/client";
+declare module "@sanity/client" {
+  interface SanityQueries {
+    "*[_type == \"redirect\" && defined(source)]{\n  source,\n  destination,\n  outcome,\n  \"permanent\": outcome == \"permanent\"\n}": REDIRECTS_QUERY_RESULT;
+    "*[_id == \"siteSettings\"][0]{\n  siteName,\n  description,\n  socialImage,\n  logo,\n  socialLinks,\n  contactEmail,\n  contactPhone,\n  postalAddress\n}": SITE_SETTINGS_QUERY_RESULT;
+    "*[_id == \"homePage\"][0]{\n  _id,\n  _type,\n  title,\n  \"seo\": {\n    \"title\": coalesce(seo.title, title),\n    \"description\": coalesce(seo.description, excerpt),\n    \"image\": coalesce(seo.image, mainImage),\n    \"imageAlt\": coalesce(seo.image.alt, mainImage.alt, title),\n    \"noIndex\": seo.searchVisibility == \"hidden\",\n    \"canonicalUrl\": seo.canonicalUrl\n  }\n}": HOME_PAGE_QUERY_RESULT;
+    "*[_type == \"page\" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  \"slug\": slug.current,\n  \"seo\": {\n    \"title\": coalesce(seo.title, title),\n    \"description\": coalesce(seo.description, excerpt),\n    \"image\": coalesce(seo.image, mainImage),\n    \"imageAlt\": coalesce(seo.image.alt, mainImage.alt, title),\n    \"noIndex\": seo.searchVisibility == \"hidden\",\n    \"canonicalUrl\": seo.canonicalUrl\n  }\n}": PAGE_QUERY_RESULT;
+    "*[_type == \"post\" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  \"slug\": slug.current,\n  publishedAt,\n  _updatedAt,\n  excerpt,\n  mainImage,\n  author->{name, role},\n  topics[]->{title},\n  \"seo\": {\n    \"title\": coalesce(seo.title, title),\n    \"description\": coalesce(seo.description, excerpt),\n    \"image\": coalesce(seo.image, mainImage),\n    \"imageAlt\": coalesce(seo.image.alt, mainImage.alt, title),\n    \"noIndex\": seo.searchVisibility == \"hidden\",\n    \"canonicalUrl\": seo.canonicalUrl\n  }\n}": POST_QUERY_RESULT;
+    "*[_type == \"page\" && defined(slug.current)] | order(_id) [0...1000].slug.current": PAGE_SLUGS_QUERY_RESULT;
+    "*[_type == \"post\" && defined(slug.current)] | order(_id) [0...1000].slug.current": POST_SLUGS_QUERY_RESULT;
+    "{\n  \"home\": *[_id == \"homePage\" && seo.searchVisibility != \"hidden\"][0]{ _updatedAt },\n  \"pages\": *[_type == \"page\" && defined(slug.current) && seo.searchVisibility != \"hidden\"]\n    | order(_id) [0...5000]{ \"slug\": slug.current, _updatedAt },\n  \"posts\": *[_type == \"post\" && defined(slug.current) && seo.searchVisibility != \"hidden\"\n      && publishedAt <= now()]\n    | order(_id) [0...5000]{ \"slug\": slug.current, _updatedAt }\n}": SITEMAP_QUERY_RESULT;
+    "{\n  \"site\": *[_id == \"siteSettings\"][0]{ siteName, description },\n  \"home\": *[_id == \"homePage\" && seo.searchVisibility != \"hidden\"][0]{\n    title,\n    \"description\": seo.description\n  },\n  \"pages\": *[_type == \"page\" && defined(slug.current) && seo.searchVisibility != \"hidden\"]\n    | order(title asc) [0...1000]{\n      title,\n      \"slug\": slug.current,\n      \"description\": seo.description\n    },\n  \"posts\": *[_type == \"post\" && defined(slug.current) && seo.searchVisibility != \"hidden\"\n      && publishedAt <= now()]\n    | order(publishedAt desc) [0...1000]{\n      title,\n      \"slug\": slug.current,\n      publishedAt,\n      \"description\": coalesce(seo.description, excerpt)\n    }\n}": LLMS_QUERY_RESULT;
+    "{\n  \"site\": *[_id == \"siteSettings\"][0]{ siteName, description },\n  \"posts\": *[_type == \"post\" && defined(slug.current) && seo.searchVisibility != \"hidden\"\n      && publishedAt <= now()]\n    | order(publishedAt desc) [0...200]{\n      title,\n      \"slug\": slug.current,\n      publishedAt,\n      \"description\": coalesce(seo.description, excerpt),\n      author->{ name },\n      body\n    }\n}": LLMS_FULL_QUERY_RESULT;
+  }
+}
+

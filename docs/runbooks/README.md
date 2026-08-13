@@ -14,6 +14,8 @@ and checks with expected output, written so the reader does not have to reason.
 | Runbook | Covers |
 |---|---|
 | `rebrand.md` ✅ | Changing a client's brand colours through the token pipeline |
+| `search-console-and-analytics.md` ✅ | Wiring GSC and GA4 on launch day, and the week-one verification |
+| `seo-geo-audit.md` ✅ | Pre-launch and post-launch search/AI visibility audit. Becomes a skill in WP8 |
 | `deploy.md` | Normal deploy, what a healthy build looks like, how to verify after |
 | `rollback.md` | Reverting a bad production deploy — Vercel *Promote to Production* on the last good build, not a revert-and-rebuild |
 | `dns-cutover.md` | Domain switch on launch day, TTL lowering beforehand, verification, and the abort path |
