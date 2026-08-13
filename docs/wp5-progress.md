@@ -1,8 +1,13 @@
 # WP5 — SEO & GEO module: progress and resume point
 
 **Temporary.** This file exists while WP5 is mid-build so a new session can pick it up
-cold. When WP5 completes it folds into `../effizien-system/docs/handoffs/WP5-seo-geo.md`
-and gets deleted from here.
+cold. **Delete it when chunk 5 lands** — the durable version is already written at
+`../effizien-system/docs/handoffs/WP5-seo-geo.md`, which is the file to read first.
+
+What survives only here: the chunk table below, and the build notes from chunks 1–4 in
+the order they were found. Those sections are **historical** — headings like "what chunk 2
+must honour" describe work that is now done, and are kept because the reasoning is why
+the code looks the way it does.
 
 Branch: `wp5/seo-geo-module` · Last updated 2026-08-12
 
@@ -16,10 +21,11 @@ Branch: `wp5/seo-geo-module` · Last updated 2026-08-12
 | 2 | Typed JSON-LD helpers | ✅ `dd3b7b4` |
 | 3 | `sitemap.ts` + `robots.ts` with AI crawler policy | ✅ `5b27ceb` |
 | 4 | `llms.txt` / `llms-full.txt` + portable-text→markdown | ✅ this commit |
-| 5 | Redirect map + IndexNow | ⬜ |
-| 6 | GSC/GA4 runbook, audit checklist, ADRs, handoff | ⬜ |
+| 5 | Redirect map + IndexNow | ⬜ **outstanding — WP5 is not complete without it** |
+| 6 | GSC/GA4 runbook, audit checklist, ADRs, handoff | ✅ this commit |
 
-`pnpm check` passes on chunk 1.
+`pnpm check` passes on every commit. Chunk 5 is the only build work left, and its design
+is already settled — see decision 3 and 4 below, and the handoff.
 
 ---
 
