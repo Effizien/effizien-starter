@@ -261,5 +261,13 @@ export function seoField() {
     title: 'SEO & sharing',
     type: 'seo',
     group: FIELD_GROUP.seo,
+    /* The one sentence that stops an editor filling this tab in because it is
+       there. Every field inside is an override, so the honest instruction is
+       "you do not need this" — and it belongs on the tab, not buried in each
+       field. It lived on `page` alone until the WP4 review; saying it once here
+       is what makes it true on every document type. */
+    description:
+      'Optional. Anything left blank falls back to the title above and the defaults in ' +
+      'Site settings, so this is fully indexable and shareable without touching this tab.',
   })
 }

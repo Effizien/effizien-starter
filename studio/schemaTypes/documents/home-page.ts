@@ -1,7 +1,9 @@
 import { HomeIcon } from '@sanity/icons/Home'
 import { defineField, defineType } from 'sanity'
 
+import { seoField } from '../objects/seo'
 import { LIMIT } from '../shared/editorial-guardrails'
+import { DOCUMENT_FIELD_GROUPS, FIELD_GROUP } from '../shared/field-groups'
 
 /** The site root. A singleton — see `SINGLETONS` in `studio/document-types.ts`,
  *  which is what pins it to the fixed id `homePage` and takes Delete, Duplicate
@@ -30,17 +32,14 @@ export const homePage = defineType({
   type: 'document',
   icon: HomeIcon,
 
-  groups: [
-    { name: 'content', title: 'Content', default: true },
-    { name: 'seo', title: 'SEO & sharing' },
-  ],
+  groups: DOCUMENT_FIELD_GROUPS,
 
   fields: [
     defineField({
       name: 'title',
       title: 'Page title',
       type: 'string',
-      group: 'content',
+      group: FIELD_GROUP.content,
       description:
         'What the home page is called in the browser tab and in search results — usually the business name and what it does, not the word "Home". Visitors rarely notice it; search engines lead with it.',
       validation: (rule) => [
@@ -61,7 +60,7 @@ export const homePage = defineType({
       name: 'pageBuilder',
       title: 'Sections',
       type: 'pageBuilder',
-      group: 'content',
+      group: FIELD_GROUP.content,
       description:
         'The home page itself, built from sections. Drag to reorder. The first section carries the page’s main heading.',
       validation: (rule) =>
@@ -73,14 +72,7 @@ export const homePage = defineType({
           ),
     }),
 
-    defineField({
-      name: 'seo',
-      title: 'SEO & sharing',
-      type: 'seo',
-      group: 'seo',
-      description:
-        'Optional. Anything left blank falls back to the title above and the defaults in Site settings.',
-    }),
+    seoField(),
   ],
 
   preview: {

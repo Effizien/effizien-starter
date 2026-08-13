@@ -1,12 +1,11 @@
 import { DocumentIcon } from '@sanity/icons/Document'
 import { defineField, defineType } from 'sanity'
 
-import {
-  describeSlugProblem,
-  isSlugUnique,
-  LIMIT,
-  slugifySegment,
-} from '../shared/editorial-guardrails'
+import { ROUTE } from '../../presentation'
+import { seoField } from '../objects/seo'
+import { LIMIT } from '../shared/editorial-guardrails'
+import { DOCUMENT_FIELD_GROUPS, FIELD_GROUP } from '../shared/field-groups'
+import { slugField } from '../shared/slug-field'
 
 /** The generic page. Every archetype uses it unchanged.
  *
@@ -54,17 +53,14 @@ export const page = defineType({
   type: 'document',
   icon: DocumentIcon,
 
-  groups: [
-    { name: 'content', title: 'Content', default: true },
-    { name: 'seo', title: 'SEO & sharing' },
-  ],
+  groups: DOCUMENT_FIELD_GROUPS,
 
   fields: [
     defineField({
       name: 'title',
       title: 'Page title',
       type: 'string',
-      group: 'content',
+      group: FIELD_GROUP.content,
       description:
         'What this page is called. Used in the browser tab, in search results, in the list of pages here, and as the page heading unless the first section supplies its own.',
       validation: (rule) => [
@@ -81,39 +77,22 @@ export const page = defineType({
       ],
     }),
 
-    defineField({
-      name: 'slug',
-      title: 'Web address',
-      type: 'slug',
-      group: 'content',
-      description:
-        'The last part of this page’s address: "brand-strategy" gives example.com/brand-strategy. Changing it after launch breaks every link anyone has already shared or bookmarked, so add a redirect from the old address when you do.',
-      options: {
-        source: 'title',
-        maxLength: LIMIT.slug,
-        slugify: slugifySegment,
-        /* Sanity's built-in check compares across every document type and fails
-           with "Slug is already in use", naming neither the other document nor
-           what to do about it. `isSlugUnique` below does the same job per type
-           and says which document is in the way. */
-        isUnique: () => true,
-      },
-      validation: (rule) => [
-        rule
-          .required()
-          .error(
-            'This page has no address, so it cannot be published or linked to. Click Generate to build one from the title.',
-          ),
-        rule.custom(describeSlugProblem),
-        rule.custom(isSlugUnique),
-      ],
-    }),
+    /* `slugField` rather than a hand-rolled slug, and the reason is the third
+       rule it carries: it notices when the address of an *already published*
+       page has changed with no redirect covering the old one, and says so at
+       the moment the editor makes the change.
+
+       This file used to declare its own slug and had every check except that
+       one — so renaming a live article warned, and renaming a live page, the
+       type a site is mostly made of, warned nobody. `ROUTE.page` is passed so
+       every message names the address the site actually serves. */
+    slugField({ pathFor: ROUTE.page, group: FIELD_GROUP.content }),
 
     defineField({
       name: 'pageBuilder',
       title: 'Sections',
       type: 'pageBuilder',
-      group: 'content',
+      group: FIELD_GROUP.content,
       description:
         'The page itself, built from sections. Drag to reorder — this is the order visitors read, and the order a screen reader announces. Put the section that introduces the page first; it carries the page’s main heading.',
       validation: (rule) =>
@@ -125,14 +104,7 @@ export const page = defineType({
           ),
     }),
 
-    defineField({
-      name: 'seo',
-      title: 'SEO & sharing',
-      type: 'seo',
-      group: 'seo',
-      description:
-        'Optional. Anything left blank falls back to the page title and the defaults in Site settings, so a page is fully indexable and shareable without touching this tab.',
-    }),
+    seoField(),
   ],
 
   /* Editors look for a page by what they touched last far more often than
