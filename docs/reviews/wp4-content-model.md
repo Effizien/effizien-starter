@@ -2,6 +2,12 @@
 
 2026-08-13 · Closes the gap named in `effizien-system/docs/handoffs/WP4-content-model.md`
 
+> **Status: E1, E2, E3, E4 and S1 are fixed.** `page.ts` and `home-page.ts` now use
+> `slugField()`, `seoField()` and `DOCUMENT_FIELD_GROUPS`; the duplicate slug system has
+> been deleted from `editorial-guardrails.ts`. S2 is resolved by the same change. The
+> findings below are kept as written — the reasoning is why the code looks the way it
+> does now, and the method is the part worth reusing.
+
 WP4 shipped with two reviews unrun: **editor experience** and **schema evolution**. Both
 died on a spend limit. This is those two reviews.
 
@@ -161,12 +167,37 @@ hold up:
 
 ---
 
-## Recommended order
+## What was changed
 
-1. **E1 + S1 together** — move `page.ts` onto `slugField()`, delete the duplicate slug
-   helpers, correct the comment and the WP4 handoff. One change, four findings.
-2. **E3, E4** — align when those files are next touched. Not worth their own change.
-3. **S2** — resolved by (1); keep it in mind when a fourth archetype is added.
+All of it, in one pass, because the findings were one structural fact:
 
-Nothing here blocks a client build. E1 is the one that costs real money on a replacement
-site, and it costs it silently.
+- `documents/page.ts` — now `slugField({ pathFor: ROUTE.page, group: FIELD_GROUP.content })`,
+  `seoField()` and `DOCUMENT_FIELD_GROUPS`. Gains the redirect warning, the reserved-slug
+  check, and messages that name the real address.
+- `documents/home-page.ts` — `seoField()` and `DOCUMENT_FIELD_GROUPS`. It has no slug;
+  its route is fixed.
+- `objects/seo.ts` — `seoField()` now carries the "Optional, everything falls back"
+  description that previously existed only on `page`. Saying it once here makes it true
+  on every document type.
+- `shared/editorial-guardrails.ts` — the duplicate `toSlug`, `slugifySegment`,
+  `describeSlugProblem`, `isSlugUnique` and `LIMIT.slug` are deleted. 210 lines → 88. The
+  module is now what its name says: limits and the severity policy.
+
+**Behaviour change, stated plainly:** a page slug generated from a title longer than 64
+characters is now up to 96 characters instead of 64, and the length message relaxes to
+match. No stored slug changes — Sanity generates one only when an editor clicks Generate.
+
+**Verified:** studio `tsc` clean · `sanity build` succeeds · `pnpm typegen` clean ·
+`pnpm check` clean · no orphan references outside the two gitignored WP4 scratch
+directories.
+
+## What is left
+
+**S2** is resolved by the change above — every routable type in the repo now goes through
+`slugField()`: `page`, `post`, `person`, `category`, `redirect`, `product`,
+`productCategory`, `docPage`.
+
+Nothing outstanding from this review. The next thing this model needs is **tests** (WP6),
+which is what would have caught S1 years earlier than a read did: two functions with the
+same name, the same algorithm and different limits are trivially distinguishable by a
+test and nearly invisible in a diff.
