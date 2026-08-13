@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { JsonLd } from '@/components/json-ld'
 import { ROUTE } from '@/lib/routes'
+import { buildArticle, buildBreadcrumbList } from '@/lib/seo/json-ld/build'
 import { buildMetadata } from '@/lib/seo/metadata'
 import { client } from '@/sanity/lib/client'
 import { sanityFetch } from '@/sanity/lib/live'
@@ -25,6 +27,15 @@ import { POST_QUERY, POST_SLUGS_QUERY, SITE_SETTINGS_QUERY } from '@/sanity/quer
  */
 
 type PostParams = { params: Promise<{ slug: string }> }
+
+/** The middle breadcrumb.
+ *
+ * A constant rather than a lookup. The blog index is an ordinary `page` with
+ * the slug "blog", so its real title is fetchable — but that is one extra query
+ * on every article page to render one word, and the word is "Blog" on every
+ * site that has one. Change it here if a client calls their blog something
+ * else; do not add a query for it. */
+const BLOG_INDEX_NAME = 'Blog'
 
 export async function generateStaticParams() {
   const slugs = await client.withConfig({ useCdn: false }).fetch(POST_SLUGS_QUERY)
@@ -62,6 +73,17 @@ export default async function PostPage({ params }: PostParams) {
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-2xl flex-col justify-center gap-8 px-6 py-16">
+      {/* Derived from the article, not from its SEO overrides — see the rule at
+          the top of `lib/seo/json-ld/build.ts`. */}
+      <JsonLd data={buildArticle(post, ROUTE.post(slug))} />
+      <JsonLd
+        data={buildBreadcrumbList([
+          { name: 'Home', href: ROUTE.home },
+          { name: BLOG_INDEX_NAME, href: ROUTE.blogIndex },
+          /* No href on the last crumb: it is the page the visitor is on. */
+          { name: post.title ?? 'Article' },
+        ])}
+      />
       <article className="flex flex-col gap-3">
         <h1 className="text-balance font-semibold text-4xl tracking-tight">
           {post.title}

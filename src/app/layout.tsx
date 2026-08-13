@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { draftMode } from 'next/headers'
 import { VisualEditing } from 'next-sanity/visual-editing'
 
+import { JsonLd } from '@/components/json-ld'
+import { buildOrganization } from '@/lib/seo/json-ld/build'
 import { siteUrl } from '@/lib/seo/site-url'
 import { SanityLive, sanityFetch } from '@/sanity/lib/live'
 import { SITE_SETTINGS_QUERY } from '@/sanity/queries'
@@ -53,11 +55,20 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  /* The same query `generateMetadata` runs, so this is one fetch rather than
+     two — Next dedupes an identical query within a render pass. */
+  const { data: site } = await sanityFetch({ query: SITE_SETTINGS_QUERY, stega: false })
+
   return (
     /* lang is required for screen readers to select the right voice, and is a
        WCAG 2.2 AA failure if missing or wrong. Set it per client site. */
     <html lang="en" className={`${fontSans.variable} ${fontMono.variable}`}>
       <body className="antialiased">
+        {/* Organization goes on every page rather than only the home page, so
+            that an Article's `publisher` reference to it always resolves on the
+            page a crawler is actually looking at. A dangling `@id` is worse
+            than a repeated node, and the fetch above is already paid for. */}
+        <JsonLd data={buildOrganization(site)} />
         {children}
         {/* Required for the Live Content API. Without it, sanityFetch still
             returns data but nothing ever updates without a full reload. */}

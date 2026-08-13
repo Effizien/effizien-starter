@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { JsonLd } from '@/components/json-ld'
 import { ROUTE } from '@/lib/routes'
+import { buildBreadcrumbList } from '@/lib/seo/json-ld/build'
 import { buildMetadata } from '@/lib/seo/metadata'
 import { client } from '@/sanity/lib/client'
 import { sanityFetch } from '@/sanity/lib/live'
@@ -54,6 +56,15 @@ export default async function Page({ params }: PageParams) {
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-2xl flex-col justify-center gap-8 px-6 py-16">
+      {/* No Article here — a page is not an article, and there is no schema.org
+          type that says "a page" more usefully than the page itself already
+          does. Breadcrumbs are the honest thing to state. */}
+      <JsonLd
+        data={buildBreadcrumbList([
+          { name: 'Home', href: ROUTE.home },
+          { name: page.title ?? 'Page' },
+        ])}
+      />
       <div className="flex flex-col gap-3">
         <h1 className="text-balance font-semibold text-4xl tracking-tight">
           {page.title}
