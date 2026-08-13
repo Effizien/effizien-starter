@@ -757,7 +757,7 @@ export type POST_SLUGS_QUERY_RESULT = Array<string | null>;
 
 // Source: ../src/sanity/queries.ts
 // Variable: SITEMAP_QUERY
-// Query: {  "home": *[_id == "homePage" && seo.searchVisibility != "hidden"][0]{ _updatedAt },  "pages": *[_type == "page"      && defined(slug.current)      && seo.searchVisibility != "hidden"]    | order(_id) [0...5000]{ "slug": slug.current, _updatedAt },  "posts": *[_type == "post"      && defined(slug.current)      && seo.searchVisibility != "hidden"      && publishedAt <= now()]    | order(_id) [0...5000]{ "slug": slug.current, _updatedAt }}
+// Query: {  "home": *[_id == "homePage" && seo.searchVisibility != "hidden"][0]{ _updatedAt },  "pages": *[_type == "page" && defined(slug.current) && seo.searchVisibility != "hidden"]    | order(_id) [0...5000]{ "slug": slug.current, _updatedAt },  "posts": *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"      && publishedAt <= now()]    | order(_id) [0...5000]{ "slug": slug.current, _updatedAt }}
 export type SITEMAP_QUERY_RESULT = {
   home: {
     _updatedAt: string;
@@ -772,6 +772,69 @@ export type SITEMAP_QUERY_RESULT = {
   }>;
 };
 
+// Source: ../src/sanity/queries.ts
+// Variable: LLMS_QUERY
+// Query: {  "site": *[_id == "siteSettings"][0]{ siteName, description },  "home": *[_id == "homePage" && seo.searchVisibility != "hidden"][0]{    title,    "description": seo.description  },  "pages": *[_type == "page" && defined(slug.current) && seo.searchVisibility != "hidden"]    | order(title asc) [0...1000]{      title,      "slug": slug.current,      "description": seo.description    },  "posts": *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"      && publishedAt <= now()]    | order(publishedAt desc) [0...1000]{      title,      "slug": slug.current,      publishedAt,      "description": coalesce(seo.description, excerpt)    }}
+export type LLMS_QUERY_RESULT = {
+  site: {
+    siteName: null;
+    description: null;
+  } | {
+    siteName: null;
+    description: string | null;
+  } | {
+    siteName: string | null;
+    description: string | null;
+  } | null;
+  home: {
+    title: null;
+    description: null;
+  } | {
+    title: string | null;
+    description: null;
+  } | {
+    title: string | null;
+    description: string | null;
+  } | null;
+  pages: Array<{
+    title: string | null;
+    slug: string | null;
+    description: string | null;
+  }>;
+  posts: Array<{
+    title: string | null;
+    slug: string | null;
+    publishedAt: string | null;
+    description: string | null;
+  }>;
+};
+
+// Source: ../src/sanity/queries.ts
+// Variable: LLMS_FULL_QUERY
+// Query: {  "site": *[_id == "siteSettings"][0]{ siteName, description },  "posts": *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"      && publishedAt <= now()]    | order(publishedAt desc) [0...200]{      title,      "slug": slug.current,      publishedAt,      "description": coalesce(seo.description, excerpt),      author->{ name },      body    }}
+export type LLMS_FULL_QUERY_RESULT = {
+  site: {
+    siteName: null;
+    description: null;
+  } | {
+    siteName: null;
+    description: string | null;
+  } | {
+    siteName: string | null;
+    description: string | null;
+  } | null;
+  posts: Array<{
+    title: string | null;
+    slug: string | null;
+    publishedAt: string | null;
+    description: string | null;
+    author: {
+      name: string | null;
+    } | null;
+    body: RichText | null;
+  }>;
+};
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -782,7 +845,9 @@ declare module "@sanity/client" {
     "*[_type == \"post\" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  \"slug\": slug.current,\n  publishedAt,\n  _updatedAt,\n  excerpt,\n  mainImage,\n  author->{name, role},\n  topics[]->{title},\n  \"seo\": {\n    \"title\": coalesce(seo.title, title),\n    \"description\": coalesce(seo.description, excerpt),\n    \"image\": coalesce(seo.image, mainImage),\n    \"imageAlt\": coalesce(seo.image.alt, mainImage.alt, title),\n    \"noIndex\": seo.searchVisibility == \"hidden\",\n    \"canonicalUrl\": seo.canonicalUrl\n  }\n}": POST_QUERY_RESULT;
     "*[_type == \"page\" && defined(slug.current)] | order(_id) [0...1000].slug.current": PAGE_SLUGS_QUERY_RESULT;
     "*[_type == \"post\" && defined(slug.current)] | order(_id) [0...1000].slug.current": POST_SLUGS_QUERY_RESULT;
-    "{\n  \"home\": *[_id == \"homePage\" && seo.searchVisibility != \"hidden\"][0]{ _updatedAt },\n  \"pages\": *[_type == \"page\"\n      && defined(slug.current)\n      && seo.searchVisibility != \"hidden\"]\n    | order(_id) [0...5000]{ \"slug\": slug.current, _updatedAt },\n  \"posts\": *[_type == \"post\"\n      && defined(slug.current)\n      && seo.searchVisibility != \"hidden\"\n      && publishedAt <= now()]\n    | order(_id) [0...5000]{ \"slug\": slug.current, _updatedAt }\n}": SITEMAP_QUERY_RESULT;
+    "{\n  \"home\": *[_id == \"homePage\" && seo.searchVisibility != \"hidden\"][0]{ _updatedAt },\n  \"pages\": *[_type == \"page\" && defined(slug.current) && seo.searchVisibility != \"hidden\"]\n    | order(_id) [0...5000]{ \"slug\": slug.current, _updatedAt },\n  \"posts\": *[_type == \"post\" && defined(slug.current) && seo.searchVisibility != \"hidden\"\n      && publishedAt <= now()]\n    | order(_id) [0...5000]{ \"slug\": slug.current, _updatedAt }\n}": SITEMAP_QUERY_RESULT;
+    "{\n  \"site\": *[_id == \"siteSettings\"][0]{ siteName, description },\n  \"home\": *[_id == \"homePage\" && seo.searchVisibility != \"hidden\"][0]{\n    title,\n    \"description\": seo.description\n  },\n  \"pages\": *[_type == \"page\" && defined(slug.current) && seo.searchVisibility != \"hidden\"]\n    | order(title asc) [0...1000]{\n      title,\n      \"slug\": slug.current,\n      \"description\": seo.description\n    },\n  \"posts\": *[_type == \"post\" && defined(slug.current) && seo.searchVisibility != \"hidden\"\n      && publishedAt <= now()]\n    | order(publishedAt desc) [0...1000]{\n      title,\n      \"slug\": slug.current,\n      publishedAt,\n      \"description\": coalesce(seo.description, excerpt)\n    }\n}": LLMS_QUERY_RESULT;
+    "{\n  \"site\": *[_id == \"siteSettings\"][0]{ siteName, description },\n  \"posts\": *[_type == \"post\" && defined(slug.current) && seo.searchVisibility != \"hidden\"\n      && publishedAt <= now()]\n    | order(publishedAt desc) [0...200]{\n      title,\n      \"slug\": slug.current,\n      publishedAt,\n      \"description\": coalesce(seo.description, excerpt),\n      author->{ name },\n      body\n    }\n}": LLMS_FULL_QUERY_RESULT;
   }
 }
 

@@ -14,8 +14,8 @@ Branch: `wp5/seo-geo-module` · Last updated 2026-08-12
 |---|---|---|
 | 1 | Metadata spine — GROQ projection, `buildMetadata`, site URL, route shells | ✅ `62763c7` |
 | 2 | Typed JSON-LD helpers | ✅ `dd3b7b4` |
-| 3 | `sitemap.ts` + `robots.ts` with AI crawler policy | ✅ this commit |
-| 4 | `llms.txt` / `llms-full.txt` + portable-text→markdown | ⬜ |
+| 3 | `sitemap.ts` + `robots.ts` with AI crawler policy | ✅ `5b27ceb` |
+| 4 | `llms.txt` / `llms-full.txt` + portable-text→markdown | ✅ this commit |
 | 5 | Redirect map + IndexNow | ⬜ |
 | 6 | GSC/GA4 runbook, audit checklist, ADRs, handoff | ⬜ |
 
@@ -150,6 +150,23 @@ data because it keeps that path exercised.
 - **Crawling and indexing are separate permissions.** `Disallow` stops a fetch; a linked
   URL can still be indexed without a snippet. Preview deploys need both — `robots.ts`
   disallows, and `next.config.ts` sends `X-Robots-Tag: noindex`. Neither alone is enough.
+
+**Verified in chunk 4, against a deliberately rich seeded article body** — headings,
+nested lists, bold, italic, an external link and a blockquote. Two formatting defects
+that only a real body would have exposed:
+
+- **A blank line between list items makes the list "loose"**, wrapping each item in its
+  own paragraph. Portable Text has no loose-list concept, so emitting one invents
+  formatting the editor never asked for. `toMarkdown` now joins consecutive list items
+  with a single newline.
+- **Nested list indent must be three spaces, not two.** CommonMark nests a child only
+  when it is indented at least as far as the parent's content begins, and a numbered
+  marker (`1. `) is three characters wide. Two spaces nests correctly under a bullet and
+  silently becomes a *sibling* list under a number — a change to the document's meaning,
+  not its appearance.
+
+The seeded post now carries that rich body permanently, so the serializer stays
+exercised. Its `seo.title` override is also still in place from chunk 2.
 
 ### Verifying GROQ without content
 

@@ -120,6 +120,30 @@ export const POST_SLUGS_QUERY = defineQuery(
   `*[_type == "post" && defined(slug.current)] | order(_id) [0...1000].slug.current`,
 )
 
+/* ── Public listings: sitemap and llms.txt ──────────────────────────────────*/
+
+/** "May this document be listed publicly?"
+ *
+ * One constant, interpolated into every query that answers that question, so
+ * the sitemap and `llms.txt` cannot drift into disagreeing about what is
+ * public. Interpolation resolves within this file — the reason everything lives
+ * in one module.
+ *
+ * **`!= "hidden"` is not the inverse spelling of the `noIndex` projection, and
+ * both are right.** `noIndex` asks "did the editor hide this?" and must answer
+ * no when the field is absent. This asks "may this be listed?" and must answer
+ * yes when absent. Verified with groq-js: GROQ treats `null != "hidden"` as
+ * true, so a document saved before the field existed is listed.
+ */
+const PUBLIC_FILTER = /* groq */ `seo.searchVisibility != "hidden"`
+
+/** Articles filter on this as well.
+ *
+ * `documents/post.ts` promises an editor that a future date schedules a piece.
+ * A sitemap or an llms.txt advertising an article that is not yet on the blog
+ * breaks that promise in the two places a machine is guaranteed to look. */
+const PUBLISHED_FILTER = /* groq */ `publishedAt <= now()`
+
 /* ── Sitemap ────────────────────────────────────────────────────────────────*/
 
 /** Everything that belongs in the sitemap, grouped by type.
@@ -148,14 +172,75 @@ export const POST_SLUGS_QUERY = defineQuery(
  * shard, not a bigger number here.
  */
 export const SITEMAP_QUERY = defineQuery(`{
-  "home": *[_id == "homePage" && seo.searchVisibility != "hidden"][0]{ _updatedAt },
-  "pages": *[_type == "page"
-      && defined(slug.current)
-      && seo.searchVisibility != "hidden"]
+  "home": *[_id == "homePage" && ${PUBLIC_FILTER}][0]{ _updatedAt },
+  "pages": *[_type == "page" && defined(slug.current) && ${PUBLIC_FILTER}]
     | order(_id) [0...5000]{ "slug": slug.current, _updatedAt },
-  "posts": *[_type == "post"
-      && defined(slug.current)
-      && seo.searchVisibility != "hidden"
-      && publishedAt <= now()]
+  "posts": *[_type == "post" && defined(slug.current) && ${PUBLIC_FILTER}
+      && ${PUBLISHED_FILTER}]
     | order(_id) [0...5000]{ "slug": slug.current, _updatedAt }
+}`)
+
+/* ── llms.txt ───────────────────────────────────────────────────────────────*/
+
+/** The index behind `/llms.txt` — every public document, with a description.
+ *
+ * **Bounded at 1,000 per type, and that bound is doing something the sitemap's
+ * is not.** A sitemap with a thousand URLs is normal. An `llms.txt` with a
+ * thousand links is not a curated map of the site, which is the entire premise
+ * of the format — it is a directory listing with extra steps. A site that
+ * outgrows this needs an editorial signal for what belongs in the map, and that
+ * is a content-model decision, not a bigger number here.
+ *
+ * There is deliberately **no "include in llms.txt" field** in the schema. A
+ * second visibility switch beside `searchVisibility` is a state machine with
+ * four combinations, two of which mean nothing — the argument
+ * `documents/redirect.ts` already makes against an `isEnabled` field. */
+export const LLMS_QUERY = defineQuery(`{
+  "site": *[_id == "siteSettings"][0]{ siteName, description },
+  "home": *[_id == "homePage" && ${PUBLIC_FILTER}][0]{
+    title,
+    "description": seo.description
+  },
+  "pages": *[_type == "page" && defined(slug.current) && ${PUBLIC_FILTER}]
+    | order(title asc) [0...1000]{
+      title,
+      "slug": slug.current,
+      "description": seo.description
+    },
+  "posts": *[_type == "post" && defined(slug.current) && ${PUBLIC_FILTER}
+      && ${PUBLISHED_FILTER}]
+    | order(publishedAt desc) [0...1000]{
+      title,
+      "slug": slug.current,
+      publishedAt,
+      "description": coalesce(seo.description, excerpt)
+    }
+}`)
+
+/** Article bodies, for `/llms-full.txt`.
+ *
+ * **Articles only, and pages deliberately absent.** A `page` is composed of
+ * page-builder sections, and turning those into Markdown here would be a second
+ * rendering of the site — one that would immediately begin drifting from the
+ * real one, so that the full-text file and the page itself would eventually
+ * disagree about what the page says. That is the precise failure this whole
+ * work package exists to prevent. Pages appear in `llms.txt` with their
+ * descriptions; they gain full text when there is one renderer to derive it
+ * from.
+ *
+ * **Bounded at 200.** Each body is the entire text of an article, so this is
+ * the one query here whose payload is measured in megabytes rather than
+ * kilobytes. */
+export const LLMS_FULL_QUERY = defineQuery(`{
+  "site": *[_id == "siteSettings"][0]{ siteName, description },
+  "posts": *[_type == "post" && defined(slug.current) && ${PUBLIC_FILTER}
+      && ${PUBLISHED_FILTER}]
+    | order(publishedAt desc) [0...200]{
+      title,
+      "slug": slug.current,
+      publishedAt,
+      "description": coalesce(seo.description, excerpt),
+      author->{ name },
+      body
+    }
 }`)
