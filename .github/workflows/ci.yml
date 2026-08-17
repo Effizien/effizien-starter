@@ -1,3 +1,15 @@
+# ⚠️ THIS REPORTS. IT DOES NOT BLOCK.
+#
+# A red run does not stop a merge, because required status checks need branch
+# protection or rulesets, and GitHub refuses both on a private repository under
+# a free organisation plan — verified, 403 on each.
+#
+# That is a deliberate, recorded position, not an oversight:
+# `docs/decisions/ADR-003-ci-is-advisory.md` carries the reasoning and the two
+# conditions that change it. **Do not let WP9's launch checklist describe this
+# as a gate**, and do not describe it that way to a client. It is a signal a
+# human still has to read and act on.
+
 name: CI
 
 # Every pull request, and every push to main. The push run is what makes the
