@@ -24,7 +24,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:a11y": "playwright test",
-    "test:a11y:ui": "playwright test --ui"
+    "test:a11y:ui": "playwright test --ui",
+    "test:perf": "pnpm build && lhci autorun"
   },
   "dependencies": {
     "@sanity/client": "7.26.2",
@@ -44,6 +45,7 @@
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
     "@biomejs/biome": "2.5.7",
+    "@lhci/cli": "0.15.1",
     "@playwright/test": "1.62.1",
     "@tailwindcss/postcss": "4.3.3",
     "@types/node": "26.2.0",

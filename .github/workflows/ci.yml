@@ -148,3 +148,43 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+  # Core Web Vitals, against Google's published thresholds rather than against
+  # whatever this site currently achieves. The reasoning, the TBT-stands-in-for-
+  # INP substitution and the revisit triggers are in
+  # `docs/decisions/ADR-004-core-web-vitals-budgets.md` — `lighthouserc.json` is
+  # JSON and cannot carry any of it.
+  performance:
+    name: Core Web Vitals (Lighthouse)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail early if the project is not configured
+        run: |
+          if [ -z "$NEXT_PUBLIC_SANITY_PROJECT_ID" ] || [ -z "$NEXT_PUBLIC_SANITY_DATASET" ]; then
+            echo "::error::Set NEXT_PUBLIC_SANITY_PROJECT_ID and NEXT_PUBLIC_SANITY_DATASET as repository variables."
+            exit 1
+          fi
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # `lhci autorun` builds nothing — it starts a server against whatever is
+      # already built, so the build has to happen first and explicitly.
+      - run: pnpm build
+      - run: pnpm exec lhci autorun
+
+      # The HTML reports carry the trace and the filmstrip, which is most of
+      # what makes a Core Web Vitals failure diagnosable rather than just red.
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: lighthouse-report
+          path: .lighthouseci/
+          retention-days: 7
