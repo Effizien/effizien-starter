@@ -8,6 +8,19 @@
 # The file exists because pnpm 11 no longer reads the `pnpm` field in
 # package.json; settings moved here.
 
+# Exact versions on `pnpm add` — no caret ranges. `AGENTS.md` makes this a hard
+# constraint: "Versions are pinned exactly and `.npmrc` sets `save-exact`. Do not
+# introduce a caret range. Version drift between client sites is the problem this
+# starter exists to prevent."
+#
+# `.npmrc` does still say `save-exact=true`, and pnpm 11 does not read it — the
+# same migration this file's header describes for the `pnpm` field in
+# package.json. `pnpm config get save-exact` returned `undefined` and
+# `pnpm add -D vitest` wrote `^4.1.10`, so the constraint was stated in three
+# places and enforced in none. Found during WP6 chunk 1, on the first `pnpm add`
+# since the pnpm 11 upgrade — which is why nothing had drifted yet.
+saveExact: true
+
 # pnpm blocks postinstall scripts by default — a supply-chain protection, since a
 # postinstall runs arbitrary code at install time. esbuild's is legitimate: it
 # links the platform-specific binary, and the Next.js build fails without it.

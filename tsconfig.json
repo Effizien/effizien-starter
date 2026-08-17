@@ -37,6 +37,7 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
+    "**/*.mts",
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
@@ -45,5 +46,5 @@
   /* studio/ is a separate app with its own tsconfig and its own dependency
      tree. Type-checking it from here would resolve `sanity` against the app's
      node_modules, where it deliberately is not installed. */
-  "exclude": ["node_modules", "studio"]
+  "exclude": ["node_modules", "studio", "tests"]
 }

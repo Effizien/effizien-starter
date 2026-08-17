@@ -15,12 +15,14 @@
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
-    "check": "pnpm typecheck && pnpm lint && pnpm build",
+    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build",
     "install:all": "pnpm install && pnpm --dir studio install",
     "studio": "pnpm --dir studio dev",
     "studio:build": "pnpm --dir studio build",
     "studio:deploy": "pnpm --dir studio deploy",
-    "typegen": "pnpm --dir studio typegen"
+    "typegen": "pnpm --dir studio typegen",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@sanity/client": "7.26.2",
@@ -46,6 +48,7 @@
     "postcss": "8.5.26",
     "style-dictionary": "5.5.1",
     "tailwindcss": "4.3.3",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
   }
 }
