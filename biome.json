@@ -28,9 +28,24 @@
     "enabled": true,
     "rules": {
       "preset": "recommended",
-      "a11y": "on"
+      "a11y": "on",
+      "suspicious": {
+        "noFocusedTests": "off"
+      }
     }
   },
+  "overrides": [
+    {
+      "includes": ["**/*.test.ts", "**/*.test.tsx", "tests/**"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noFocusedTests": "error"
+          }
+        }
+      }
+    }
+  ],
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
