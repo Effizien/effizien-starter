@@ -113,9 +113,8 @@ Mostly covered by §1, but these are the ones worth a human's eye:
 
 ## 8 · The client deliverable
 
-> ⚠️ **Not written yet.** Both templates are WP6 chunk 6. This section is here so the gap
-> is visible rather than assumed filled — an audit that silently omits the deliverable is
-> how a launch reaches the day before with nothing to hand over.
+> **Fill both from this audit's results**, not from what the site is intended to do. A
+> statement published before testing is a documented, dated, false claim.
 
 - [ ] **Accessibility statement published**, from
       `docs/templates/accessibility-statement.md`, naming the standard, the date, the
