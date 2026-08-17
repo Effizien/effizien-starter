@@ -31,9 +31,10 @@ gh run list --branch main --limit 1
 
 **Expected: all four jobs `success`.**
 
-> ⚠️ **CI reports; it does not block a merge.** A red run does not stop anything — see
-> `docs/decisions/ADR-003-ci-is-advisory.md`. So "the last run was green" is a claim about
-> the last run, not about `main`. Check the run for the commit you are auditing.
+> These four are **required status checks** on `main` — a red run blocks the merge, so
+> anything on `main` has passed them. The one way past is an administrator override
+> (`enforce_admins` is off, deliberately: see ADR-005). If a commit reached `main` without
+> a green run, that is what happened, and it is worth asking why.
 
 ## 2 · What automation cannot tell you
 
