@@ -1,0 +1,138 @@
+name: CI
+
+# Every pull request, and every push to main. The push run is what makes the
+# main branch's status meaningful — a PR can be green and main still break if
+# two PRs merge in an order neither was tested in.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A second push to the same branch makes the first run irrelevant. Cancelling it
+# frees a runner and stops a stale red cross sitting on a commit that has been
+# superseded.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# ── Why these are `vars` and not `secrets` ───────────────────────────────────
+#
+# A Sanity project ID and dataset name are public by construction: they appear
+# in every API request the browser makes, which is why they carry the
+# `NEXT_PUBLIC_` prefix. `.env.example` and `.claude/rules/secrets.md` both say
+# so. Putting them in `secrets` would suggest otherwise, and teaching a client
+# that public identifiers are secrets is how the genuinely secret ones stop
+# being treated differently.
+#
+# The read token is deliberately absent. Draft mode and Visual Editing are the
+# only things that need it, neither is exercised here, and the app warns rather
+# than failing when it is missing — see `src/sanity/lib/token.ts`.
+#
+# **A cloned site must set these two, or CI cannot build.** `src/sanity/env.ts`
+# throws without them, on purpose: a site that silently builds against the wrong
+# dataset is worse than one that refuses to build.
+env:
+  NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ vars.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+  NEXT_PUBLIC_SANITY_DATASET: ${{ vars.NEXT_PUBLIC_SANITY_DATASET }}
+
+jobs:
+  # The fast gate: typecheck → lint → unit tests → build. Under two minutes, and
+  # the one most failures land in.
+  check:
+    name: Typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail early if the project is not configured
+        # Without this the failure surfaces three steps later as a stack trace
+        # from inside the Next build, which reads as a code problem rather than
+        # a settings one.
+        run: |
+          if [ -z "$NEXT_PUBLIC_SANITY_PROJECT_ID" ] || [ -z "$NEXT_PUBLIC_SANITY_DATASET" ]; then
+            echo "::error::Set NEXT_PUBLIC_SANITY_PROJECT_ID and NEXT_PUBLIC_SANITY_DATASET as repository *variables* (Settings → Secrets and variables → Actions → Variables). Both are public by design; they are not secrets."
+            exit 1
+          fi
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+
+  # The schema only fully resolves when the Studio builds. `AGENTS.md` calls
+  # this "the real check that the schema resolves" — a type error in a schema
+  # file is caught by tsc, but an unresolved type name, a reference to a
+  # document type that is not registered, or a broken archetype switch is not.
+  studio:
+    name: Studio build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm --dir studio install --frozen-lockfile
+      - run: pnpm studio:build
+
+  # WCAG 2.2 AA, automated half. Separate from `check` on purpose: it takes
+  # minutes rather than seconds, and a lint failure hiding an accessibility
+  # failure would mean fixing one, pushing, and discovering the other.
+  accessibility:
+    name: Accessibility (axe-core)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail early if the project is not configured
+        run: |
+          if [ -z "$NEXT_PUBLIC_SANITY_PROJECT_ID" ] || [ -z "$NEXT_PUBLIC_SANITY_DATASET" ]; then
+            echo "::error::Set NEXT_PUBLIC_SANITY_PROJECT_ID and NEXT_PUBLIC_SANITY_DATASET as repository variables."
+            exit 1
+          fi
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Keyed on the resolved Playwright version, so a version bump invalidates
+      # the cache rather than running new tests against an old browser.
+      - name: Resolve Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        id: pw-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+
+      # `--with-deps` installs the system libraries Chromium needs on a bare
+      # runner. Skipped when the browser is cached, but the system packages are
+      # not cached, so they are installed either way.
+      - run: pnpm exec playwright install --with-deps chromium
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+      - run: pnpm exec playwright install-deps chromium
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+
+      - run: pnpm test:a11y
+
+      # The HTML report carries the axe violation detail and a screenshot of the
+      # failing page. Only kept when something failed — on a green run it is
+      # megabytes of nothing.
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
