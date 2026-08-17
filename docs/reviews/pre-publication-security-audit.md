@@ -110,15 +110,7 @@ Two consequences to accept knowingly:
   hook and `.gitignore` are what carry it forward, and both are speed bumps rather than
   guarantees.
 
-## Next
+## Next — done 2026-08-17
 
-1. Make `effizien-starter` public.
-2. Enable required status checks — the free path ADR-003 was waiting on:
-
-```bash
-gh api -X PUT repos/Effizien/effizien-starter/branches/main/protection --input - <<'JSON'
-{"required_status_checks":{"strict":true,"contexts":["Typecheck, lint, test, build","Studio build","Accessibility (axe-core)","Core Web Vitals (Lighthouse)"]},"enforce_admins":false,"required_pull_request_reviews":null,"restrictions":null}
-JSON
-```
-
-3. Supersede ADR-003 with a short ADR recording that trigger 1 fired and what changed.
+The repository was made public and required status checks enabled the same day. All four
+CI jobs now block a merge on `main`. ADR-005 supersedes ADR-003 and records what changed.

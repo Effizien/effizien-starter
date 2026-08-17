@@ -1,14 +1,15 @@
-# ⚠️ THIS REPORTS. IT DOES NOT BLOCK.
+# All four jobs below are REQUIRED STATUS CHECKS on `main`. A red run blocks the
+# merge — this is a gate, not a report.
 #
-# A red run does not stop a merge, because required status checks need branch
-# protection or rulesets, and GitHub refuses both on a private repository under
-# a free organisation plan — verified, 403 on each.
+# It was report-only until 2026-08-17, because required checks need branch
+# protection and GitHub refuses that on a private repository under a free plan.
+# The repository is now public and the checks are enforced. ADR-005 records what
+# changed and supersedes ADR-003.
 #
-# That is a deliberate, recorded position, not an oversight:
-# `docs/decisions/ADR-003-ci-is-advisory.md` carries the reasoning and the two
-# conditions that change it. **Do not let WP9's launch checklist describe this
-# as a gate**, and do not describe it that way to a client. It is a signal a
-# human still has to read and act on.
+# `enforce_admins` is deliberately off: a solo operator locked out of his own
+# main branch mid-launch is a worse failure than a skipped check. That is the
+# one remaining way past these jobs, and it is a deliberate escape hatch rather
+# than a hole.
 
 name: CI
 

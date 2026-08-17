@@ -1,6 +1,13 @@
 # ADR-003 — CI reports; it does not block a merge
 
-Date: 2026-08-17 · Status: **Accepted**
+Date: 2026-08-17 · Status: **Superseded by [ADR-005](ADR-005-ci-blocks-merges.md)**
+
+> **Trigger 1 fired the same day this was written.** The security audit ran clean, the
+> repository was made public, and all four checks are now required. This ADR is kept
+> rather than deleted: the reasoning for accepting an advisory gate, and the argument for
+> why an advisory gate you *know about* differs from one you believe is blocking, are both
+> worth being able to read. It also records that this ADR overestimated the audit — which
+> took fifteen minutes.
 
 ## Context
 
