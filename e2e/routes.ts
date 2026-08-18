@@ -1,16 +1,31 @@
 /** The routes every browser test runs against.
  *
  * One list, so adding a route to the site adds it to the accessibility gate
- * rather than requiring someone to remember to. When WP12 renders the
- * page-builder sections, the pages below stop being shells and this list starts
- * earning its keep without changing.
+ * rather than requiring someone to remember to. Since WP12 these pages render
+ * their page-builder sections, so the list scans real content rather than
+ * shells.
  *
- * **These paths depend on the seeded dataset.** `docs/reviews/` and the WP5
- * handoff record what is in it: `siteSettings`, `homePage`, four pages covering
- * each visibility case, a person and one article. If the dataset is emptied,
- * every route here except `/` returns a 404 and the suite fails loudly — which
- * is the right failure, because an accessibility gate that silently scans
- * nothing is worse than no gate.
+ * ## These paths depend on content that is not in this repository
+ *
+ * They resolve because documents exist in one Sanity dataset — eight pages, an
+ * article, an author and the redirects. **None of that is versioned here.** A
+ * clone of this starter gets every line of code and an empty dataset, and the
+ * schema alone does not conjure a `/pricing`.
+ *
+ * That is deliberate rather than an oversight: a client's site will never want
+ * this content, and a seed script maintained in step with the schema costs more
+ * than it saves at this size. What matters is that the two failure modes are
+ * told apart, which `dataset.ts` does:
+ *
+ * - **Nothing published at all** — a fresh scaffold. These routes are skipped
+ *   with a reason, not failed. `/` is still scanned; it renders its own empty
+ *   state and is still held to WCAG.
+ * - **Something published, but a route here missing** — a deleted page, an
+ *   edited slug, a broken query. Still a hard failure, and still loud.
+ *
+ * Revisit if a second site is ever scaffolded from this one and someone finds
+ * themselves rebuilding content by hand to make CI pass. That is the point at
+ * which a versioned seed earns its keep, and not before.
  */
 export const SCANNED_ROUTES = [
   { path: '/', name: 'home' },
