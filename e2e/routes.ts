@@ -27,6 +27,11 @@ export const SCANNED_ROUTES = [
      this exact page while seeding, and the whole suite stayed green because
      nothing scanned it. */
   { path: '/why-flat-roofs-fail', name: 'page whose h1 comes from the title' },
+  /* The blog index, and deliberately not a route of its own: it is an ordinary
+     `page` with the slug "blog" whose builder holds an `articleList`. Scanned
+     because it is the only page exercising a block contributed by the
+     archetype rather than by the base library. */
+  { path: '/blog', name: 'blog index' },
   { path: '/blog/how-long-a-flat-roof-lasts', name: 'article' },
 ] as const
 

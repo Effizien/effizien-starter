@@ -653,7 +653,7 @@ export type SITE_SETTINGS_QUERY_RESULT =
 
 // Source: ../src/sanity/queries.ts
 // Variable: HOME_PAGE_QUERY
-// Query: *[_id == "homePage"][0]{  _id,  _type,  title,  pageBuilder[]{    _type,    _key,    heading,    _type == "hero" => {      lede,      alignment,      image {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  },      actions[]{        _key,        label,        destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }      }    },    _type == "textSection" => {      content []{      ...,      markDefs[]{        ...,        _type == "link" => {    ...,    internalTarget->{ _type, "slug": slug.current }  }      },      _type == "mediaImage" => {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }    }    },    _type == "features" => {      intro,      items[]{        _key,        heading,        body,        image {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  },        link{          label,          destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }        }      }    },    _type == "faqs" => {      intro,      items[]{        _key,        question,        answer []{      ...,      markDefs[]{        ...,        _type == "link" => {    ...,    internalTarget->{ _type, "slug": slug.current }  }      },      _type == "mediaImage" => {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }    }      }    },    _type == "testimonials" => {      intro,      items[]{        _key,        quote,        name,        context,        portrait {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }      }    },    _type == "callToAction" => {      body,      actions[]{        _key,        label,        destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }      }    }  },  "seo": {    "title": coalesce(seo.title, title),    "description": coalesce(seo.description, excerpt),    "image": coalesce(seo.image, mainImage),    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),    "noIndex": seo.searchVisibility == "hidden",    "canonicalUrl": seo.canonicalUrl  }}
+// Query: *[_id == "homePage"][0]{  _id,  _type,  title,  pageBuilder[]{    _type,    _key,    heading,    _type == "hero" => {      lede,      alignment,      image {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  },      actions[]{        _key,        label,        destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }      }    },    _type == "textSection" => {      content []{      ...,      markDefs[]{        ...,        _type == "link" => {    ...,    internalTarget->{ _type, "slug": slug.current }  }      },      _type == "mediaImage" => {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }    }    },    _type == "features" => {      intro,      items[]{        _key,        heading,        body,        image {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  },        link{          label,          destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }        }      }    },    _type == "faqs" => {      intro,      items[]{        _key,        question,        answer []{      ...,      markDefs[]{        ...,        _type == "link" => {    ...,    internalTarget->{ _type, "slug": slug.current }  }      },      _type == "mediaImage" => {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }    }      }    },    _type == "testimonials" => {      intro,      items[]{        _key,        quote,        name,        context,        portrait {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }      }    },    _type == "callToAction" => {      body,      actions[]{        _key,        label,        destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }      }    },    _type == "articleList" => {      intro,      source,      limit,      action{        label,        destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }      },      "articles": select(        source == "selected" => articles[]->{          _id,          title,          "slug": slug.current,          publishedAt,          excerpt,          mainImage {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }        },        *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"            && publishedAt <= now()            && (!defined(^.topic) || ^.topic._ref in topics[]._ref)]          | order(publishedAt desc) [0...12]{            _id,            title,            "slug": slug.current,            publishedAt,            excerpt,            mainImage {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }          }      )    }  },  "seo": {    "title": coalesce(seo.title, title),    "description": coalesce(seo.description, excerpt),    "image": coalesce(seo.image, mainImage),    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),    "noIndex": seo.searchVisibility == "hidden",    "canonicalUrl": seo.canonicalUrl  }}
 export type HOME_PAGE_QUERY_RESULT =
   | {
       _id: "homePage";
@@ -678,6 +678,54 @@ export type HOME_PAGE_QUERY_RESULT =
             _type: "articleList";
             _key: string;
             heading: string | null;
+            intro: string | null;
+            source: "latest" | "selected" | null;
+            limit: number | null;
+            action: {
+              label: string | null;
+              destination: {
+                _type: "link";
+                linkType?: "external" | "internal";
+                internalTarget:
+                  | {
+                      _type: "homePage";
+                      slug: null;
+                    }
+                  | {
+                      _type: "page";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "post";
+                      slug: string | null;
+                    }
+                  | null;
+                externalUrl?: string;
+                opensInNewTab?: boolean;
+              } | null;
+            } | null;
+            articles: Array<{
+              _id: string;
+              title: string | null;
+              slug: string | null;
+              publishedAt: string | null;
+              excerpt: string | null;
+              mainImage: {
+                _type: "mediaImage";
+                asset: {
+                  _id: string;
+                  metadata: {
+                    lqip: string | null;
+                  } | null;
+                } | null;
+                media?: unknown;
+                hotspot?: SanityImageHotspot;
+                crop?: SanityImageCrop;
+                role?: "decorative" | "informative";
+                alt?: string;
+                caption?: string;
+              } | null;
+            }> | null;
           }
         | {
             _type: "callToAction";
@@ -973,6 +1021,54 @@ export type HOME_PAGE_QUERY_RESULT =
             _type: "articleList";
             _key: string;
             heading: string | null;
+            intro: string | null;
+            source: "latest" | "selected" | null;
+            limit: number | null;
+            action: {
+              label: string | null;
+              destination: {
+                _type: "link";
+                linkType?: "external" | "internal";
+                internalTarget:
+                  | {
+                      _type: "homePage";
+                      slug: null;
+                    }
+                  | {
+                      _type: "page";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "post";
+                      slug: string | null;
+                    }
+                  | null;
+                externalUrl?: string;
+                opensInNewTab?: boolean;
+              } | null;
+            } | null;
+            articles: Array<{
+              _id: string;
+              title: string | null;
+              slug: string | null;
+              publishedAt: string | null;
+              excerpt: string | null;
+              mainImage: {
+                _type: "mediaImage";
+                asset: {
+                  _id: string;
+                  metadata: {
+                    lqip: string | null;
+                  } | null;
+                } | null;
+                media?: unknown;
+                hotspot?: SanityImageHotspot;
+                crop?: SanityImageCrop;
+                role?: "decorative" | "informative";
+                alt?: string;
+                caption?: string;
+              } | null;
+            }> | null;
           }
         | {
             _type: "callToAction";
@@ -1343,7 +1439,7 @@ export type HOME_PAGE_QUERY_RESULT =
 
 // Source: ../src/sanity/queries.ts
 // Variable: PAGE_QUERY
-// Query: *[_type == "page" && slug.current == $slug][0]{  _id,  _type,  title,  "slug": slug.current,  pageBuilder[]{    _type,    _key,    heading,    _type == "hero" => {      lede,      alignment,      image {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  },      actions[]{        _key,        label,        destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }      }    },    _type == "textSection" => {      content []{      ...,      markDefs[]{        ...,        _type == "link" => {    ...,    internalTarget->{ _type, "slug": slug.current }  }      },      _type == "mediaImage" => {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }    }    },    _type == "features" => {      intro,      items[]{        _key,        heading,        body,        image {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  },        link{          label,          destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }        }      }    },    _type == "faqs" => {      intro,      items[]{        _key,        question,        answer []{      ...,      markDefs[]{        ...,        _type == "link" => {    ...,    internalTarget->{ _type, "slug": slug.current }  }      },      _type == "mediaImage" => {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }    }      }    },    _type == "testimonials" => {      intro,      items[]{        _key,        quote,        name,        context,        portrait {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }      }    },    _type == "callToAction" => {      body,      actions[]{        _key,        label,        destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }      }    }  },  "seo": {    "title": coalesce(seo.title, title),    "description": coalesce(seo.description, excerpt),    "image": coalesce(seo.image, mainImage),    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),    "noIndex": seo.searchVisibility == "hidden",    "canonicalUrl": seo.canonicalUrl  }}
+// Query: *[_type == "page" && slug.current == $slug][0]{  _id,  _type,  title,  "slug": slug.current,  pageBuilder[]{    _type,    _key,    heading,    _type == "hero" => {      lede,      alignment,      image {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  },      actions[]{        _key,        label,        destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }      }    },    _type == "textSection" => {      content []{      ...,      markDefs[]{        ...,        _type == "link" => {    ...,    internalTarget->{ _type, "slug": slug.current }  }      },      _type == "mediaImage" => {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }    }    },    _type == "features" => {      intro,      items[]{        _key,        heading,        body,        image {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  },        link{          label,          destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }        }      }    },    _type == "faqs" => {      intro,      items[]{        _key,        question,        answer []{      ...,      markDefs[]{        ...,        _type == "link" => {    ...,    internalTarget->{ _type, "slug": slug.current }  }      },      _type == "mediaImage" => {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }    }      }    },    _type == "testimonials" => {      intro,      items[]{        _key,        quote,        name,        context,        portrait {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }      }    },    _type == "callToAction" => {      body,      actions[]{        _key,        label,        destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }      }    },    _type == "articleList" => {      intro,      source,      limit,      action{        label,        destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }      },      "articles": select(        source == "selected" => articles[]->{          _id,          title,          "slug": slug.current,          publishedAt,          excerpt,          mainImage {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }        },        *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"            && publishedAt <= now()            && (!defined(^.topic) || ^.topic._ref in topics[]._ref)]          | order(publishedAt desc) [0...12]{            _id,            title,            "slug": slug.current,            publishedAt,            excerpt,            mainImage {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }          }      )    }  },  "seo": {    "title": coalesce(seo.title, title),    "description": coalesce(seo.description, excerpt),    "image": coalesce(seo.image, mainImage),    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),    "noIndex": seo.searchVisibility == "hidden",    "canonicalUrl": seo.canonicalUrl  }}
 export type PAGE_QUERY_RESULT = {
   _id: string;
   _type: "page";
@@ -1354,6 +1450,54 @@ export type PAGE_QUERY_RESULT = {
         _type: "articleList";
         _key: string;
         heading: string | null;
+        intro: string | null;
+        source: "latest" | "selected" | null;
+        limit: number | null;
+        action: {
+          label: string | null;
+          destination: {
+            _type: "link";
+            linkType?: "external" | "internal";
+            internalTarget:
+              | {
+                  _type: "homePage";
+                  slug: null;
+                }
+              | {
+                  _type: "page";
+                  slug: string | null;
+                }
+              | {
+                  _type: "post";
+                  slug: string | null;
+                }
+              | null;
+            externalUrl?: string;
+            opensInNewTab?: boolean;
+          } | null;
+        } | null;
+        articles: Array<{
+          _id: string;
+          title: string | null;
+          slug: string | null;
+          publishedAt: string | null;
+          excerpt: string | null;
+          mainImage: {
+            _type: "mediaImage";
+            asset: {
+              _id: string;
+              metadata: {
+                lqip: string | null;
+              } | null;
+            } | null;
+            media?: unknown;
+            hotspot?: SanityImageHotspot;
+            crop?: SanityImageCrop;
+            role?: "decorative" | "informative";
+            alt?: string;
+            caption?: string;
+          } | null;
+        }> | null;
       }
     | {
         _type: "callToAction";
@@ -1841,8 +1985,8 @@ declare module "@sanity/client" {
   interface SanityQueries {
     '*[_type == "redirect" && defined(source)]{\n  source,\n  destination,\n  outcome,\n  "permanent": outcome == "permanent"\n}': REDIRECTS_QUERY_RESULT;
     '*[_id == "siteSettings"][0]{\n  siteName,\n  description,\n  socialImage,\n  logo,\n  socialLinks,\n  contactEmail,\n  contactPhone,\n  postalAddress\n}': SITE_SETTINGS_QUERY_RESULT;
-    '*[_id == "homePage"][0]{\n  _id,\n  _type,\n  title,\n  pageBuilder[]{\n    _type,\n    _key,\n    heading,\n\n    _type == "hero" => {\n      lede,\n      alignment,\n      image {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      }\n    },\n\n    _type == "textSection" => {\n      content []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    }\n    },\n\n    _type == "features" => {\n      intro,\n      items[]{\n        _key,\n        heading,\n        body,\n        image {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n        link{\n          label,\n          destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n        }\n      }\n    },\n\n    _type == "faqs" => {\n      intro,\n      items[]{\n        _key,\n        question,\n        answer []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    }\n      }\n    },\n\n    _type == "testimonials" => {\n      intro,\n      items[]{\n        _key,\n        quote,\n        name,\n        context,\n        portrait {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n      }\n    },\n\n    _type == "callToAction" => {\n      body,\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      }\n    }\n  },\n  "seo": {\n    "title": coalesce(seo.title, title),\n    "description": coalesce(seo.description, excerpt),\n    "image": coalesce(seo.image, mainImage),\n    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),\n    "noIndex": seo.searchVisibility == "hidden",\n    "canonicalUrl": seo.canonicalUrl\n  }\n}': HOME_PAGE_QUERY_RESULT;
-    '*[_type == "page" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  pageBuilder[]{\n    _type,\n    _key,\n    heading,\n\n    _type == "hero" => {\n      lede,\n      alignment,\n      image {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      }\n    },\n\n    _type == "textSection" => {\n      content []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    }\n    },\n\n    _type == "features" => {\n      intro,\n      items[]{\n        _key,\n        heading,\n        body,\n        image {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n        link{\n          label,\n          destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n        }\n      }\n    },\n\n    _type == "faqs" => {\n      intro,\n      items[]{\n        _key,\n        question,\n        answer []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    }\n      }\n    },\n\n    _type == "testimonials" => {\n      intro,\n      items[]{\n        _key,\n        quote,\n        name,\n        context,\n        portrait {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n      }\n    },\n\n    _type == "callToAction" => {\n      body,\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      }\n    }\n  },\n  "seo": {\n    "title": coalesce(seo.title, title),\n    "description": coalesce(seo.description, excerpt),\n    "image": coalesce(seo.image, mainImage),\n    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),\n    "noIndex": seo.searchVisibility == "hidden",\n    "canonicalUrl": seo.canonicalUrl\n  }\n}': PAGE_QUERY_RESULT;
+    '*[_id == "homePage"][0]{\n  _id,\n  _type,\n  title,\n  pageBuilder[]{\n    _type,\n    _key,\n    heading,\n\n    _type == "hero" => {\n      lede,\n      alignment,\n      image {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      }\n    },\n\n    _type == "textSection" => {\n      content []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    }\n    },\n\n    _type == "features" => {\n      intro,\n      items[]{\n        _key,\n        heading,\n        body,\n        image {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n        link{\n          label,\n          destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n        }\n      }\n    },\n\n    _type == "faqs" => {\n      intro,\n      items[]{\n        _key,\n        question,\n        answer []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    }\n      }\n    },\n\n    _type == "testimonials" => {\n      intro,\n      items[]{\n        _key,\n        quote,\n        name,\n        context,\n        portrait {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n      }\n    },\n\n    _type == "callToAction" => {\n      body,\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      }\n    },\n\n    _type == "articleList" => {\n      intro,\n      source,\n      limit,\n      action{\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      "articles": select(\n        source == "selected" => articles[]->{\n          _id,\n          title,\n          "slug": slug.current,\n          publishedAt,\n          excerpt,\n          mainImage {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n        },\n        *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"\n            && publishedAt <= now()\n            && (!defined(^.topic) || ^.topic._ref in topics[]._ref)]\n          | order(publishedAt desc) [0...12]{\n            _id,\n            title,\n            "slug": slug.current,\n            publishedAt,\n            excerpt,\n            mainImage {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n          }\n      )\n    }\n  },\n  "seo": {\n    "title": coalesce(seo.title, title),\n    "description": coalesce(seo.description, excerpt),\n    "image": coalesce(seo.image, mainImage),\n    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),\n    "noIndex": seo.searchVisibility == "hidden",\n    "canonicalUrl": seo.canonicalUrl\n  }\n}': HOME_PAGE_QUERY_RESULT;
+    '*[_type == "page" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  pageBuilder[]{\n    _type,\n    _key,\n    heading,\n\n    _type == "hero" => {\n      lede,\n      alignment,\n      image {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      }\n    },\n\n    _type == "textSection" => {\n      content []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    }\n    },\n\n    _type == "features" => {\n      intro,\n      items[]{\n        _key,\n        heading,\n        body,\n        image {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n        link{\n          label,\n          destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n        }\n      }\n    },\n\n    _type == "faqs" => {\n      intro,\n      items[]{\n        _key,\n        question,\n        answer []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    }\n      }\n    },\n\n    _type == "testimonials" => {\n      intro,\n      items[]{\n        _key,\n        quote,\n        name,\n        context,\n        portrait {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n      }\n    },\n\n    _type == "callToAction" => {\n      body,\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      }\n    },\n\n    _type == "articleList" => {\n      intro,\n      source,\n      limit,\n      action{\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      "articles": select(\n        source == "selected" => articles[]->{\n          _id,\n          title,\n          "slug": slug.current,\n          publishedAt,\n          excerpt,\n          mainImage {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n        },\n        *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"\n            && publishedAt <= now()\n            && (!defined(^.topic) || ^.topic._ref in topics[]._ref)]\n          | order(publishedAt desc) [0...12]{\n            _id,\n            title,\n            "slug": slug.current,\n            publishedAt,\n            excerpt,\n            mainImage {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n          }\n      )\n    }\n  },\n  "seo": {\n    "title": coalesce(seo.title, title),\n    "description": coalesce(seo.description, excerpt),\n    "image": coalesce(seo.image, mainImage),\n    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),\n    "noIndex": seo.searchVisibility == "hidden",\n    "canonicalUrl": seo.canonicalUrl\n  }\n}': PAGE_QUERY_RESULT;
     '*[_type == "post" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  publishedAt,\n  _updatedAt,\n  excerpt,\n  mainImage {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n  author->{name, role},\n  topics[]->{title},\n  body []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    },\n  "seo": {\n    "title": coalesce(seo.title, title),\n    "description": coalesce(seo.description, excerpt),\n    "image": coalesce(seo.image, mainImage),\n    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),\n    "noIndex": seo.searchVisibility == "hidden",\n    "canonicalUrl": seo.canonicalUrl\n  }\n}': POST_QUERY_RESULT;
     '*[_type == "page" && defined(slug.current)] | order(_id) [0...1000].slug.current': PAGE_SLUGS_QUERY_RESULT;
     '*[_type == "post" && defined(slug.current)] | order(_id) [0...1000].slug.current': POST_SLUGS_QUERY_RESULT;

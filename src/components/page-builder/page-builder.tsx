@@ -1,6 +1,7 @@
-import { Fragment, type ReactNode } from 'react'
+import { Fragment } from 'react'
 
 import { JsonLd } from '@/components/json-ld'
+import { ARCHETYPE_BLOCKS } from '@/components/page-builder/archetype-blocks'
 import {
   CallToAction,
   type CallToActionValue,
@@ -21,6 +22,8 @@ import {
   type SectionHeadingLevels,
 } from '@/lib/page-builder/heading-outline'
 import { buildFaqPage } from '@/lib/seo/json-ld/build'
+
+import type { SectionRenderer, SectionValue } from './types'
 
 /** A page, rendered from the sections an editor composed.
  *
@@ -56,21 +59,10 @@ import { buildFaqPage } from '@/lib/seo/json-ld/build'
  *  `h1` onto the wrong section.
  */
 
-/** The minimum a section has to look like to be dispatched and levelled. */
-export type SectionValue = {
-  readonly _key: string
-  readonly _type: string
-  readonly heading?: string | null
-}
+export type { SectionValue } from './types'
 
-type SectionRenderer = (section: SectionValue, levels: SectionHeadingLevels) => ReactNode
-
-/** The base block library, complete: all six types render.
- *
- *  `articleList` (marketing) and the catalogue blocks are contributed by the
- *  active archetype in WP12 chunk 5, from their own module — never imported
- *  here, for the reason in this file's header. */
-const BLOCKS: Record<string, SectionRenderer> = {
+/** The base block library: the six types every archetype has. */
+const BASE_BLOCKS: Record<string, SectionRenderer> = {
   /* The cast is confined to this table. Each component then declares exactly
      the shape it needs, rather than every block accepting an unknown. */
   hero: (section, levels) => <Hero value={section as HeroValue} levels={levels} />,
@@ -88,6 +80,14 @@ const BLOCKS: Record<string, SectionRenderer> = {
     <CallToAction value={section as CallToActionValue} levels={levels} />
   ),
 }
+
+/** The base six plus whatever the active archetype adds.
+ *
+ *  Merged rather than reached for separately, so dispatch stays one lookup and
+ *  an archetype block is not a special case at the call site. The archetype's
+ *  entries come last: a client site that genuinely needs to replace a base block
+ *  can do it in its own map without editing the base one. */
+const BLOCKS: Record<string, SectionRenderer> = { ...BASE_BLOCKS, ...ARCHETYPE_BLOCKS }
 
 /** Every FAQ entry on the page, in reading order, as one list.
  *

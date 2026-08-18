@@ -61,6 +61,37 @@ const SEO_PROJECTION = /* groq */ `"seo": {
     "canonicalUrl": seo.canonicalUrl
   }`
 
+/* ── Filters shared by everything that lists content publicly ───────────────*/
+
+/** "May this document be listed publicly?"
+ *
+ * One constant, interpolated into every query that answers that question, so
+ * the sitemap, `llms.txt` and the `articleList` block cannot drift into
+ * disagreeing about what is public. Interpolation resolves within this file —
+ * the reason everything lives in one module.
+ *
+ * **`!= "hidden"` is not the inverse spelling of the `noIndex` projection, and
+ * both are right.** `noIndex` asks "did the editor hide this?" and must answer
+ * no when the field is absent. This asks "may this be listed?" and must answer
+ * yes when absent. Verified with groq-js: GROQ treats `null != "hidden"` as
+ * true, so a document saved before the field existed is listed.
+ *
+ * **Declared here, above the page-builder projection, rather than beside the
+ * sitemap.** These are interpolated at module evaluation, so a `const` used
+ * before its definition is a temporal dead zone error rather than a hoisted
+ * reference — the file would throw on import. WP12 chunk 5 moved them up when
+ * `articleList` became the first consumer above the listing queries.
+ */
+const PUBLIC_FILTER = /* groq */ `seo.searchVisibility != "hidden"`
+
+/** Articles filter on this as well.
+ *
+ * `documents/post.ts` promises an editor that a future date schedules a piece.
+ * A sitemap, an llms.txt or a blog index advertising an article that is not yet
+ * published breaks that promise in the places a reader and a machine both look.
+ */
+const PUBLISHED_FILTER = /* groq */ `publishedAt <= now()`
+
 /* ── Page-builder sections ──────────────────────────────────────────────────*/
 
 /** Enough of an image for `<SanityImage>` to render it properly.
@@ -110,6 +141,58 @@ const RICH_TEXT_PROJECTION = /* groq */ `[]{
       },
       _type == "mediaImage" => ${IMAGE_PROJECTION}
     }`
+
+/** The articles an `articleList` block resolves to.
+ *
+ * ## Contributed by name, like every other archetype block
+ *
+ * `articleList` belongs to the marketing archetype. This branch is safe on a
+ * catalogue or documentation site for the same reason the Studio's
+ * `blocks/page-builder.ts` can list block names it does not import: a
+ * conditional on `_type` simply never matches when no section has that type.
+ * Nothing here needs to know which archetype is active.
+ *
+ * ## Both sources in one projection
+ *
+ * `select()` resolves the branch the editor chose. "Ones I choose" follows the
+ * references in the editor's order; "the most recent" runs a fresh query, so
+ * the list is still correct in two years with nobody editing the page — which
+ * is what `article-list.ts` promises them.
+ *
+ * The automatic branch repeats the two filters every public listing uses. An
+ * article scheduled for next week is not on the blog yet, and one hidden from
+ * search is not something to link to from a page that is indexed.
+ *
+ * **Bounded at twelve, then trimmed in the component.** GROQ slice bounds are
+ * safest as constants, and `limit` is editor-controlled — so the query takes a
+ * fixed ceiling matching `SECTION_LIMIT.listItemsMax` and the block shows the
+ * first `limit` of them. The bound is real either way: this is a list query, and
+ * `.claude/rules/routes.md` allows no unbounded ones.
+ *
+ * `^` reaches the enclosing section, which is how the optional topic filter
+ * reads a field of the block it belongs to.
+ */
+const ARTICLE_LIST_ARTICLES = /* groq */ `"articles": select(
+        source == "selected" => articles[]->{
+          _id,
+          title,
+          "slug": slug.current,
+          publishedAt,
+          excerpt,
+          mainImage ${IMAGE_PROJECTION}
+        },
+        *[_type == "post" && defined(slug.current) && ${PUBLIC_FILTER}
+            && ${PUBLISHED_FILTER}
+            && (!defined(^.topic) || ^.topic._ref in topics[]._ref)]
+          | order(publishedAt desc) [0...12]{
+            _id,
+            title,
+            "slug": slug.current,
+            publishedAt,
+            excerpt,
+            mainImage ${IMAGE_PROJECTION}
+          }
+      )`
 
 /** The sections an editor composed, projected for the renderer.
  *
@@ -190,6 +273,17 @@ const PAGE_BUILDER_PROJECTION = /* groq */ `pageBuilder[]{
         label,
         destination ${LINK_PROJECTION}
       }
+    },
+
+    _type == "articleList" => {
+      intro,
+      source,
+      limit,
+      action{
+        label,
+        destination ${LINK_PROJECTION}
+      },
+      ${ARTICLE_LIST_ARTICLES}
     }
   }`
 
@@ -266,30 +360,6 @@ export const PAGE_SLUGS_QUERY = defineQuery(
 export const POST_SLUGS_QUERY = defineQuery(
   `*[_type == "post" && defined(slug.current)] | order(_id) [0...1000].slug.current`,
 )
-
-/* ── Public listings: sitemap and llms.txt ──────────────────────────────────*/
-
-/** "May this document be listed publicly?"
- *
- * One constant, interpolated into every query that answers that question, so
- * the sitemap and `llms.txt` cannot drift into disagreeing about what is
- * public. Interpolation resolves within this file — the reason everything lives
- * in one module.
- *
- * **`!= "hidden"` is not the inverse spelling of the `noIndex` projection, and
- * both are right.** `noIndex` asks "did the editor hide this?" and must answer
- * no when the field is absent. This asks "may this be listed?" and must answer
- * yes when absent. Verified with groq-js: GROQ treats `null != "hidden"` as
- * true, so a document saved before the field existed is listed.
- */
-const PUBLIC_FILTER = /* groq */ `seo.searchVisibility != "hidden"`
-
-/** Articles filter on this as well.
- *
- * `documents/post.ts` promises an editor that a future date schedules a piece.
- * A sitemap or an llms.txt advertising an article that is not yet on the blog
- * breaks that promise in the two places a machine is guaranteed to look. */
-const PUBLISHED_FILTER = /* groq */ `publishedAt <= now()`
 
 /* ── Sitemap ────────────────────────────────────────────────────────────────*/
 
