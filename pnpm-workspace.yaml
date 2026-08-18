@@ -21,6 +21,19 @@
 # since the pnpm 11 upgrade — which is why nothing had drifted yet.
 saveExact: true
 
+# Refuse to install on a Node version outside `engines`, rather than warning.
+#
+# `.npmrc` says `engine-strict=true` and **pnpm 11 does not read it** — exactly the
+# defect WP6 found with `save-exact` in the same file, missed then because only the
+# setting that had just been tripped over was moved. `pnpm config get engine-strict`
+# returned `undefined`, so the range in `package.json` was decorative: nothing enforced
+# it and a build on the wrong major would simply proceed.
+#
+# With this here and `engines.node` pinned to a single major, the three places that name
+# a Node version — `.nvmrc`, `engines`, and whatever Vercel picks — cannot disagree
+# silently. A mismatch now fails the install with a message naming both versions.
+engineStrict: true
+
 # pnpm blocks postinstall scripts by default — a supply-chain protection, since a
 # postinstall runs arbitrary code at install time. esbuild's is legitimate: it
 # links the platform-specific binary, and the Next.js build fails without it.
