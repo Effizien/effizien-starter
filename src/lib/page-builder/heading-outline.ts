@@ -1,3 +1,5 @@
+import { stegaClean } from 'next-sanity'
+
 /** Where every heading level on a page-builder page comes from.
  *
  *  The Studio half of this is `studio/schemaTypes/shared/heading-outline.ts`,
@@ -63,15 +65,37 @@ type LevelledSection = {
   heading?: string | null
 }
 
-/** Characters Sanity's stega encoder hides inside strings for click-to-edit.
- *  They make a visually empty string non-empty, which would otherwise make every
- *  heading look present in a draft-mode preview and nowhere else — a bug that
- *  only appears for the editor, which is the worst kind. */
-const STEGA_CHARACTERS = /[\u{E0000}-\u{E007F}]/gu
-
+/** Does this section announce itself?
+ *
+ *  In draft mode Sanity hides click-to-edit metadata inside every string it
+ *  returns, which makes a *visually* empty heading non-empty as a string. Left
+ *  unhandled, every heading looks present in a Presentation preview and nowhere
+ *  else — a bug that appears only for the editor, which is the worst kind.
+ *
+ *  ## Corrected in WP12
+ *
+ *  This used to strip `U+E0000–U+E007F`, the Unicode Tags block, with a
+ *  hand-rolled regex. **Sanity's encoder does not use that range.** It uses
+ *  `@vercel/stega`, whose alphabet is the zero-width characters `U+200B`,
+ *  `U+200C`, `U+200D` and `U+FEFF`, in runs of four or more. So the regex
+ *  stripped nothing that was ever actually present, and a whitespace-only
+ *  heading in Presentation was read as a real one: the section claimed the
+ *  page's `h1`, rendered it empty, and `documentTitleIsPageHeading` went false —
+ *  leaving the page with a blank `h1` and its real title rendered as ordinary
+ *  text. Found by reading the encoder rather than by hitting it.
+ *
+ *  `stegaClean` is the encoder's own inverse, so it cannot drift from it the way
+ *  a copied character range did.
+ *
+ *  `richTextHeadingLevel` below compares `style` and does *not* clean it. That is
+ *  deliberate and not the same gap: its callers clean first because they must —
+ *  `@portabletext/react` dispatches on `style` inside the library, so
+ *  `src/lib/page-builder/rich-text.ts` has already stripped it by the time the
+ *  level is worked out. This function is different: it reads section data
+ *  straight off the query result, so it is the one that has to do its own
+ *  cleaning. */
 const declaresHeading = (section: LevelledSection): boolean =>
-  typeof section.heading === 'string' &&
-  section.heading.replace(STEGA_CHARACTERS, '').trim().length > 0
+  typeof section.heading === 'string' && stegaClean(section.heading).trim().length > 0
 
 const deeper = (level: HeadingLevel): HeadingLevel =>
   (level < 6 ? level + 1 : 6) as HeadingLevel

@@ -18,6 +18,23 @@ const nextConfig: NextConfig = {
      and this project lints with Biome (`pnpm lint`) rather than ESLint. */
   typescript: { ignoreBuildErrors: false },
 
+  /* Sanity's asset CDN, and nothing else.
+     `next/image` refuses to optimise a remote image from a host that is not
+     listed here — a deliberate protection, since an open image proxy will be
+     found and used to serve other people's traffic on your bill. Every image on
+     the site comes from this one host, so the pattern is exact rather than a
+     wildcard: `hostname` matches the full name, and the pathname is narrowed to
+     the project's own asset directory. */
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
+        pathname: '/images/**',
+      },
+    ],
+  },
+
   /* The redirect map, read from Sanity at build.
      `AGENTS.md`: every old URL maps to a new one or a deliberate 410. This half
      is the 3xx rules; the 410s are in `rewrites()` below, because

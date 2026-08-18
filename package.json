@@ -28,6 +28,7 @@
     "test:perf": "pnpm build && lhci autorun"
   },
   "dependencies": {
+    "@portabletext/react": "8.0.0",
     "@sanity/client": "7.26.2",
     "@sanity/image-url": "2.1.1",
     "class-variance-authority": "0.7.1",
