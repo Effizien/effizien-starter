@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { PageBuilder } from '@/components/page-builder/page-builder'
 import { ROUTE } from '@/lib/routes'
 import { buildMetadata } from '@/lib/seo/metadata'
 import { sanityFetch } from '@/sanity/lib/live'
@@ -6,12 +7,10 @@ import { HOME_PAGE_QUERY, SITE_SETTINGS_QUERY } from '@/sanity/queries'
 
 /** The site root.
  *
- * ⚠️ **A route shell.** WP5 built the SEO and GEO layer; the page-builder
- * sections an editor assembles in the Studio are not rendered yet. What is here
- * is the part the metadata, JSON-LD, sitemap and llms.txt all bind to — the
- * document fetch, the address, and the single `h1`. Rendering the six section
- * types is a later work package, and it replaces the body of this component
- * without touching anything above it.
+ * The home page is an ordinary page-builder document that happens to live at a
+ * fixed address. Everything the metadata, JSON-LD, sitemap and llms.txt bind to
+ * is unchanged; `PageBuilder` renders the sections and decides whether the
+ * page's `h1` comes from the first section or from the document title.
  */
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -36,20 +35,24 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   const { data: home } = await sanityFetch({ query: HOME_PAGE_QUERY })
 
-  return (
-    <main className="mx-auto flex min-h-dvh max-w-2xl flex-col justify-center gap-8 px-6 py-16">
-      <div className="flex flex-col gap-3">
-        <p className="font-mono text-muted-foreground text-sm">effizien-starter</p>
-        {/* Exactly one h1 per page; headings descend without skipping. */}
+  /* An empty dataset is a real state for a freshly scaffolded site, and a blank
+     page gives whoever just cloned the starter nothing to act on. */
+  if (!home) {
+    return (
+      <main className="mx-auto flex min-h-dvh max-w-2xl flex-col justify-center gap-3 px-6 py-16">
         <h1 className="text-balance font-semibold text-4xl tracking-tight">
-          {home?.title ?? 'No home page yet'}
+          No home page yet
         </h1>
         <p className="text-pretty text-lg text-muted-foreground">
-          {home
-            ? 'Metadata, canonical URL and structured data are live on this route. Page-builder sections render in a later work package.'
-            : 'Create the Home page document in the Studio and it will appear here.'}
+          Create the Home page document in the Studio and it will appear here.
         </p>
-      </div>
+      </main>
+    )
+  }
+
+  return (
+    <main className="mx-auto flex max-w-3xl flex-col gap-16 px-6 py-16">
+      <PageBuilder sections={home.pageBuilder} documentTitle={home.title} />
     </main>
   )
 }

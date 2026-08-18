@@ -49,6 +49,95 @@ const SEO_PROJECTION = /* groq */ `"seo": {
     "canonicalUrl": seo.canonicalUrl
   }`
 
+/* ── Page-builder sections ──────────────────────────────────────────────────*/
+
+/** Enough of an image for `<SanityImage>` to render it properly.
+ *
+ * `asset->` is expanded for one reason: `metadata.lqip`, the base64 blur
+ * placeholder `media-image.ts` asks Sanity to store. Dimensions are *not*
+ * projected — they are encoded in the asset id and read from there
+ * (`src/sanity/lib/asset-id.ts`), which keeps the payload smaller and works even
+ * where the asset is not expanded.
+ *
+ * The spread keeps `role`, `alt` and `caption`, which are the accessibility
+ * contract: a projection that listed fields by hand would drop `role` the first
+ * time someone copied it, and a dropped `role` turns every decorative image into
+ * one announced by a screen reader.
+ */
+const IMAGE_PROJECTION = /* groq */ `{
+    ...,
+    asset->{ _id, "metadata": metadata{ lqip } }
+  }`
+
+/** A `link`, with its internal destination resolved far enough to build a URL.
+ *
+ * `internalTarget->` expands the reference to the two fields `resolveHref` needs
+ * — the document's type and its slug. It deliberately does **not** build the
+ * path here: GROQ could concatenate `"/blog/" + slug.current` and that string
+ * would immediately be a fourth definition of where an article lives, free to
+ * drift from `ROUTE` with nothing failing. Same rule the sitemap query follows.
+ */
+const LINK_PROJECTION = /* groq */ `{
+    ...,
+    internalTarget->{ _type, "slug": slug.current }
+  }`
+
+/** Portable Text with its annotations and images resolved.
+ *
+ * Two things the default `content` projection would not give the renderer:
+ * link annotations that can resolve to an address, and images carrying their
+ * blur placeholder. Everything else passes through the spread, because the
+ * renderer dispatches on `style`, `listItem` and `marks` and a hand-listed
+ * projection would silently drop whichever one a future schema change adds.
+ */
+const RICH_TEXT_PROJECTION = /* groq */ `[]{
+      ...,
+      markDefs[]{
+        ...,
+        _type == "link" => ${LINK_PROJECTION}
+      },
+      _type == "mediaImage" => ${IMAGE_PROJECTION}
+    }`
+
+/** The sections an editor composed, projected for the renderer.
+ *
+ * ## Every section contributes `heading`, including the ones nothing renders yet
+ *
+ * `headingOutline` decides the whole page's heading structure from the ordered
+ * list of sections and whether each declares a heading. It has to see **all** of
+ * them: if this projection returned only the block types that currently have a
+ * renderer, a page whose first section is a `features` block would look to the
+ * outline like it starts with whatever came next, and the `h1` would land on the
+ * wrong section — or on the document title when a section had already claimed
+ * it. So `_type`, `_key` and `heading` come back for every member, and the
+ * per-type projections below only add what a specific renderer needs.
+ *
+ * The blocks without a conditional branch here — `features`, `faqs`,
+ * `testimonials`, `callToAction` — are WP12 chunk 3, and `articleList` is chunk
+ * 5. Until then they return their three shared fields, count towards the
+ * outline, and render nothing.
+ */
+const PAGE_BUILDER_PROJECTION = /* groq */ `pageBuilder[]{
+    _type,
+    _key,
+    heading,
+
+    _type == "hero" => {
+      lede,
+      alignment,
+      image ${IMAGE_PROJECTION},
+      actions[]{
+        _key,
+        label,
+        destination ${LINK_PROJECTION}
+      }
+    },
+
+    _type == "textSection" => {
+      content ${RICH_TEXT_PROJECTION}
+    }
+  }`
+
 /* ── Site-wide ──────────────────────────────────────────────────────────────*/
 
 /** Fetched by the root layout for the title template, and by the JSON-LD
@@ -72,6 +161,7 @@ export const HOME_PAGE_QUERY = defineQuery(`*[_id == "homePage"][0]{
   _id,
   _type,
   title,
+  ${PAGE_BUILDER_PROJECTION},
   ${SEO_PROJECTION}
 }`)
 
@@ -80,6 +170,7 @@ export const PAGE_QUERY = defineQuery(`*[_type == "page" && slug.current == $slu
   _type,
   title,
   "slug": slug.current,
+  ${PAGE_BUILDER_PROJECTION},
   ${SEO_PROJECTION}
 }`)
 

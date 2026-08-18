@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { JsonLd } from '@/components/json-ld'
+import { PageBuilder } from '@/components/page-builder/page-builder'
 import { ROUTE } from '@/lib/routes'
 import { buildBreadcrumbList } from '@/lib/seo/json-ld/build'
 import { buildMetadata } from '@/lib/seo/metadata'
@@ -10,8 +11,8 @@ import { PAGE_QUERY, PAGE_SLUGS_QUERY, SITE_SETTINGS_QUERY } from '@/sanity/quer
 
 /** Any page with an address of its own.
  *
- * ⚠️ **A route shell** — see `src/app/page.tsx`. The page-builder sections are
- * not rendered yet; everything the SEO and GEO layer binds to is.
+ * The page-builder sections an editor composed are rendered by `PageBuilder`,
+ * which also owns which element becomes the page's `h1`.
  *
  * The blog index has no route of its own: it is an ordinary `page` with the
  * slug "blog" and falls through to here, which is exactly what
@@ -55,7 +56,7 @@ export default async function Page({ params }: PageParams) {
   if (!page) notFound()
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-2xl flex-col justify-center gap-8 px-6 py-16">
+    <main className="mx-auto flex max-w-3xl flex-col gap-16 px-6 py-16">
       {/* No Article here — a page is not an article, and there is no schema.org
           type that says "a page" more usefully than the page itself already
           does. Breadcrumbs are the honest thing to state. */}
@@ -65,14 +66,10 @@ export default async function Page({ params }: PageParams) {
           { name: page.title ?? 'Page' },
         ])}
       />
-      <div className="flex flex-col gap-3">
-        <h1 className="text-balance font-semibold text-4xl tracking-tight">
-          {page.title}
-        </h1>
-        <p className="text-pretty text-lg text-muted-foreground">
-          Page-builder sections render in a later work package.
-        </p>
-      </div>
+      {/* The `h1` is `PageBuilder`'s decision, not this route's: it comes from
+          the first section when that section declares a heading, and from the
+          title otherwise. See `heading-outline.ts`. */}
+      <PageBuilder sections={page.pageBuilder} documentTitle={page.title} />
     </main>
   )
 }
