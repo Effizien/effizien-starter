@@ -42,10 +42,15 @@ meaningfully between Safari and Chrome; Safari is the better-supported pairing o
 
 ## What you can run today
 
-The page-builder sections are not rendered until WP12, so tasks 3 and 4 below have
-nothing to exercise yet. **Tasks 1, 2 and 5 are runnable now** and are worth running now,
-because the failures they catch — a missing skip link, an unlabelled landmark, a focus
-order that jumps — are structural and cheap to fix before there is content on top of them.
+**All five tasks are runnable.** They were not until WP12: the page-builder sections had
+no renderer, so tasks 3 and 4 had nothing to exercise. Pages now render their sections,
+articles render their bodies, and the blog index lists real articles.
+
+Two of the checks below need no screen reader at all, and those two were run on real
+content on 2026-08-18 — reflow at 320px and target size, both clean across all eight
+pages. That is recorded in the WP12 handoff. **It is not a substitute for tasks 1 to 5**,
+which need a person and a screen reader; automation reaches perhaps 30–40% of real
+barriers, and none of the five tasks below is automatable.
 
 ---
 

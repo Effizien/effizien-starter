@@ -411,7 +411,19 @@ export const SITEMAP_QUERY = defineQuery(`{
  * There is deliberately **no "include in llms.txt" field** in the schema. A
  * second visibility switch beside `searchVisibility` is a state machine with
  * four combinations, two of which mean nothing — the argument
- * `documents/redirect.ts` already makes against an `isEnabled` field. */
+ * `documents/redirect.ts` already makes against an `isEnabled` field.
+ *
+ * **A page falls back to its opening section's introduction.** Articles have
+ * always coalesced onto `excerpt`; pages had no equivalent and simply appeared
+ * as a title and a link when nobody filled in a search description. `hero.ts`
+ * already tells the editor that the introduction "is also what search engines
+ * and social platforms fall back to when no description is set under Search &
+ * sharing", so this is that promise being kept rather than a new rule.
+ *
+ * It is a projection, not a second rendering — the distinction ADR-007 turns
+ * on. Reading one existing field is not the same as serialising a page's
+ * sections into a parallel representation that can drift from the rendered one.
+ */
 export const LLMS_QUERY = defineQuery(`{
   "site": *[_id == "siteSettings"][0]{ siteName, description },
   "home": *[_id == "homePage" && ${PUBLIC_FILTER}][0]{
@@ -422,7 +434,7 @@ export const LLMS_QUERY = defineQuery(`{
     | order(title asc) [0...1000]{
       title,
       "slug": slug.current,
-      "description": seo.description
+      "description": coalesce(seo.description, pageBuilder[_type == "hero"][0].lede)
     },
   "posts": *[_type == "post" && defined(slug.current) && ${PUBLIC_FILTER}
       && ${PUBLISHED_FILTER}]

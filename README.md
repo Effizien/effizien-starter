@@ -150,6 +150,8 @@ Sanity release into a dependency bump and a redeploy on every site.
 | Three-tier design tokens → `pnpm tokens`, which **fails the build** when a declared colour pair drops below its WCAG contrast threshold | WP3 |
 | Content model: three archetypes selected by one constant, page-builder blocks, editorial validation, required alt text, derived heading levels | WP4 |
 | SEO/GEO: metadata, typed JSON-LD, sitemap, robots with an AI-crawler policy, `llms.txt`, IndexNow, and the redirect map with 410s | WP5 |
+| Accessibility and performance gates: axe-core over Playwright, Lighthouse CWV budgets, unit tests, and four **required status checks** that block a merge | WP6 |
+| **Page-builder rendering.** All six base blocks plus the archetype's, article bodies with byline and date, the blog index, and `FAQPage` structured data wired to the block that renders it | WP12 |
 
 ## What it does not include yet
 
@@ -157,16 +159,15 @@ Built in later work packages, so a site scaffolded today does not have them:
 
 | | |
 |---|---|
-| **Page-builder rendering.** Editors can compose sections; routes render a title and a placeholder. **This is the gating gap** | WP12 |
-| Accessibility and CWV CI gates — there is no `.github/` workflow at all today | WP6 |
 | Statsig experimentation, and the GA4 component that reads `NEXT_PUBLIC_GA_MEASUREMENT_ID` | WP7 |
 | Launch checklist, DNS cutover and rollback runbooks | WP9 |
+| Catalogue page-builder blocks — `productList` and `enquiryForm` are modelled in the schema but have no components, and the enquiry form has no submission path. They are a catalogue site's work; see `src/components/page-builder/archetype-blocks.tsx` | — |
 
 **Two per-site steps fail silently** and belong on a launch checklist rather than in
 anyone's memory: the IndexNow key, without which every submission is skipped, and the
 Sanity publish webhook, without which the sitemap and both `llms` files refresh only on
 deploy. Both are documented in `docs/runbooks/seo-geo-audit.md`.
 
-The accessibility and SEO requirements in `AGENTS.md` apply from the first commit
-regardless — the gates that enforce them automatically arrive later, and until then they
-are enforced by review.
+The accessibility and SEO requirements in `AGENTS.md` apply from the first commit, and
+since WP6 they are enforced by CI rather than by review: a merge to `main` is blocked
+until axe, Lighthouse, the unit tests and the Studio build all pass.
