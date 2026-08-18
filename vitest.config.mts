@@ -36,6 +36,25 @@ export default defineConfig({
        browser environment; adding one now would be config for nothing. */
     environment: 'node',
     include: ['src/**/*.test.ts', 'tests/**/*.test.ts'],
+
+    /* Deliberately fake, and deliberately not read from `.env.local`.
+     *
+     * `src/sanity/env.ts` throws at import time when these are absent, so
+     * anything importing the Sanity boundary — `urlFor`, and therefore the
+     * JSON-LD builders — cannot be tested without them. Placeholders rather
+     * than the real project's values because nothing here talks to Sanity: the
+     * builders construct CDN URLs from strings, and a test asserting a URL
+     * should not change meaning if the project is renamed. It also keeps a real
+     * project id out of the assertions, where it would quietly become a second
+     * place that value lives.
+     *
+     * Pure functions with no Sanity import need none of this — see
+     * `src/sanity/lib/asset-id.ts`, which was split out of `image.ts` for
+     * exactly that reason. */
+    env: {
+      NEXT_PUBLIC_SANITY_PROJECT_ID: 'test-project',
+      NEXT_PUBLIC_SANITY_DATASET: 'test-dataset',
+    },
   },
   resolve: {
     alias: {

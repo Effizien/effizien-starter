@@ -36,9 +36,11 @@ export type ArticleList = {
   source?: "latest" | "selected";
   topic?: CategoryReference;
   limit?: number;
-  articles?: Array<{
-    _key: string;
-  } & PostReference>;
+  articles?: Array<
+    {
+      _key: string;
+    } & PostReference
+  >;
   action?: Action;
 };
 
@@ -61,32 +63,39 @@ export type SimpleRichText = Array<{
   }>;
   style?: "normal";
   listItem?: "bullet" | "number";
-  markDefs?: Array<{
-    _key: string;
-  } & Link>;
+  markDefs?: Array<
+    {
+      _key: string;
+    } & Link
+  >;
   level?: number;
   _type: "block";
   _key: string;
 }>;
 
-export type RichText = Array<{
-  children?: Array<{
-    marks?: Array<string>;
-    text?: string;
-    _type: "span";
-    _key: string;
-  }>;
-  style?: "normal" | "heading" | "subheading" | "blockquote";
-  listItem?: "bullet" | "number";
-  markDefs?: Array<{
-    _key: string;
-  } & Link>;
-  level?: number;
-  _type: "block";
-  _key: string;
-} | {
-  _key: string;
-} & MediaImage>;
+export type RichText = Array<
+  | {
+      children?: Array<{
+        marks?: Array<string>;
+        text?: string;
+        _type: "span";
+        _key: string;
+      }>;
+      style?: "normal" | "heading" | "subheading" | "blockquote";
+      listItem?: "bullet" | "number";
+      markDefs?: Array<
+        {
+          _key: string;
+        } & Link
+      >;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }
+  | ({
+      _key: string;
+    } & MediaImage)
+>;
 
 export type Testimonial = {
   _type: "testimonial";
@@ -120,36 +129,44 @@ export type CallToAction = {
   _type: "callToAction";
   heading?: string;
   body?: string;
-  actions?: Array<{
-    _key: string;
-  } & Action>;
+  actions?: Array<
+    {
+      _key: string;
+    } & Action
+  >;
 };
 
 export type Testimonials = {
   _type: "testimonials";
   heading?: string;
   intro?: string;
-  items?: Array<{
-    _key: string;
-  } & Testimonial>;
+  items?: Array<
+    {
+      _key: string;
+    } & Testimonial
+  >;
 };
 
 export type Faqs = {
   _type: "faqs";
   heading?: string;
   intro?: string;
-  items?: Array<{
-    _key: string;
-  } & FaqItem>;
+  items?: Array<
+    {
+      _key: string;
+    } & FaqItem
+  >;
 };
 
 export type Features = {
   _type: "features";
   heading?: string;
   intro?: string;
-  items?: Array<{
-    _key: string;
-  } & FeatureItem>;
+  items?: Array<
+    {
+      _key: string;
+    } & FeatureItem
+  >;
 };
 
 export type TextSection = {
@@ -163,31 +180,49 @@ export type Hero = {
   heading?: string;
   lede?: string;
   image?: MediaImage;
-  actions?: Array<{
-    _key: string;
-  } & Action>;
+  actions?: Array<
+    {
+      _key: string;
+    } & Action
+  >;
   alignment?: "start" | "center";
 };
 
-export type PageBuilder = Array<{
-  _key: string;
-} & Hero | {
-  _key: string;
-} & TextSection | {
-  _key: string;
-} & Features | {
-  _key: string;
-} & Faqs | {
-  _key: string;
-} & Testimonials | {
-  _key: string;
-} & CallToAction | {
-  _key: string;
-} & ArticleList>;
+export type PageBuilder = Array<
+  | ({
+      _key: string;
+    } & Hero)
+  | ({
+      _key: string;
+    } & TextSection)
+  | ({
+      _key: string;
+    } & Features)
+  | ({
+      _key: string;
+    } & Faqs)
+  | ({
+      _key: string;
+    } & Testimonials)
+  | ({
+      _key: string;
+    } & CallToAction)
+  | ({
+      _key: string;
+    } & ArticleList)
+>;
 
 export type SocialLink = {
   _type: "socialLink";
-  platform?: "linkedin" | "instagram" | "facebook" | "youtube" | "x" | "tiktok" | "bluesky" | "github";
+  platform?:
+    | "linkedin"
+    | "instagram"
+    | "facebook"
+    | "youtube"
+    | "x"
+    | "tiktok"
+    | "bluesky"
+    | "github";
   url?: string;
 };
 
@@ -200,9 +235,11 @@ export type NavigationLink = {
 export type NavigationGroup = {
   _type: "navigationGroup";
   label?: string;
-  links?: Array<{
-    _key: string;
-  } & NavigationLink>;
+  links?: Array<
+    {
+      _key: string;
+    } & NavigationLink
+  >;
 };
 
 export type HomePageReference = {
@@ -244,9 +281,11 @@ export type Post = {
   slug?: Slug;
   publishedAt?: string;
   author?: PersonReference;
-  topics?: Array<{
-    _key: string;
-  } & CategoryReference>;
+  topics?: Array<
+    {
+      _key: string;
+    } & CategoryReference
+  >;
   excerpt?: string;
   mainImage?: MediaImage;
   body?: RichText;
@@ -297,9 +336,11 @@ export type Person = {
   role?: string;
   image?: MediaImage;
   bio?: SimpleRichText;
-  socialLinks?: Array<{
-    _key: string;
-  } & SocialLink>;
+  socialLinks?: Array<
+    {
+      _key: string;
+    } & SocialLink
+  >;
 };
 
 export type Slug = {
@@ -327,9 +368,11 @@ export type SiteSettings = {
   _rev: string;
   siteName?: string;
   logo?: MediaImage;
-  socialLinks?: Array<{
-    _key: string;
-  } & SocialLink>;
+  socialLinks?: Array<
+    {
+      _key: string;
+    } & SocialLink
+  >;
   description?: string;
   socialImage?: MediaImage;
   contactEmail?: string;
@@ -343,16 +386,22 @@ export type Navigation = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  header?: Array<{
-    _key: string;
-  } & NavigationLink | {
-    _key: string;
-  } & NavigationGroup>;
-  footer?: Array<{
-    _key: string;
-  } & NavigationLink | {
-    _key: string;
-  } & NavigationGroup>;
+  header?: Array<
+    | ({
+        _key: string;
+      } & NavigationLink)
+    | ({
+        _key: string;
+      } & NavigationGroup)
+  >;
+  footer?: Array<
+    | ({
+        _key: string;
+      } & NavigationLink)
+    | ({
+        _key: string;
+      } & NavigationGroup)
+  >;
 };
 
 export type HomePage = {
@@ -491,7 +540,52 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type AllSanitySchemaTypes = CategoryReference | PostReference | ArticleList | Category | SimpleRichText | RichText | Testimonial | FaqItem | FeatureItem | Action | CallToAction | Testimonials | Faqs | Features | TextSection | Hero | PageBuilder | SocialLink | NavigationLink | NavigationGroup | HomePageReference | PageReference | Link | PersonReference | Post | SanityImageAssetReference | Seo | MediaImage | Person | Slug | Redirect | SiteSettings | Navigation | HomePage | Page | SanityImageCrop | SanityImageHotspot | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
+export type AllSanitySchemaTypes =
+  | CategoryReference
+  | PostReference
+  | ArticleList
+  | Category
+  | SimpleRichText
+  | RichText
+  | Testimonial
+  | FaqItem
+  | FeatureItem
+  | Action
+  | CallToAction
+  | Testimonials
+  | Faqs
+  | Features
+  | TextSection
+  | Hero
+  | PageBuilder
+  | SocialLink
+  | NavigationLink
+  | NavigationGroup
+  | HomePageReference
+  | PageReference
+  | Link
+  | PersonReference
+  | Post
+  | SanityImageAssetReference
+  | Seo
+  | MediaImage
+  | Person
+  | Slug
+  | Redirect
+  | SiteSettings
+  | Navigation
+  | HomePage
+  | Page
+  | SanityImageCrop
+  | SanityImageHotspot
+  | SanityImagePaletteSwatch
+  | SanityImagePalette
+  | SanityImageDimensions
+  | SanityImageMetadata
+  | SanityFileAsset
+  | SanityAssetSourceData
+  | SanityImageAsset
+  | Geopoint;
 
 // Source: ../src/lib/redirects.ts
 // Variable: REDIRECTS_QUERY
@@ -506,661 +600,746 @@ export type REDIRECTS_QUERY_RESULT = Array<{
 // Source: ../src/sanity/queries.ts
 // Variable: SITE_SETTINGS_QUERY
 // Query: *[_id == "siteSettings"][0]{  siteName,  description,  socialImage,  logo,  socialLinks,  contactEmail,  contactPhone,  postalAddress}
-export type SITE_SETTINGS_QUERY_RESULT = {
-  siteName: null;
-  description: null;
-  socialImage: null;
-  logo: null;
-  socialLinks: null;
-  contactEmail: null;
-  contactPhone: null;
-  postalAddress: null;
-} | {
-  siteName: null;
-  description: null;
-  socialImage: null;
-  logo: null;
-  socialLinks: Array<{
-    _key: string;
-  } & SocialLink> | null;
-  contactEmail: null;
-  contactPhone: null;
-  postalAddress: null;
-} | {
-  siteName: null;
-  description: string | null;
-  socialImage: null;
-  logo: null;
-  socialLinks: null;
-  contactEmail: null;
-  contactPhone: null;
-  postalAddress: null;
-} | {
-  siteName: string | null;
-  description: string | null;
-  socialImage: MediaImage | null;
-  logo: MediaImage | null;
-  socialLinks: Array<{
-    _key: string;
-  } & SocialLink> | null;
-  contactEmail: string | null;
-  contactPhone: string | null;
-  postalAddress: string | null;
-} | null;
+export type SITE_SETTINGS_QUERY_RESULT =
+  | {
+      siteName: null;
+      description: null;
+      socialImage: null;
+      logo: null;
+      socialLinks: null;
+      contactEmail: null;
+      contactPhone: null;
+      postalAddress: null;
+    }
+  | {
+      siteName: null;
+      description: null;
+      socialImage: null;
+      logo: null;
+      socialLinks: Array<
+        {
+          _key: string;
+        } & SocialLink
+      > | null;
+      contactEmail: null;
+      contactPhone: null;
+      postalAddress: null;
+    }
+  | {
+      siteName: null;
+      description: string | null;
+      socialImage: null;
+      logo: null;
+      socialLinks: null;
+      contactEmail: null;
+      contactPhone: null;
+      postalAddress: null;
+    }
+  | {
+      siteName: string | null;
+      description: string | null;
+      socialImage: MediaImage | null;
+      logo: MediaImage | null;
+      socialLinks: Array<
+        {
+          _key: string;
+        } & SocialLink
+      > | null;
+      contactEmail: string | null;
+      contactPhone: string | null;
+      postalAddress: string | null;
+    }
+  | null;
 
 // Source: ../src/sanity/queries.ts
 // Variable: HOME_PAGE_QUERY
 // Query: *[_id == "homePage"][0]{  _id,  _type,  title,  pageBuilder[]{    _type,    _key,    heading,    _type == "hero" => {      lede,      alignment,      image {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  },      actions[]{        _key,        label,        destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }      }    },    _type == "textSection" => {      content []{      ...,      markDefs[]{        ...,        _type == "link" => {    ...,    internalTarget->{ _type, "slug": slug.current }  }      },      _type == "mediaImage" => {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }    }    },    _type == "features" => {      intro,      items[]{        _key,        heading,        body,        image {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  },        link{          label,          destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }        }      }    },    _type == "faqs" => {      intro,      items[]{        _key,        question,        answer []{      ...,      markDefs[]{        ...,        _type == "link" => {    ...,    internalTarget->{ _type, "slug": slug.current }  }      },      _type == "mediaImage" => {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }    }      }    },    _type == "testimonials" => {      intro,      items[]{        _key,        quote,        name,        context,        portrait {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }      }    },    _type == "callToAction" => {      body,      actions[]{        _key,        label,        destination {    ...,    internalTarget->{ _type, "slug": slug.current }  }      }    }  },  "seo": {    "title": coalesce(seo.title, title),    "description": coalesce(seo.description, excerpt),    "image": coalesce(seo.image, mainImage),    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),    "noIndex": seo.searchVisibility == "hidden",    "canonicalUrl": seo.canonicalUrl  }}
-export type HOME_PAGE_QUERY_RESULT = {
-  _id: "homePage";
-  _type: "category";
-  title: string | null;
-  pageBuilder: null;
-  seo: {
-    title: string | null;
-    description: null;
-    image: null;
-    imageAlt: string | null;
-    noIndex: false;
-    canonicalUrl: null;
-  };
-} | {
-  _id: "homePage";
-  _type: "homePage";
-  title: string | null;
-  pageBuilder: Array<{
-    _type: "articleList";
-    _key: string;
-    heading: string | null;
-  } | {
-    _type: "callToAction";
-    _key: string;
-    heading: string | null;
-    body: string | null;
-    actions: Array<{
-      _key: string;
-      label: string | null;
-      destination: {
-        _type: "link";
-        linkType?: "external" | "internal";
-        internalTarget: {
-          _type: "homePage";
-          slug: null;
-        } | {
-          _type: "page";
-          slug: string | null;
-        } | {
-          _type: "post";
-          slug: string | null;
+export type HOME_PAGE_QUERY_RESULT =
+  | {
+      _id: "homePage";
+      _type: "category";
+      title: string | null;
+      pageBuilder: null;
+      seo: {
+        title: string | null;
+        description: null;
+        image: null;
+        imageAlt: string | null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "homePage";
+      title: string | null;
+      pageBuilder: Array<
+        | {
+            _type: "articleList";
+            _key: string;
+            heading: string | null;
+          }
+        | {
+            _type: "callToAction";
+            _key: string;
+            heading: string | null;
+            body: string | null;
+            actions: Array<{
+              _key: string;
+              label: string | null;
+              destination: {
+                _type: "link";
+                linkType?: "external" | "internal";
+                internalTarget:
+                  | {
+                      _type: "homePage";
+                      slug: null;
+                    }
+                  | {
+                      _type: "page";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "post";
+                      slug: string | null;
+                    }
+                  | null;
+                externalUrl?: string;
+                opensInNewTab?: boolean;
+              } | null;
+            }> | null;
+          }
+        | {
+            _type: "faqs";
+            _key: string;
+            heading: string | null;
+            intro: string | null;
+            items: Array<{
+              _key: string;
+              question: string | null;
+              answer: Array<{
+                children?: Array<{
+                  marks?: Array<string>;
+                  text?: string;
+                  _type: "span";
+                  _key: string;
+                }>;
+                style?: "normal";
+                listItem?: "bullet" | "number";
+                markDefs: Array<{
+                  _key: string;
+                  _type: "link";
+                  linkType?: "external" | "internal";
+                  internalTarget:
+                    | {
+                        _type: "homePage";
+                        slug: null;
+                      }
+                    | {
+                        _type: "page";
+                        slug: string | null;
+                      }
+                    | {
+                        _type: "post";
+                        slug: string | null;
+                      }
+                    | null;
+                  externalUrl?: string;
+                  opensInNewTab?: boolean;
+                }> | null;
+                level?: number;
+                _type: "block";
+                _key: string;
+              }> | null;
+            }> | null;
+          }
+        | {
+            _type: "features";
+            _key: string;
+            heading: string | null;
+            intro: string | null;
+            items: Array<{
+              _key: string;
+              heading: string | null;
+              body: string | null;
+              image: {
+                _type: "mediaImage";
+                asset: {
+                  _id: string;
+                  metadata: {
+                    lqip: string | null;
+                  } | null;
+                } | null;
+                media?: unknown;
+                hotspot?: SanityImageHotspot;
+                crop?: SanityImageCrop;
+                role?: "decorative" | "informative";
+                alt?: string;
+                caption?: string;
+              } | null;
+              link: {
+                label: string | null;
+                destination: {
+                  _type: "link";
+                  linkType?: "external" | "internal";
+                  internalTarget:
+                    | {
+                        _type: "homePage";
+                        slug: null;
+                      }
+                    | {
+                        _type: "page";
+                        slug: string | null;
+                      }
+                    | {
+                        _type: "post";
+                        slug: string | null;
+                      }
+                    | null;
+                  externalUrl?: string;
+                  opensInNewTab?: boolean;
+                } | null;
+              } | null;
+            }> | null;
+          }
+        | {
+            _type: "hero";
+            _key: string;
+            heading: string | null;
+            lede: string | null;
+            alignment: "center" | "start" | null;
+            image: {
+              _type: "mediaImage";
+              asset: {
+                _id: string;
+                metadata: {
+                  lqip: string | null;
+                } | null;
+              } | null;
+              media?: unknown;
+              hotspot?: SanityImageHotspot;
+              crop?: SanityImageCrop;
+              role?: "decorative" | "informative";
+              alt?: string;
+              caption?: string;
+            } | null;
+            actions: Array<{
+              _key: string;
+              label: string | null;
+              destination: {
+                _type: "link";
+                linkType?: "external" | "internal";
+                internalTarget:
+                  | {
+                      _type: "homePage";
+                      slug: null;
+                    }
+                  | {
+                      _type: "page";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "post";
+                      slug: string | null;
+                    }
+                  | null;
+                externalUrl?: string;
+                opensInNewTab?: boolean;
+              } | null;
+            }> | null;
+          }
+        | {
+            _type: "testimonials";
+            _key: string;
+            heading: string | null;
+            intro: string | null;
+            items: Array<{
+              _key: string;
+              quote: string | null;
+              name: string | null;
+              context: string | null;
+              portrait: {
+                _type: "mediaImage";
+                asset: {
+                  _id: string;
+                  metadata: {
+                    lqip: string | null;
+                  } | null;
+                } | null;
+                media?: unknown;
+                hotspot?: SanityImageHotspot;
+                crop?: SanityImageCrop;
+                role?: "decorative" | "informative";
+                alt?: string;
+                caption?: string;
+              } | null;
+            }> | null;
+          }
+        | {
+            _type: "textSection";
+            _key: string;
+            heading: string | null;
+            content: Array<
+              | {
+                  children?: Array<{
+                    marks?: Array<string>;
+                    text?: string;
+                    _type: "span";
+                    _key: string;
+                  }>;
+                  style?: "blockquote" | "heading" | "normal" | "subheading";
+                  listItem?: "bullet" | "number";
+                  markDefs: Array<{
+                    _key: string;
+                    _type: "link";
+                    linkType?: "external" | "internal";
+                    internalTarget:
+                      | {
+                          _type: "homePage";
+                          slug: null;
+                        }
+                      | {
+                          _type: "page";
+                          slug: string | null;
+                        }
+                      | {
+                          _type: "post";
+                          slug: string | null;
+                        }
+                      | null;
+                    externalUrl?: string;
+                    opensInNewTab?: boolean;
+                  }> | null;
+                  level?: number;
+                  _type: "block";
+                  _key: string;
+                }
+              | {
+                  _key: string;
+                  _type: "mediaImage";
+                  asset: {
+                    _id: string;
+                    metadata: {
+                      lqip: string | null;
+                    } | null;
+                  } | null;
+                  media?: unknown;
+                  hotspot?: SanityImageHotspot;
+                  crop?: SanityImageCrop;
+                  role?: "decorative" | "informative";
+                  alt?: string;
+                  caption?: string;
+                  markDefs: null;
+                }
+            > | null;
+          }
+      > | null;
+      seo: {
+        title: string | null;
+        description: string | null;
+        image: {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
         } | null;
-        externalUrl?: string;
-        opensInNewTab?: boolean;
-      } | null;
-    }> | null;
-  } | {
-    _type: "faqs";
-    _key: string;
-    heading: string | null;
-    intro: string | null;
-    items: Array<{
-      _key: string;
-      question: string | null;
-      answer: Array<{
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
-          _key: string;
-        }>;
-        style?: "normal";
-        listItem?: "bullet" | "number";
-        markDefs: Array<{
-          _key: string;
-          _type: "link";
-          linkType?: "external" | "internal";
-          internalTarget: {
-            _type: "homePage";
-            slug: null;
-          } | {
-            _type: "page";
-            slug: string | null;
-          } | {
-            _type: "post";
-            slug: string | null;
-          } | null;
-          externalUrl?: string;
-          opensInNewTab?: boolean;
-        }> | null;
-        level?: number;
-        _type: "block";
-        _key: string;
-      }> | null;
-    }> | null;
-  } | {
-    _type: "features";
-    _key: string;
-    heading: string | null;
-    intro: string | null;
-    items: Array<{
-      _key: string;
-      heading: string | null;
-      body: string | null;
-      image: {
-        _type: "mediaImage";
-        asset: {
-          _id: string;
-          metadata: {
-            lqip: string | null;
-          } | null;
+        imageAlt: string | null;
+        noIndex: false | true;
+        canonicalUrl: string | null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "navigation";
+      title: null;
+      pageBuilder: null;
+      seo: {
+        title: null;
+        description: null;
+        image: null;
+        imageAlt: null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "page";
+      title: string | null;
+      pageBuilder: Array<
+        | {
+            _type: "articleList";
+            _key: string;
+            heading: string | null;
+          }
+        | {
+            _type: "callToAction";
+            _key: string;
+            heading: string | null;
+            body: string | null;
+            actions: Array<{
+              _key: string;
+              label: string | null;
+              destination: {
+                _type: "link";
+                linkType?: "external" | "internal";
+                internalTarget:
+                  | {
+                      _type: "homePage";
+                      slug: null;
+                    }
+                  | {
+                      _type: "page";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "post";
+                      slug: string | null;
+                    }
+                  | null;
+                externalUrl?: string;
+                opensInNewTab?: boolean;
+              } | null;
+            }> | null;
+          }
+        | {
+            _type: "faqs";
+            _key: string;
+            heading: string | null;
+            intro: string | null;
+            items: Array<{
+              _key: string;
+              question: string | null;
+              answer: Array<{
+                children?: Array<{
+                  marks?: Array<string>;
+                  text?: string;
+                  _type: "span";
+                  _key: string;
+                }>;
+                style?: "normal";
+                listItem?: "bullet" | "number";
+                markDefs: Array<{
+                  _key: string;
+                  _type: "link";
+                  linkType?: "external" | "internal";
+                  internalTarget:
+                    | {
+                        _type: "homePage";
+                        slug: null;
+                      }
+                    | {
+                        _type: "page";
+                        slug: string | null;
+                      }
+                    | {
+                        _type: "post";
+                        slug: string | null;
+                      }
+                    | null;
+                  externalUrl?: string;
+                  opensInNewTab?: boolean;
+                }> | null;
+                level?: number;
+                _type: "block";
+                _key: string;
+              }> | null;
+            }> | null;
+          }
+        | {
+            _type: "features";
+            _key: string;
+            heading: string | null;
+            intro: string | null;
+            items: Array<{
+              _key: string;
+              heading: string | null;
+              body: string | null;
+              image: {
+                _type: "mediaImage";
+                asset: {
+                  _id: string;
+                  metadata: {
+                    lqip: string | null;
+                  } | null;
+                } | null;
+                media?: unknown;
+                hotspot?: SanityImageHotspot;
+                crop?: SanityImageCrop;
+                role?: "decorative" | "informative";
+                alt?: string;
+                caption?: string;
+              } | null;
+              link: {
+                label: string | null;
+                destination: {
+                  _type: "link";
+                  linkType?: "external" | "internal";
+                  internalTarget:
+                    | {
+                        _type: "homePage";
+                        slug: null;
+                      }
+                    | {
+                        _type: "page";
+                        slug: string | null;
+                      }
+                    | {
+                        _type: "post";
+                        slug: string | null;
+                      }
+                    | null;
+                  externalUrl?: string;
+                  opensInNewTab?: boolean;
+                } | null;
+              } | null;
+            }> | null;
+          }
+        | {
+            _type: "hero";
+            _key: string;
+            heading: string | null;
+            lede: string | null;
+            alignment: "center" | "start" | null;
+            image: {
+              _type: "mediaImage";
+              asset: {
+                _id: string;
+                metadata: {
+                  lqip: string | null;
+                } | null;
+              } | null;
+              media?: unknown;
+              hotspot?: SanityImageHotspot;
+              crop?: SanityImageCrop;
+              role?: "decorative" | "informative";
+              alt?: string;
+              caption?: string;
+            } | null;
+            actions: Array<{
+              _key: string;
+              label: string | null;
+              destination: {
+                _type: "link";
+                linkType?: "external" | "internal";
+                internalTarget:
+                  | {
+                      _type: "homePage";
+                      slug: null;
+                    }
+                  | {
+                      _type: "page";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "post";
+                      slug: string | null;
+                    }
+                  | null;
+                externalUrl?: string;
+                opensInNewTab?: boolean;
+              } | null;
+            }> | null;
+          }
+        | {
+            _type: "testimonials";
+            _key: string;
+            heading: string | null;
+            intro: string | null;
+            items: Array<{
+              _key: string;
+              quote: string | null;
+              name: string | null;
+              context: string | null;
+              portrait: {
+                _type: "mediaImage";
+                asset: {
+                  _id: string;
+                  metadata: {
+                    lqip: string | null;
+                  } | null;
+                } | null;
+                media?: unknown;
+                hotspot?: SanityImageHotspot;
+                crop?: SanityImageCrop;
+                role?: "decorative" | "informative";
+                alt?: string;
+                caption?: string;
+              } | null;
+            }> | null;
+          }
+        | {
+            _type: "textSection";
+            _key: string;
+            heading: string | null;
+            content: Array<
+              | {
+                  children?: Array<{
+                    marks?: Array<string>;
+                    text?: string;
+                    _type: "span";
+                    _key: string;
+                  }>;
+                  style?: "blockquote" | "heading" | "normal" | "subheading";
+                  listItem?: "bullet" | "number";
+                  markDefs: Array<{
+                    _key: string;
+                    _type: "link";
+                    linkType?: "external" | "internal";
+                    internalTarget:
+                      | {
+                          _type: "homePage";
+                          slug: null;
+                        }
+                      | {
+                          _type: "page";
+                          slug: string | null;
+                        }
+                      | {
+                          _type: "post";
+                          slug: string | null;
+                        }
+                      | null;
+                    externalUrl?: string;
+                    opensInNewTab?: boolean;
+                  }> | null;
+                  level?: number;
+                  _type: "block";
+                  _key: string;
+                }
+              | {
+                  _key: string;
+                  _type: "mediaImage";
+                  asset: {
+                    _id: string;
+                    metadata: {
+                      lqip: string | null;
+                    } | null;
+                  } | null;
+                  media?: unknown;
+                  hotspot?: SanityImageHotspot;
+                  crop?: SanityImageCrop;
+                  role?: "decorative" | "informative";
+                  alt?: string;
+                  caption?: string;
+                  markDefs: null;
+                }
+            > | null;
+          }
+      > | null;
+      seo: {
+        title: string | null;
+        description: string | null;
+        image: {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
         } | null;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        role?: "decorative" | "informative";
-        alt?: string;
-        caption?: string;
-      } | null;
-      link: {
-        label: string | null;
-        destination: {
-          _type: "link";
-          linkType?: "external" | "internal";
-          internalTarget: {
-            _type: "homePage";
-            slug: null;
-          } | {
-            _type: "page";
-            slug: string | null;
-          } | {
-            _type: "post";
-            slug: string | null;
-          } | null;
-          externalUrl?: string;
-          opensInNewTab?: boolean;
-        } | null;
-      } | null;
-    }> | null;
-  } | {
-    _type: "hero";
-    _key: string;
-    heading: string | null;
-    lede: string | null;
-    alignment: "center" | "start" | null;
-    image: {
-      _type: "mediaImage";
-      asset: {
-        _id: string;
-        metadata: {
-          lqip: string | null;
-        } | null;
-      } | null;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      role?: "decorative" | "informative";
-      alt?: string;
-      caption?: string;
-    } | null;
-    actions: Array<{
-      _key: string;
-      label: string | null;
-      destination: {
-        _type: "link";
-        linkType?: "external" | "internal";
-        internalTarget: {
-          _type: "homePage";
-          slug: null;
-        } | {
-          _type: "page";
-          slug: string | null;
-        } | {
-          _type: "post";
-          slug: string | null;
-        } | null;
-        externalUrl?: string;
-        opensInNewTab?: boolean;
-      } | null;
-    }> | null;
-  } | {
-    _type: "testimonials";
-    _key: string;
-    heading: string | null;
-    intro: string | null;
-    items: Array<{
-      _key: string;
-      quote: string | null;
-      name: string | null;
-      context: string | null;
-      portrait: {
-        _type: "mediaImage";
-        asset: {
-          _id: string;
-          metadata: {
-            lqip: string | null;
-          } | null;
-        } | null;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        role?: "decorative" | "informative";
-        alt?: string;
-        caption?: string;
-      } | null;
-    }> | null;
-  } | {
-    _type: "textSection";
-    _key: string;
-    heading: string | null;
-    content: Array<{
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
-        _key: string;
-      }>;
-      style?: "blockquote" | "heading" | "normal" | "subheading";
-      listItem?: "bullet" | "number";
-      markDefs: Array<{
-        _key: string;
-        _type: "link";
-        linkType?: "external" | "internal";
-        internalTarget: {
-          _type: "homePage";
-          slug: null;
-        } | {
-          _type: "page";
-          slug: string | null;
-        } | {
-          _type: "post";
-          slug: string | null;
-        } | null;
-        externalUrl?: string;
-        opensInNewTab?: boolean;
-      }> | null;
-      level?: number;
-      _type: "block";
-      _key: string;
-    } | {
-      _key: string;
-      _type: "mediaImage";
-      asset: {
-        _id: string;
-        metadata: {
-          lqip: string | null;
-        } | null;
-      } | null;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      role?: "decorative" | "informative";
-      alt?: string;
-      caption?: string;
-      markDefs: null;
-    }> | null;
-  }> | null;
-  seo: {
-    title: string | null;
-    description: string | null;
-    image: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    } | null;
-    imageAlt: string | null;
-    noIndex: false | true;
-    canonicalUrl: string | null;
-  };
-} | {
-  _id: "homePage";
-  _type: "navigation";
-  title: null;
-  pageBuilder: null;
-  seo: {
-    title: null;
-    description: null;
-    image: null;
-    imageAlt: null;
-    noIndex: false;
-    canonicalUrl: null;
-  };
-} | {
-  _id: "homePage";
-  _type: "page";
-  title: string | null;
-  pageBuilder: Array<{
-    _type: "articleList";
-    _key: string;
-    heading: string | null;
-  } | {
-    _type: "callToAction";
-    _key: string;
-    heading: string | null;
-    body: string | null;
-    actions: Array<{
-      _key: string;
-      label: string | null;
-      destination: {
-        _type: "link";
-        linkType?: "external" | "internal";
-        internalTarget: {
-          _type: "homePage";
-          slug: null;
-        } | {
-          _type: "page";
-          slug: string | null;
-        } | {
-          _type: "post";
-          slug: string | null;
-        } | null;
-        externalUrl?: string;
-        opensInNewTab?: boolean;
-      } | null;
-    }> | null;
-  } | {
-    _type: "faqs";
-    _key: string;
-    heading: string | null;
-    intro: string | null;
-    items: Array<{
-      _key: string;
-      question: string | null;
-      answer: Array<{
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
-          _key: string;
-        }>;
-        style?: "normal";
-        listItem?: "bullet" | "number";
-        markDefs: Array<{
-          _key: string;
-          _type: "link";
-          linkType?: "external" | "internal";
-          internalTarget: {
-            _type: "homePage";
-            slug: null;
-          } | {
-            _type: "page";
-            slug: string | null;
-          } | {
-            _type: "post";
-            slug: string | null;
-          } | null;
-          externalUrl?: string;
-          opensInNewTab?: boolean;
-        }> | null;
-        level?: number;
-        _type: "block";
-        _key: string;
-      }> | null;
-    }> | null;
-  } | {
-    _type: "features";
-    _key: string;
-    heading: string | null;
-    intro: string | null;
-    items: Array<{
-      _key: string;
-      heading: string | null;
-      body: string | null;
-      image: {
-        _type: "mediaImage";
-        asset: {
-          _id: string;
-          metadata: {
-            lqip: string | null;
-          } | null;
-        } | null;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        role?: "decorative" | "informative";
-        alt?: string;
-        caption?: string;
-      } | null;
-      link: {
-        label: string | null;
-        destination: {
-          _type: "link";
-          linkType?: "external" | "internal";
-          internalTarget: {
-            _type: "homePage";
-            slug: null;
-          } | {
-            _type: "page";
-            slug: string | null;
-          } | {
-            _type: "post";
-            slug: string | null;
-          } | null;
-          externalUrl?: string;
-          opensInNewTab?: boolean;
-        } | null;
-      } | null;
-    }> | null;
-  } | {
-    _type: "hero";
-    _key: string;
-    heading: string | null;
-    lede: string | null;
-    alignment: "center" | "start" | null;
-    image: {
-      _type: "mediaImage";
-      asset: {
-        _id: string;
-        metadata: {
-          lqip: string | null;
-        } | null;
-      } | null;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      role?: "decorative" | "informative";
-      alt?: string;
-      caption?: string;
-    } | null;
-    actions: Array<{
-      _key: string;
-      label: string | null;
-      destination: {
-        _type: "link";
-        linkType?: "external" | "internal";
-        internalTarget: {
-          _type: "homePage";
-          slug: null;
-        } | {
-          _type: "page";
-          slug: string | null;
-        } | {
-          _type: "post";
-          slug: string | null;
-        } | null;
-        externalUrl?: string;
-        opensInNewTab?: boolean;
-      } | null;
-    }> | null;
-  } | {
-    _type: "testimonials";
-    _key: string;
-    heading: string | null;
-    intro: string | null;
-    items: Array<{
-      _key: string;
-      quote: string | null;
-      name: string | null;
-      context: string | null;
-      portrait: {
-        _type: "mediaImage";
-        asset: {
-          _id: string;
-          metadata: {
-            lqip: string | null;
-          } | null;
-        } | null;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        role?: "decorative" | "informative";
-        alt?: string;
-        caption?: string;
-      } | null;
-    }> | null;
-  } | {
-    _type: "textSection";
-    _key: string;
-    heading: string | null;
-    content: Array<{
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
-        _key: string;
-      }>;
-      style?: "blockquote" | "heading" | "normal" | "subheading";
-      listItem?: "bullet" | "number";
-      markDefs: Array<{
-        _key: string;
-        _type: "link";
-        linkType?: "external" | "internal";
-        internalTarget: {
-          _type: "homePage";
-          slug: null;
-        } | {
-          _type: "page";
-          slug: string | null;
-        } | {
-          _type: "post";
-          slug: string | null;
-        } | null;
-        externalUrl?: string;
-        opensInNewTab?: boolean;
-      }> | null;
-      level?: number;
-      _type: "block";
-      _key: string;
-    } | {
-      _key: string;
-      _type: "mediaImage";
-      asset: {
-        _id: string;
-        metadata: {
-          lqip: string | null;
-        } | null;
-      } | null;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      role?: "decorative" | "informative";
-      alt?: string;
-      caption?: string;
-      markDefs: null;
-    }> | null;
-  }> | null;
-  seo: {
-    title: string | null;
-    description: string | null;
-    image: {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    } | null;
-    imageAlt: string | null;
-    noIndex: false | true;
-    canonicalUrl: string | null;
-  };
-} | {
-  _id: "homePage";
-  _type: "person";
-  title: null;
-  pageBuilder: null;
-  seo: {
-    title: null;
-    description: null;
-    image: null;
-    imageAlt: null;
-    noIndex: false;
-    canonicalUrl: null;
-  };
-} | {
-  _id: "homePage";
-  _type: "post";
-  title: string | null;
-  pageBuilder: null;
-  seo: {
-    title: string | null;
-    description: string | null;
-    image: MediaImage | {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    } | null;
-    imageAlt: string | null;
-    noIndex: false | true;
-    canonicalUrl: string | null;
-  };
-} | {
-  _id: "homePage";
-  _type: "redirect";
-  title: null;
-  pageBuilder: null;
-  seo: {
-    title: null;
-    description: null;
-    image: null;
-    imageAlt: null;
-    noIndex: false;
-    canonicalUrl: null;
-  };
-} | {
-  _id: "homePage";
-  _type: "sanity.fileAsset";
-  title: string | null;
-  pageBuilder: null;
-  seo: {
-    title: string | null;
-    description: null;
-    image: null;
-    imageAlt: string | null;
-    noIndex: false;
-    canonicalUrl: null;
-  };
-} | {
-  _id: "homePage";
-  _type: "sanity.imageAsset";
-  title: string | null;
-  pageBuilder: null;
-  seo: {
-    title: string | null;
-    description: null;
-    image: null;
-    imageAlt: string | null;
-    noIndex: false;
-    canonicalUrl: null;
-  };
-} | {
-  _id: "homePage";
-  _type: "siteSettings";
-  title: null;
-  pageBuilder: null;
-  seo: {
-    title: null;
-    description: null;
-    image: null;
-    imageAlt: null;
-    noIndex: false;
-    canonicalUrl: null;
-  };
-} | null;
+        imageAlt: string | null;
+        noIndex: false | true;
+        canonicalUrl: string | null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "person";
+      title: null;
+      pageBuilder: null;
+      seo: {
+        title: null;
+        description: null;
+        image: null;
+        imageAlt: null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "post";
+      title: string | null;
+      pageBuilder: null;
+      seo: {
+        title: string | null;
+        description: string | null;
+        image:
+          | MediaImage
+          | {
+              asset?: SanityImageAssetReference;
+              media?: unknown;
+              hotspot?: SanityImageHotspot;
+              crop?: SanityImageCrop;
+              alt?: string;
+              _type: "image";
+            }
+          | null;
+        imageAlt: string | null;
+        noIndex: false | true;
+        canonicalUrl: string | null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "redirect";
+      title: null;
+      pageBuilder: null;
+      seo: {
+        title: null;
+        description: null;
+        image: null;
+        imageAlt: null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "sanity.fileAsset";
+      title: string | null;
+      pageBuilder: null;
+      seo: {
+        title: string | null;
+        description: null;
+        image: null;
+        imageAlt: string | null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "sanity.imageAsset";
+      title: string | null;
+      pageBuilder: null;
+      seo: {
+        title: string | null;
+        description: null;
+        image: null;
+        imageAlt: string | null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | {
+      _id: "homePage";
+      _type: "siteSettings";
+      title: null;
+      pageBuilder: null;
+      seo: {
+        title: null;
+        description: null;
+        image: null;
+        imageAlt: null;
+        noIndex: false;
+        canonicalUrl: null;
+      };
+    }
+  | null;
 
 // Source: ../src/sanity/queries.ts
 // Variable: PAGE_QUERY
@@ -1170,236 +1349,267 @@ export type PAGE_QUERY_RESULT = {
   _type: "page";
   title: string | null;
   slug: string | null;
-  pageBuilder: Array<{
-    _type: "articleList";
-    _key: string;
-    heading: string | null;
-  } | {
-    _type: "callToAction";
-    _key: string;
-    heading: string | null;
-    body: string | null;
-    actions: Array<{
-      _key: string;
-      label: string | null;
-      destination: {
-        _type: "link";
-        linkType?: "external" | "internal";
-        internalTarget: {
-          _type: "homePage";
-          slug: null;
-        } | {
-          _type: "page";
-          slug: string | null;
-        } | {
-          _type: "post";
-          slug: string | null;
-        } | null;
-        externalUrl?: string;
-        opensInNewTab?: boolean;
-      } | null;
-    }> | null;
-  } | {
-    _type: "faqs";
-    _key: string;
-    heading: string | null;
-    intro: string | null;
-    items: Array<{
-      _key: string;
-      question: string | null;
-      answer: Array<{
-        children?: Array<{
-          marks?: Array<string>;
-          text?: string;
-          _type: "span";
+  pageBuilder: Array<
+    | {
+        _type: "articleList";
+        _key: string;
+        heading: string | null;
+      }
+    | {
+        _type: "callToAction";
+        _key: string;
+        heading: string | null;
+        body: string | null;
+        actions: Array<{
           _key: string;
-        }>;
-        style?: "normal";
-        listItem?: "bullet" | "number";
-        markDefs: Array<{
-          _key: string;
-          _type: "link";
-          linkType?: "external" | "internal";
-          internalTarget: {
-            _type: "homePage";
-            slug: null;
-          } | {
-            _type: "page";
-            slug: string | null;
-          } | {
-            _type: "post";
-            slug: string | null;
+          label: string | null;
+          destination: {
+            _type: "link";
+            linkType?: "external" | "internal";
+            internalTarget:
+              | {
+                  _type: "homePage";
+                  slug: null;
+                }
+              | {
+                  _type: "page";
+                  slug: string | null;
+                }
+              | {
+                  _type: "post";
+                  slug: string | null;
+                }
+              | null;
+            externalUrl?: string;
+            opensInNewTab?: boolean;
           } | null;
-          externalUrl?: string;
-          opensInNewTab?: boolean;
         }> | null;
-        level?: number;
-        _type: "block";
+      }
+    | {
+        _type: "faqs";
         _key: string;
-      }> | null;
-    }> | null;
-  } | {
-    _type: "features";
-    _key: string;
-    heading: string | null;
-    intro: string | null;
-    items: Array<{
-      _key: string;
-      heading: string | null;
-      body: string | null;
-      image: {
-        _type: "mediaImage";
-        asset: {
-          _id: string;
-          metadata: {
-            lqip: string | null;
-          } | null;
-        } | null;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        role?: "decorative" | "informative";
-        alt?: string;
-        caption?: string;
-      } | null;
-      link: {
-        label: string | null;
-        destination: {
-          _type: "link";
-          linkType?: "external" | "internal";
-          internalTarget: {
-            _type: "homePage";
-            slug: null;
-          } | {
-            _type: "page";
-            slug: string | null;
-          } | {
-            _type: "post";
-            slug: string | null;
-          } | null;
-          externalUrl?: string;
-          opensInNewTab?: boolean;
-        } | null;
-      } | null;
-    }> | null;
-  } | {
-    _type: "hero";
-    _key: string;
-    heading: string | null;
-    lede: string | null;
-    alignment: "center" | "start" | null;
-    image: {
-      _type: "mediaImage";
-      asset: {
-        _id: string;
-        metadata: {
-          lqip: string | null;
-        } | null;
-      } | null;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      role?: "decorative" | "informative";
-      alt?: string;
-      caption?: string;
-    } | null;
-    actions: Array<{
-      _key: string;
-      label: string | null;
-      destination: {
-        _type: "link";
-        linkType?: "external" | "internal";
-        internalTarget: {
-          _type: "homePage";
-          slug: null;
-        } | {
-          _type: "page";
-          slug: string | null;
-        } | {
-          _type: "post";
-          slug: string | null;
-        } | null;
-        externalUrl?: string;
-        opensInNewTab?: boolean;
-      } | null;
-    }> | null;
-  } | {
-    _type: "testimonials";
-    _key: string;
-    heading: string | null;
-    intro: string | null;
-    items: Array<{
-      _key: string;
-      quote: string | null;
-      name: string | null;
-      context: string | null;
-      portrait: {
-        _type: "mediaImage";
-        asset: {
-          _id: string;
-          metadata: {
-            lqip: string | null;
-          } | null;
-        } | null;
-        media?: unknown;
-        hotspot?: SanityImageHotspot;
-        crop?: SanityImageCrop;
-        role?: "decorative" | "informative";
-        alt?: string;
-        caption?: string;
-      } | null;
-    }> | null;
-  } | {
-    _type: "textSection";
-    _key: string;
-    heading: string | null;
-    content: Array<{
-      children?: Array<{
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
+        heading: string | null;
+        intro: string | null;
+        items: Array<{
+          _key: string;
+          question: string | null;
+          answer: Array<{
+            children?: Array<{
+              marks?: Array<string>;
+              text?: string;
+              _type: "span";
+              _key: string;
+            }>;
+            style?: "normal";
+            listItem?: "bullet" | "number";
+            markDefs: Array<{
+              _key: string;
+              _type: "link";
+              linkType?: "external" | "internal";
+              internalTarget:
+                | {
+                    _type: "homePage";
+                    slug: null;
+                  }
+                | {
+                    _type: "page";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "post";
+                    slug: string | null;
+                  }
+                | null;
+              externalUrl?: string;
+              opensInNewTab?: boolean;
+            }> | null;
+            level?: number;
+            _type: "block";
+            _key: string;
+          }> | null;
+        }> | null;
+      }
+    | {
+        _type: "features";
         _key: string;
-      }>;
-      style?: "blockquote" | "heading" | "normal" | "subheading";
-      listItem?: "bullet" | "number";
-      markDefs: Array<{
+        heading: string | null;
+        intro: string | null;
+        items: Array<{
+          _key: string;
+          heading: string | null;
+          body: string | null;
+          image: {
+            _type: "mediaImage";
+            asset: {
+              _id: string;
+              metadata: {
+                lqip: string | null;
+              } | null;
+            } | null;
+            media?: unknown;
+            hotspot?: SanityImageHotspot;
+            crop?: SanityImageCrop;
+            role?: "decorative" | "informative";
+            alt?: string;
+            caption?: string;
+          } | null;
+          link: {
+            label: string | null;
+            destination: {
+              _type: "link";
+              linkType?: "external" | "internal";
+              internalTarget:
+                | {
+                    _type: "homePage";
+                    slug: null;
+                  }
+                | {
+                    _type: "page";
+                    slug: string | null;
+                  }
+                | {
+                    _type: "post";
+                    slug: string | null;
+                  }
+                | null;
+              externalUrl?: string;
+              opensInNewTab?: boolean;
+            } | null;
+          } | null;
+        }> | null;
+      }
+    | {
+        _type: "hero";
         _key: string;
-        _type: "link";
-        linkType?: "external" | "internal";
-        internalTarget: {
-          _type: "homePage";
-          slug: null;
-        } | {
-          _type: "page";
-          slug: string | null;
-        } | {
-          _type: "post";
-          slug: string | null;
+        heading: string | null;
+        lede: string | null;
+        alignment: "center" | "start" | null;
+        image: {
+          _type: "mediaImage";
+          asset: {
+            _id: string;
+            metadata: {
+              lqip: string | null;
+            } | null;
+          } | null;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          role?: "decorative" | "informative";
+          alt?: string;
+          caption?: string;
         } | null;
-        externalUrl?: string;
-        opensInNewTab?: boolean;
-      }> | null;
-      level?: number;
-      _type: "block";
-      _key: string;
-    } | {
-      _key: string;
-      _type: "mediaImage";
-      asset: {
-        _id: string;
-        metadata: {
-          lqip: string | null;
-        } | null;
-      } | null;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      role?: "decorative" | "informative";
-      alt?: string;
-      caption?: string;
-      markDefs: null;
-    }> | null;
-  }> | null;
+        actions: Array<{
+          _key: string;
+          label: string | null;
+          destination: {
+            _type: "link";
+            linkType?: "external" | "internal";
+            internalTarget:
+              | {
+                  _type: "homePage";
+                  slug: null;
+                }
+              | {
+                  _type: "page";
+                  slug: string | null;
+                }
+              | {
+                  _type: "post";
+                  slug: string | null;
+                }
+              | null;
+            externalUrl?: string;
+            opensInNewTab?: boolean;
+          } | null;
+        }> | null;
+      }
+    | {
+        _type: "testimonials";
+        _key: string;
+        heading: string | null;
+        intro: string | null;
+        items: Array<{
+          _key: string;
+          quote: string | null;
+          name: string | null;
+          context: string | null;
+          portrait: {
+            _type: "mediaImage";
+            asset: {
+              _id: string;
+              metadata: {
+                lqip: string | null;
+              } | null;
+            } | null;
+            media?: unknown;
+            hotspot?: SanityImageHotspot;
+            crop?: SanityImageCrop;
+            role?: "decorative" | "informative";
+            alt?: string;
+            caption?: string;
+          } | null;
+        }> | null;
+      }
+    | {
+        _type: "textSection";
+        _key: string;
+        heading: string | null;
+        content: Array<
+          | {
+              children?: Array<{
+                marks?: Array<string>;
+                text?: string;
+                _type: "span";
+                _key: string;
+              }>;
+              style?: "blockquote" | "heading" | "normal" | "subheading";
+              listItem?: "bullet" | "number";
+              markDefs: Array<{
+                _key: string;
+                _type: "link";
+                linkType?: "external" | "internal";
+                internalTarget:
+                  | {
+                      _type: "homePage";
+                      slug: null;
+                    }
+                  | {
+                      _type: "page";
+                      slug: string | null;
+                    }
+                  | {
+                      _type: "post";
+                      slug: string | null;
+                    }
+                  | null;
+                externalUrl?: string;
+                opensInNewTab?: boolean;
+              }> | null;
+              level?: number;
+              _type: "block";
+              _key: string;
+            }
+          | {
+              _key: string;
+              _type: "mediaImage";
+              asset: {
+                _id: string;
+                metadata: {
+                  lqip: string | null;
+                } | null;
+              } | null;
+              media?: unknown;
+              hotspot?: SanityImageHotspot;
+              crop?: SanityImageCrop;
+              role?: "decorative" | "informative";
+              alt?: string;
+              caption?: string;
+              markDefs: null;
+            }
+        > | null;
+      }
+  > | null;
   seo: {
     title: string | null;
     description: string | null;
@@ -1419,7 +1629,7 @@ export type PAGE_QUERY_RESULT = {
 
 // Source: ../src/sanity/queries.ts
 // Variable: POST_QUERY
-// Query: *[_type == "post" && slug.current == $slug][0]{  _id,  _type,  title,  "slug": slug.current,  publishedAt,  _updatedAt,  excerpt,  mainImage,  author->{name, role},  topics[]->{title},  "seo": {    "title": coalesce(seo.title, title),    "description": coalesce(seo.description, excerpt),    "image": coalesce(seo.image, mainImage),    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),    "noIndex": seo.searchVisibility == "hidden",    "canonicalUrl": seo.canonicalUrl  }}
+// Query: *[_type == "post" && slug.current == $slug][0]{  _id,  _type,  title,  "slug": slug.current,  publishedAt,  _updatedAt,  excerpt,  mainImage {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  },  author->{name, role},  topics[]->{title},  body []{      ...,      markDefs[]{        ...,        _type == "link" => {    ...,    internalTarget->{ _type, "slug": slug.current }  }      },      _type == "mediaImage" => {    ...,    asset->{ _id, "metadata": metadata{ lqip } }  }    },  "seo": {    "title": coalesce(seo.title, title),    "description": coalesce(seo.description, excerpt),    "image": coalesce(seo.image, mainImage),    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),    "noIndex": seo.searchVisibility == "hidden",    "canonicalUrl": seo.canonicalUrl  }}
 export type POST_QUERY_RESULT = {
   _id: string;
   _type: "post";
@@ -1428,7 +1638,21 @@ export type POST_QUERY_RESULT = {
   publishedAt: string | null;
   _updatedAt: string;
   excerpt: string | null;
-  mainImage: MediaImage | null;
+  mainImage: {
+    _type: "mediaImage";
+    asset: {
+      _id: string;
+      metadata: {
+        lqip: string | null;
+      } | null;
+    } | null;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    role?: "decorative" | "informative";
+    alt?: string;
+    caption?: string;
+  } | null;
   author: {
     name: string | null;
     role: string | null;
@@ -1436,17 +1660,73 @@ export type POST_QUERY_RESULT = {
   topics: Array<{
     title: string | null;
   }> | null;
+  body: Array<
+    | {
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "heading" | "normal" | "subheading";
+        listItem?: "bullet" | "number";
+        markDefs: Array<{
+          _key: string;
+          _type: "link";
+          linkType?: "external" | "internal";
+          internalTarget:
+            | {
+                _type: "homePage";
+                slug: null;
+              }
+            | {
+                _type: "page";
+                slug: string | null;
+              }
+            | {
+                _type: "post";
+                slug: string | null;
+              }
+            | null;
+          externalUrl?: string;
+          opensInNewTab?: boolean;
+        }> | null;
+        level?: number;
+        _type: "block";
+        _key: string;
+      }
+    | {
+        _key: string;
+        _type: "mediaImage";
+        asset: {
+          _id: string;
+          metadata: {
+            lqip: string | null;
+          } | null;
+        } | null;
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        role?: "decorative" | "informative";
+        alt?: string;
+        caption?: string;
+        markDefs: null;
+      }
+  > | null;
   seo: {
     title: string | null;
     description: string | null;
-    image: MediaImage | {
-      asset?: SanityImageAssetReference;
-      media?: unknown;
-      hotspot?: SanityImageHotspot;
-      crop?: SanityImageCrop;
-      alt?: string;
-      _type: "image";
-    } | null;
+    image:
+      | MediaImage
+      | {
+          asset?: SanityImageAssetReference;
+          media?: unknown;
+          hotspot?: SanityImageHotspot;
+          crop?: SanityImageCrop;
+          alt?: string;
+          _type: "image";
+        }
+      | null;
     imageAlt: string | null;
     noIndex: false | true;
     canonicalUrl: string | null;
@@ -1484,26 +1764,34 @@ export type SITEMAP_QUERY_RESULT = {
 // Variable: LLMS_QUERY
 // Query: {  "site": *[_id == "siteSettings"][0]{ siteName, description },  "home": *[_id == "homePage" && seo.searchVisibility != "hidden"][0]{    title,    "description": seo.description  },  "pages": *[_type == "page" && defined(slug.current) && seo.searchVisibility != "hidden"]    | order(title asc) [0...1000]{      title,      "slug": slug.current,      "description": seo.description    },  "posts": *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"      && publishedAt <= now()]    | order(publishedAt desc) [0...1000]{      title,      "slug": slug.current,      publishedAt,      "description": coalesce(seo.description, excerpt)    }}
 export type LLMS_QUERY_RESULT = {
-  site: {
-    siteName: null;
-    description: null;
-  } | {
-    siteName: null;
-    description: string | null;
-  } | {
-    siteName: string | null;
-    description: string | null;
-  } | null;
-  home: {
-    title: null;
-    description: null;
-  } | {
-    title: string | null;
-    description: null;
-  } | {
-    title: string | null;
-    description: string | null;
-  } | null;
+  site:
+    | {
+        siteName: null;
+        description: null;
+      }
+    | {
+        siteName: null;
+        description: string | null;
+      }
+    | {
+        siteName: string | null;
+        description: string | null;
+      }
+    | null;
+  home:
+    | {
+        title: null;
+        description: null;
+      }
+    | {
+        title: string | null;
+        description: null;
+      }
+    | {
+        title: string | null;
+        description: string | null;
+      }
+    | null;
   pages: Array<{
     title: string | null;
     slug: string | null;
@@ -1521,16 +1809,20 @@ export type LLMS_QUERY_RESULT = {
 // Variable: LLMS_FULL_QUERY
 // Query: {  "site": *[_id == "siteSettings"][0]{ siteName, description },  "posts": *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"      && publishedAt <= now()]    | order(publishedAt desc) [0...200]{      title,      "slug": slug.current,      publishedAt,      "description": coalesce(seo.description, excerpt),      author->{ name },      body    }}
 export type LLMS_FULL_QUERY_RESULT = {
-  site: {
-    siteName: null;
-    description: null;
-  } | {
-    siteName: null;
-    description: string | null;
-  } | {
-    siteName: string | null;
-    description: string | null;
-  } | null;
+  site:
+    | {
+        siteName: null;
+        description: null;
+      }
+    | {
+        siteName: null;
+        description: string | null;
+      }
+    | {
+        siteName: string | null;
+        description: string | null;
+      }
+    | null;
   posts: Array<{
     title: string | null;
     slug: string | null;
@@ -1547,16 +1839,15 @@ export type LLMS_FULL_QUERY_RESULT = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "*[_type == \"redirect\" && defined(source)]{\n  source,\n  destination,\n  outcome,\n  \"permanent\": outcome == \"permanent\"\n}": REDIRECTS_QUERY_RESULT;
-    "*[_id == \"siteSettings\"][0]{\n  siteName,\n  description,\n  socialImage,\n  logo,\n  socialLinks,\n  contactEmail,\n  contactPhone,\n  postalAddress\n}": SITE_SETTINGS_QUERY_RESULT;
-    "*[_id == \"homePage\"][0]{\n  _id,\n  _type,\n  title,\n  pageBuilder[]{\n    _type,\n    _key,\n    heading,\n\n    _type == \"hero\" => {\n      lede,\n      alignment,\n      image {\n    ...,\n    asset->{ _id, \"metadata\": metadata{ lqip } }\n  },\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, \"slug\": slug.current }\n  }\n      }\n    },\n\n    _type == \"textSection\" => {\n      content []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == \"link\" => {\n    ...,\n    internalTarget->{ _type, \"slug\": slug.current }\n  }\n      },\n      _type == \"mediaImage\" => {\n    ...,\n    asset->{ _id, \"metadata\": metadata{ lqip } }\n  }\n    }\n    },\n\n    _type == \"features\" => {\n      intro,\n      items[]{\n        _key,\n        heading,\n        body,\n        image {\n    ...,\n    asset->{ _id, \"metadata\": metadata{ lqip } }\n  },\n        link{\n          label,\n          destination {\n    ...,\n    internalTarget->{ _type, \"slug\": slug.current }\n  }\n        }\n      }\n    },\n\n    _type == \"faqs\" => {\n      intro,\n      items[]{\n        _key,\n        question,\n        answer []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == \"link\" => {\n    ...,\n    internalTarget->{ _type, \"slug\": slug.current }\n  }\n      },\n      _type == \"mediaImage\" => {\n    ...,\n    asset->{ _id, \"metadata\": metadata{ lqip } }\n  }\n    }\n      }\n    },\n\n    _type == \"testimonials\" => {\n      intro,\n      items[]{\n        _key,\n        quote,\n        name,\n        context,\n        portrait {\n    ...,\n    asset->{ _id, \"metadata\": metadata{ lqip } }\n  }\n      }\n    },\n\n    _type == \"callToAction\" => {\n      body,\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, \"slug\": slug.current }\n  }\n      }\n    }\n  },\n  \"seo\": {\n    \"title\": coalesce(seo.title, title),\n    \"description\": coalesce(seo.description, excerpt),\n    \"image\": coalesce(seo.image, mainImage),\n    \"imageAlt\": coalesce(seo.image.alt, mainImage.alt, title),\n    \"noIndex\": seo.searchVisibility == \"hidden\",\n    \"canonicalUrl\": seo.canonicalUrl\n  }\n}": HOME_PAGE_QUERY_RESULT;
-    "*[_type == \"page\" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  \"slug\": slug.current,\n  pageBuilder[]{\n    _type,\n    _key,\n    heading,\n\n    _type == \"hero\" => {\n      lede,\n      alignment,\n      image {\n    ...,\n    asset->{ _id, \"metadata\": metadata{ lqip } }\n  },\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, \"slug\": slug.current }\n  }\n      }\n    },\n\n    _type == \"textSection\" => {\n      content []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == \"link\" => {\n    ...,\n    internalTarget->{ _type, \"slug\": slug.current }\n  }\n      },\n      _type == \"mediaImage\" => {\n    ...,\n    asset->{ _id, \"metadata\": metadata{ lqip } }\n  }\n    }\n    },\n\n    _type == \"features\" => {\n      intro,\n      items[]{\n        _key,\n        heading,\n        body,\n        image {\n    ...,\n    asset->{ _id, \"metadata\": metadata{ lqip } }\n  },\n        link{\n          label,\n          destination {\n    ...,\n    internalTarget->{ _type, \"slug\": slug.current }\n  }\n        }\n      }\n    },\n\n    _type == \"faqs\" => {\n      intro,\n      items[]{\n        _key,\n        question,\n        answer []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == \"link\" => {\n    ...,\n    internalTarget->{ _type, \"slug\": slug.current }\n  }\n      },\n      _type == \"mediaImage\" => {\n    ...,\n    asset->{ _id, \"metadata\": metadata{ lqip } }\n  }\n    }\n      }\n    },\n\n    _type == \"testimonials\" => {\n      intro,\n      items[]{\n        _key,\n        quote,\n        name,\n        context,\n        portrait {\n    ...,\n    asset->{ _id, \"metadata\": metadata{ lqip } }\n  }\n      }\n    },\n\n    _type == \"callToAction\" => {\n      body,\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, \"slug\": slug.current }\n  }\n      }\n    }\n  },\n  \"seo\": {\n    \"title\": coalesce(seo.title, title),\n    \"description\": coalesce(seo.description, excerpt),\n    \"image\": coalesce(seo.image, mainImage),\n    \"imageAlt\": coalesce(seo.image.alt, mainImage.alt, title),\n    \"noIndex\": seo.searchVisibility == \"hidden\",\n    \"canonicalUrl\": seo.canonicalUrl\n  }\n}": PAGE_QUERY_RESULT;
-    "*[_type == \"post\" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  \"slug\": slug.current,\n  publishedAt,\n  _updatedAt,\n  excerpt,\n  mainImage,\n  author->{name, role},\n  topics[]->{title},\n  \"seo\": {\n    \"title\": coalesce(seo.title, title),\n    \"description\": coalesce(seo.description, excerpt),\n    \"image\": coalesce(seo.image, mainImage),\n    \"imageAlt\": coalesce(seo.image.alt, mainImage.alt, title),\n    \"noIndex\": seo.searchVisibility == \"hidden\",\n    \"canonicalUrl\": seo.canonicalUrl\n  }\n}": POST_QUERY_RESULT;
-    "*[_type == \"page\" && defined(slug.current)] | order(_id) [0...1000].slug.current": PAGE_SLUGS_QUERY_RESULT;
-    "*[_type == \"post\" && defined(slug.current)] | order(_id) [0...1000].slug.current": POST_SLUGS_QUERY_RESULT;
-    "{\n  \"home\": *[_id == \"homePage\" && seo.searchVisibility != \"hidden\"][0]{ _updatedAt },\n  \"pages\": *[_type == \"page\" && defined(slug.current) && seo.searchVisibility != \"hidden\"]\n    | order(_id) [0...5000]{ \"slug\": slug.current, _updatedAt },\n  \"posts\": *[_type == \"post\" && defined(slug.current) && seo.searchVisibility != \"hidden\"\n      && publishedAt <= now()]\n    | order(_id) [0...5000]{ \"slug\": slug.current, _updatedAt }\n}": SITEMAP_QUERY_RESULT;
-    "{\n  \"site\": *[_id == \"siteSettings\"][0]{ siteName, description },\n  \"home\": *[_id == \"homePage\" && seo.searchVisibility != \"hidden\"][0]{\n    title,\n    \"description\": seo.description\n  },\n  \"pages\": *[_type == \"page\" && defined(slug.current) && seo.searchVisibility != \"hidden\"]\n    | order(title asc) [0...1000]{\n      title,\n      \"slug\": slug.current,\n      \"description\": seo.description\n    },\n  \"posts\": *[_type == \"post\" && defined(slug.current) && seo.searchVisibility != \"hidden\"\n      && publishedAt <= now()]\n    | order(publishedAt desc) [0...1000]{\n      title,\n      \"slug\": slug.current,\n      publishedAt,\n      \"description\": coalesce(seo.description, excerpt)\n    }\n}": LLMS_QUERY_RESULT;
-    "{\n  \"site\": *[_id == \"siteSettings\"][0]{ siteName, description },\n  \"posts\": *[_type == \"post\" && defined(slug.current) && seo.searchVisibility != \"hidden\"\n      && publishedAt <= now()]\n    | order(publishedAt desc) [0...200]{\n      title,\n      \"slug\": slug.current,\n      publishedAt,\n      \"description\": coalesce(seo.description, excerpt),\n      author->{ name },\n      body\n    }\n}": LLMS_FULL_QUERY_RESULT;
+    '*[_type == "redirect" && defined(source)]{\n  source,\n  destination,\n  outcome,\n  "permanent": outcome == "permanent"\n}': REDIRECTS_QUERY_RESULT;
+    '*[_id == "siteSettings"][0]{\n  siteName,\n  description,\n  socialImage,\n  logo,\n  socialLinks,\n  contactEmail,\n  contactPhone,\n  postalAddress\n}': SITE_SETTINGS_QUERY_RESULT;
+    '*[_id == "homePage"][0]{\n  _id,\n  _type,\n  title,\n  pageBuilder[]{\n    _type,\n    _key,\n    heading,\n\n    _type == "hero" => {\n      lede,\n      alignment,\n      image {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      }\n    },\n\n    _type == "textSection" => {\n      content []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    }\n    },\n\n    _type == "features" => {\n      intro,\n      items[]{\n        _key,\n        heading,\n        body,\n        image {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n        link{\n          label,\n          destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n        }\n      }\n    },\n\n    _type == "faqs" => {\n      intro,\n      items[]{\n        _key,\n        question,\n        answer []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    }\n      }\n    },\n\n    _type == "testimonials" => {\n      intro,\n      items[]{\n        _key,\n        quote,\n        name,\n        context,\n        portrait {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n      }\n    },\n\n    _type == "callToAction" => {\n      body,\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      }\n    }\n  },\n  "seo": {\n    "title": coalesce(seo.title, title),\n    "description": coalesce(seo.description, excerpt),\n    "image": coalesce(seo.image, mainImage),\n    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),\n    "noIndex": seo.searchVisibility == "hidden",\n    "canonicalUrl": seo.canonicalUrl\n  }\n}': HOME_PAGE_QUERY_RESULT;
+    '*[_type == "page" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  pageBuilder[]{\n    _type,\n    _key,\n    heading,\n\n    _type == "hero" => {\n      lede,\n      alignment,\n      image {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      }\n    },\n\n    _type == "textSection" => {\n      content []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    }\n    },\n\n    _type == "features" => {\n      intro,\n      items[]{\n        _key,\n        heading,\n        body,\n        image {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n        link{\n          label,\n          destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n        }\n      }\n    },\n\n    _type == "faqs" => {\n      intro,\n      items[]{\n        _key,\n        question,\n        answer []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    }\n      }\n    },\n\n    _type == "testimonials" => {\n      intro,\n      items[]{\n        _key,\n        quote,\n        name,\n        context,\n        portrait {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n      }\n    },\n\n    _type == "callToAction" => {\n      body,\n      actions[]{\n        _key,\n        label,\n        destination {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      }\n    }\n  },\n  "seo": {\n    "title": coalesce(seo.title, title),\n    "description": coalesce(seo.description, excerpt),\n    "image": coalesce(seo.image, mainImage),\n    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),\n    "noIndex": seo.searchVisibility == "hidden",\n    "canonicalUrl": seo.canonicalUrl\n  }\n}': PAGE_QUERY_RESULT;
+    '*[_type == "post" && slug.current == $slug][0]{\n  _id,\n  _type,\n  title,\n  "slug": slug.current,\n  publishedAt,\n  _updatedAt,\n  excerpt,\n  mainImage {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  },\n  author->{name, role},\n  topics[]->{title},\n  body []{\n      ...,\n      markDefs[]{\n        ...,\n        _type == "link" => {\n    ...,\n    internalTarget->{ _type, "slug": slug.current }\n  }\n      },\n      _type == "mediaImage" => {\n    ...,\n    asset->{ _id, "metadata": metadata{ lqip } }\n  }\n    },\n  "seo": {\n    "title": coalesce(seo.title, title),\n    "description": coalesce(seo.description, excerpt),\n    "image": coalesce(seo.image, mainImage),\n    "imageAlt": coalesce(seo.image.alt, mainImage.alt, title),\n    "noIndex": seo.searchVisibility == "hidden",\n    "canonicalUrl": seo.canonicalUrl\n  }\n}': POST_QUERY_RESULT;
+    '*[_type == "page" && defined(slug.current)] | order(_id) [0...1000].slug.current': PAGE_SLUGS_QUERY_RESULT;
+    '*[_type == "post" && defined(slug.current)] | order(_id) [0...1000].slug.current': POST_SLUGS_QUERY_RESULT;
+    '{\n  "home": *[_id == "homePage" && seo.searchVisibility != "hidden"][0]{ _updatedAt },\n  "pages": *[_type == "page" && defined(slug.current) && seo.searchVisibility != "hidden"]\n    | order(_id) [0...5000]{ "slug": slug.current, _updatedAt },\n  "posts": *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"\n      && publishedAt <= now()]\n    | order(_id) [0...5000]{ "slug": slug.current, _updatedAt }\n}': SITEMAP_QUERY_RESULT;
+    '{\n  "site": *[_id == "siteSettings"][0]{ siteName, description },\n  "home": *[_id == "homePage" && seo.searchVisibility != "hidden"][0]{\n    title,\n    "description": seo.description\n  },\n  "pages": *[_type == "page" && defined(slug.current) && seo.searchVisibility != "hidden"]\n    | order(title asc) [0...1000]{\n      title,\n      "slug": slug.current,\n      "description": seo.description\n    },\n  "posts": *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"\n      && publishedAt <= now()]\n    | order(publishedAt desc) [0...1000]{\n      title,\n      "slug": slug.current,\n      publishedAt,\n      "description": coalesce(seo.description, excerpt)\n    }\n}': LLMS_QUERY_RESULT;
+    '{\n  "site": *[_id == "siteSettings"][0]{ siteName, description },\n  "posts": *[_type == "post" && defined(slug.current) && seo.searchVisibility != "hidden"\n      && publishedAt <= now()]\n    | order(publishedAt desc) [0...200]{\n      title,\n      "slug": slug.current,\n      publishedAt,\n      "description": coalesce(seo.description, excerpt),\n      author->{ name },\n      body\n    }\n}': LLMS_FULL_QUERY_RESULT;
   }
 }
-

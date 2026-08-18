@@ -240,9 +240,10 @@ export const POST_QUERY = defineQuery(`*[_type == "post" && slug.current == $slu
   publishedAt,
   _updatedAt,
   excerpt,
-  mainImage,
+  mainImage ${IMAGE_PROJECTION},
   author->{name, role},
   topics[]->{title},
+  body ${RICH_TEXT_PROJECTION},
   ${SEO_PROJECTION}
 }`)
 
