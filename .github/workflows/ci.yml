@@ -54,6 +54,10 @@ jobs:
   check:
     name: Typecheck, lint, test, build
     runs-on: ubuntu-latest
+    # Comfortably above the ~55s this job takes. Every job here carries one:
+    # GitHub's default is six hours, which is how a stalled step went unnoticed
+    # long enough to need cancelling by hand.
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -83,6 +87,7 @@ jobs:
   studio:
     name: Studio build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -100,6 +105,7 @@ jobs:
   accessibility:
     name: Accessibility (axe-core)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -130,13 +136,26 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
 
-      # `--with-deps` installs the system libraries Chromium needs on a bare
-      # runner. Skipped when the browser is cached, but the system packages are
-      # not cached, so they are installed either way.
-      - run: pnpm exec playwright install --with-deps chromium
+      # Browser only — no `--with-deps`, and no `install-deps` on the cached
+      # path either. Both of those shell out to `apt-get`, and that call was the
+      # least predictable thing in this pipeline: measured at 21s, 22s and 141s
+      # on three consecutive green runs, then hung for over twenty minutes on a
+      # fourth and had to be cancelled by hand. The tests it prepares take
+      # thirty seconds.
+      #
+      # GitHub's `ubuntu-latest` image ships Chrome, Chromium, Edge and Firefox
+      # preinstalled, so the shared libraries Playwright's bundled Chromium
+      # needs are already present. Nothing here installs them.
+      #
+      # Runner images do change. If Chromium ever fails to launch, Playwright
+      # says so in the first seconds with the exact `install-deps` command to
+      # run — a fast, self-describing failure instead of a silent stall. Put the
+      # apt call back if that happens, but put it on *both* paths and give it a
+      # `timeout-minutes`: system packages are not cached, so a cache hit and a
+      # cache miss need exactly the same libraries, and the old asymmetry only
+      # ever meant the apt call ran on the common path rather than the rare one.
+      - run: pnpm exec playwright install chromium
         if: steps.pw-cache.outputs.cache-hit != 'true'
-      - run: pnpm exec playwright install-deps chromium
-        if: steps.pw-cache.outputs.cache-hit == 'true'
 
       - run: pnpm test:a11y
 
@@ -158,6 +177,7 @@ jobs:
   performance:
     name: Core Web Vitals (Lighthouse)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
