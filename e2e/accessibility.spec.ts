@@ -101,3 +101,49 @@ for (const route of SCANNED_ROUTES) {
     await expect(page.locator('main')).toHaveCount(1)
   })
 }
+
+/** Headings descend without skipping.
+ *
+ * The third structural rule from `.claude/rules/routes.md`, and the one with no
+ * automated cover until now. axe has `heading-order`, but it is a best-practice
+ * rule rather than a WCAG success criterion, so the tag filter above excludes
+ * it — deliberately, since that filter keeps the gate to the standard the
+ * project actually committed to.
+ *
+ * That left a real gap the moment WP12 started rendering headings. The levels
+ * are *derived*: a section's own heading comes from `headingOutline`, and a
+ * heading inside its prose comes from `richTextHeadingLevel` one level below
+ * that. Two derivations that each look right in isolation can still produce an
+ * `h2` followed by an `h4` on the page, and nothing else in this suite notices.
+ *
+ * This is not hypothetical. Seeding the dataset for WP12 chunk 2 produced
+ * exactly that skip, from a rich text field whose first heading was a
+ * "Subheading" with no "Heading" above it — an arrangement the Studio's
+ * `describeHeadingOutlineProblem` rejects, and which reached the dataset only
+ * because content written through the API bypasses Studio validation. The page
+ * rendered without any visible sign of being wrong.
+ */
+for (const route of SCANNED_ROUTES) {
+  test(`${route.name} (${route.path}) has no skipped heading levels`, async ({
+    page,
+  }) => {
+    await page.goto(route.path)
+
+    const levels = await page
+      .locator('main :is(h1, h2, h3, h4, h5, h6)')
+      .evaluateAll((nodes) => nodes.map((node) => Number(node.tagName[1])))
+
+    /* A page with one heading or none cannot skip, and asserting otherwise
+       would fail the routes that are still shells. */
+    for (let index = 1; index < levels.length; index++) {
+      const previous = levels[index - 1] as number
+      const current = levels[index] as number
+
+      expect(
+        current - previous,
+        `heading ${index + 1} jumps from h${previous} to h${current} — ` +
+          'the outline derived a level with nothing above it',
+      ).toBeLessThanOrEqual(1)
+    }
+  })
+}

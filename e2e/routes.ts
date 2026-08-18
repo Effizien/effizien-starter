@@ -17,6 +17,16 @@ export const SCANNED_ROUTES = [
   { path: '/about', name: 'page with no SEO overrides' },
   { path: '/pricing', name: 'page with SEO overrides' },
   { path: '/thank-you', name: 'page hidden from search' },
+  /* Added in WP12 chunk 2, and it should have been here sooner. This is the
+     only seeded page whose first section declares no heading, so it is the only
+     one where the `h1` comes from the document title rather than from a section
+     — the branch of `headingOutline` that the obvious wrong implementation gets
+     wrong. Every other page here exercises the same branch as the one above it.
+
+     Its absence was not theoretical: a skipped heading level was introduced on
+     this exact page while seeding, and the whole suite stayed green because
+     nothing scanned it. */
+  { path: '/why-flat-roofs-fail', name: 'page whose h1 comes from the title' },
   { path: '/blog/how-long-a-flat-roof-lasts', name: 'article' },
 ] as const
 
