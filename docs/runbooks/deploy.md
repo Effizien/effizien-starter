@@ -42,6 +42,13 @@ write down which one was red and why you overrode it.
 Nothing else is required. There is no `vercel.json` in this repository and no deploy
 command to run — the Git integration owns it.
 
+**Every step in these runbooks is written for the Vercel dashboard, deliberately.** Not
+because the CLI is unavailable — it may well be installed — but because a runbook is
+followed under pressure, sometimes by someone who did not build the site, sometimes from a
+phone. The dashboard needs no install, no `vercel login` and no `vercel link`; the CLI
+needs all three, and discovers that it is missing one at the worst moment. Where the CLI is
+genuinely faster it is offered as an alternative with its prerequisites named.
+
 ---
 
 ## 2 · Watch the build
