@@ -80,6 +80,13 @@ The response tells you which of the next sections to read. Skip the others.
 
 8. If nothing deployed recently, the code did not change, so something it depends on did.
    Read the runtime logs: Vercel → the deployment → **Runtime Logs**.
+
+   > **If you reach for the CLI instead, check two things first.** `vercel logs` is faster
+   > than clicking once it works, but the CLI needs `vercel login` *and* `vercel link` —
+   > this repository is not linked, there is no `.vercel/` directory, and a fresh clone
+   > never has one. Logged out or unlinked, the command stops at an interactive prompt,
+   > which is two minutes you do not have and the reason every step here is written for
+   > the dashboard. Set both up on a calm day if you want the CLI available on a bad one.
    **Expected:** the error naming the failure. The realistic causes, in order:
 
    | In the logs | Cause |
