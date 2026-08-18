@@ -19,3 +19,7 @@ const builder = createImageUrlBuilder({ projectId, dataset })
 export function urlFor(source: SanityImageSource) {
   return builder.image(source)
 }
+
+/** Asset ids are parsed by `./asset-id`, deliberately kept out of this file:
+ *  reading dimensions out of a string needs no project configuration, and this
+ *  module throws at import time when the environment is not set up. */
