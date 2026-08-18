@@ -144,13 +144,23 @@ The whole dataset, documents and assets, as one gzipped tarball.
 **On the Free plan this project has a three-day window and no automatic backup.** That is
 enough for "an editor broke a page this morning" and nothing else.
 
+**On a small marketing site that is a reasonable place to stand, and it is the deliberate
+choice here.** What this content is matters: marketing copy is recreatable, usually exists
+in a document or on the site being replaced, and total loss costs hours of rewriting
+rather than an unrecoverable business record. A site holding orders, submissions or
+anything a customer typed would not get the same answer. Option 1 below covers the
+likeliest losses, and option 3 is the right move when clients get big enough to fund
+it.
+
 Nothing in this repository schedules an export. Three ways to close it, in order of cost:
 
 1. **Run the export by hand before anything risky** — a content migration, a schema
    change, a bulk edit. Free, and it covers the cases most likely to cause loss.
 2. **Schedule it** — a cron job or scheduled GitHub Action running step 8 and keeping the
-   tarball somewhere off Sanity. Needs a write-scoped token stored as a secret, which is a
-   deliberate decision: this repository ships a Viewer-scoped read token only.
+   tarball somewhere off Sanity. **An export only reads**, so a Viewer-scoped token is
+   enough; the CLI takes it from a login session or `SANITY_AUTH_TOKEN`, and `export` has
+   no `--token` flag because it is not a write. *Importing* is the write, which is why
+   `import` does take `-t`.
 3. **Upgrade the plan** — Growth takes retention from 3 days to 90 and removes most of the
    urgency.
 

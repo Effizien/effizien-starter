@@ -68,6 +68,12 @@ window and no automatic backup, which is enough for "an editor broke a page this
 and nothing else. A client who believes their content is backed up when it is not has been
 told something false, and this is the table where that gets corrected.
 
+**Three days with no scheduled export is a defensible answer for a small marketing site**,
+and on this starter it is the deliberate one — marketing copy is recreatable, and an
+export taken by hand before anything risky covers the losses that actually happen. It stops
+being defensible the moment a site holds something a customer typed: an order, an enquiry,
+a submission. Say which of the two this site is, in writing, here.
+
 Confirm the real number rather than copying this one:
 
 ```bash
