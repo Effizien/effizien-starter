@@ -1,6 +1,17 @@
 import { Fragment, type ReactNode } from 'react'
 
+import { JsonLd } from '@/components/json-ld'
+import {
+  CallToAction,
+  type CallToActionValue,
+} from '@/components/page-builder/call-to-action'
+import { Faqs, type FaqsValue } from '@/components/page-builder/faqs'
+import { Features, type FeaturesValue } from '@/components/page-builder/features'
 import { Hero, type HeroValue } from '@/components/page-builder/hero'
+import {
+  Testimonials,
+  type TestimonialsValue,
+} from '@/components/page-builder/testimonials'
 import {
   TextSection,
   type TextSectionValue,
@@ -9,6 +20,7 @@ import {
   headingOutline,
   type SectionHeadingLevels,
 } from '@/lib/page-builder/heading-outline'
+import { buildFaqPage } from '@/lib/seo/json-ld/build'
 
 /** A page, rendered from the sections an editor composed.
  *
@@ -53,12 +65,11 @@ export type SectionValue = {
 
 type SectionRenderer = (section: SectionValue, levels: SectionHeadingLevels) => ReactNode
 
-/** The base block library. Six types; two of them render today.
+/** The base block library, complete: all six types render.
  *
- *  `features`, `faqs`, `testimonials` and `callToAction` arrive in WP12 chunk 3.
- *  Until then they are queried, counted by the outline, and skipped below — the
- *  page is incomplete rather than broken, which is the right failure for a
- *  half-built renderer. */
+ *  `articleList` (marketing) and the catalogue blocks are contributed by the
+ *  active archetype in WP12 chunk 5, from their own module — never imported
+ *  here, for the reason in this file's header. */
 const BLOCKS: Record<string, SectionRenderer> = {
   /* The cast is confined to this table. Each component then declares exactly
      the shape it needs, rather than every block accepting an unknown. */
@@ -66,7 +77,36 @@ const BLOCKS: Record<string, SectionRenderer> = {
   textSection: (section, levels) => (
     <TextSection value={section as TextSectionValue} levels={levels} />
   ),
+  features: (section, levels) => (
+    <Features value={section as FeaturesValue} levels={levels} />
+  ),
+  faqs: (section, levels) => <Faqs value={section as FaqsValue} levels={levels} />,
+  testimonials: (section, levels) => (
+    <Testimonials value={section as TestimonialsValue} levels={levels} />
+  ),
+  callToAction: (section, levels) => (
+    <CallToAction value={section as CallToActionValue} levels={levels} />
+  ),
 }
+
+/** Every FAQ entry on the page, in reading order, as one list.
+ *
+ *  ## One `FAQPage`, not one per block
+ *
+ *  `FAQPage` describes *the page*, so a page carrying two FAQ sections still
+ *  states a single object with every question in it. Emitting the markup from
+ *  inside the block component would be a tighter coupling to "is this visible",
+ *  but it would also emit two `FAQPage` entities for one URL, which is
+ *  malformed. Deriving it here from the same array that renders keeps the
+ *  coupling: if the block is not in `sections`, the questions are not in the
+ *  markup either.
+ *
+ *  `buildFaqPage` returns null when nothing survives — an FAQ block an editor
+ *  left empty contributes no markup rather than an empty object. */
+const faqItemsOnPage = (sections: readonly SectionValue[]) =>
+  sections
+    .filter((section): section is FaqsValue => section._type === 'faqs')
+    .flatMap((section) => section.items ?? [])
 
 /** What a section falls back to if the outline somehow has no entry for its
  *  key. Unreachable in practice — the outline is built from the same array —
@@ -83,16 +123,24 @@ type PageBuilderProps = {
 
 export function PageBuilder({ sections, documentTitle }: PageBuilderProps) {
   const outline = headingOutline(sections)
+  const rendered = sections ?? []
 
   return (
     <>
+      {/* Wired here and nowhere earlier. `buildFaqPage` has existed since WP5
+          and was deliberately left unwired, because structured data describing
+          questions a visitor cannot see on the page is a manual action rather
+          than a missed opportunity. The block renders as of this chunk, so the
+          markup is now true. */}
+      <JsonLd data={buildFaqPage(faqItemsOnPage(rendered))} />
+
       {outline.documentTitleIsPageHeading && documentTitle ? (
         <h1 className="max-w-2xl text-balance font-semibold text-4xl tracking-tight">
           {documentTitle}
         </h1>
       ) : null}
 
-      {(sections ?? []).map((section) => {
+      {rendered.map((section) => {
         const render = BLOCKS[section._type]
         if (!render) return null
 
