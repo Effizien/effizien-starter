@@ -32,6 +32,14 @@ export const SCANNED_ROUTES = [
      because it is the only page exercising a block contributed by the
      archetype rather than by the base library. */
   { path: '/blog', name: 'blog index' },
+  /* Two pages where a block other than a hero is the *first* section, so that
+     block claims the `h1` and everything inside it shifts up a level. On `/faq`
+     the questions land at `h2` rather than `h3`; on `/products` the item names
+     do. Nothing else in this list exercises that, and it is the branch of
+     `headingOutline` most likely to be broken by a block deciding its own
+     level. */
+  { path: '/faq', name: 'page opening with an FAQ block' },
+  { path: '/products', name: 'page opening with a list block' },
   { path: '/blog/how-long-a-flat-roof-lasts', name: 'article' },
 ] as const
 
@@ -46,6 +54,17 @@ export const GONE_ROUTE = { path: '/2019-catalogue', name: 'removed page (410)' 
  *  these two lists are what prove the coupling in both directions: present where
  *  the questions are on the page, absent everywhere else. Both depend on the
  *  seeded dataset in the same way every path in this file does. */
-export const FAQ_ROUTE = { path: '/pricing', name: 'page with an FAQ block' } as const
+export const FAQ_ROUTES = [
+  { path: '/pricing', name: 'page with an FAQ block below a hero' },
+  /* A second one, deliberately. `FAQPage` is emitted by the block rendering
+     rather than by the route, and one example cannot tell the difference
+     between that and a rule hardcoded for `/pricing`. */
+  { path: '/faq', name: 'page opening with an FAQ block' },
+] as const
 
-export const ROUTES_WITHOUT_FAQS = ['/', '/about', '/why-flat-roofs-fail'] as const
+export const ROUTES_WITHOUT_FAQS = [
+  '/',
+  '/about',
+  '/why-flat-roofs-fail',
+  '/products',
+] as const
