@@ -65,7 +65,16 @@ export function ArticleMeta({ publishedAt, author, topics }: ArticleMetaProps) {
            first item — the same reason the features block uses one. */
         <ul className="flex flex-wrap gap-2">
           {named.map((title) => (
-            <li key={title} className="rounded-md bg-muted px-2 py-0.5 text-xs">
+            /* `text-foreground`, not the `text-muted-foreground` inherited from
+               the wrapper. Muted text on a muted background is the pairing the
+               token set does not guarantee, and axe caught it here at 
+               serious severity the first time an article had a topic to show.
+               A chip is small text, so it is exactly where contrast matters
+               most. */
+            <li
+              key={title}
+              className="rounded-md bg-muted px-2 py-0.5 text-foreground text-xs"
+            >
               {title}
             </li>
           ))}
