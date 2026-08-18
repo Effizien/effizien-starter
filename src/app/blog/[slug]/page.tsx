@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { ArticleMeta } from '@/components/article-meta'
 import { JsonLd } from '@/components/json-ld'
+import { PortableTextRenderer } from '@/components/portable-text'
+import { SanityImage } from '@/components/sanity-image'
 import { ROUTE } from '@/lib/routes'
 import { buildArticle, buildBreadcrumbList } from '@/lib/seo/json-ld/build'
 import { buildMetadata } from '@/lib/seo/metadata'
@@ -10,7 +13,10 @@ import { POST_QUERY, POST_SLUGS_QUERY, SITE_SETTINGS_QUERY } from '@/sanity/quer
 
 /** A single article.
  *
- * ⚠️ **A route shell** — see `src/app/page.tsx`.
+ * The body is Portable Text, rendered by the same component every rich text
+ * field on the site goes through. It is the one place that renderer is used
+ * *outside* a page builder, which is what its `childLevel` default is for: an
+ * article's `h1` is the headline, so a "Heading" inside the body is an `h2`.
  *
  * **Marketing archetype only.** A clone that sets `ARCHETYPE` to `catalog` or
  * `docs` in `studio/archetype.ts` has no `post` type, so this route deletes
@@ -72,7 +78,7 @@ export default async function PostPage({ params }: PostParams) {
   if (!post) notFound()
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-2xl flex-col justify-center gap-8 px-6 py-16">
+    <main className="mx-auto flex max-w-2xl flex-col gap-8 px-6 py-16">
       {/* Derived from the article, not from its SEO overrides — see the rule at
           the top of `lib/seo/json-ld/build.ts`. */}
       <JsonLd data={buildArticle(post, ROUTE.post(slug))} />
@@ -84,16 +90,41 @@ export default async function PostPage({ params }: PostParams) {
           { name: post.title ?? 'Article' },
         ])}
       />
-      <article className="flex flex-col gap-3">
-        <h1 className="text-balance font-semibold text-4xl tracking-tight">
-          {post.title}
-        </h1>
-        {post.excerpt ? (
-          <p className="text-pretty text-lg text-muted-foreground">{post.excerpt}</p>
+      <article className="flex flex-col gap-8">
+        <header className="flex flex-col gap-4">
+          {/* The headline is always the article's `h1`. Unlike a page builder
+              there is no section that could claim it, so nothing is derived
+              here — see `PageBuilder` for the case where it is. */}
+          <h1 className="text-balance font-semibold text-4xl tracking-tight">
+            {post.title}
+          </h1>
+
+          {post.excerpt ? (
+            <p className="text-pretty text-lg text-muted-foreground">{post.excerpt}</p>
+          ) : null}
+
+          <ArticleMeta
+            publishedAt={post.publishedAt}
+            author={post.author}
+            topics={post.topics}
+          />
+        </header>
+
+        {post.mainImage ? (
+          <SanityImage
+            value={post.mainImage}
+            width={1200}
+            sizes="(min-width: 768px) 768px, 100vw"
+            priority
+            className="w-full"
+          />
         ) : null}
-        <p className="text-muted-foreground text-sm">
-          The article body renders in a later work package.
-        </p>
+
+        {/* `childLevel` is left at its default of 2: the headline above is the
+            page's `h1`, so the body's "Heading" style is an `h2` and its
+            "Subheading" an `h3`. `to-markdown.ts` makes the same assumption for
+            `llms-full.txt`, which is why both stay in step. */}
+        <PortableTextRenderer value={post.body} className="flex flex-col gap-4" />
       </article>
     </main>
   )

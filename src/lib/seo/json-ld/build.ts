@@ -42,8 +42,16 @@ import type {
  * inputs let all five compile everywhere and cost nothing.
  */
 
+/** An image as either projection shape.
+ *
+ * A query that leaves the asset as a reference gives `_ref`; one that expands it
+ * with `asset->` to reach `metadata.lqip` gives `_id` instead. Both are the same
+ * asset and `urlFor` accepts either, but this builder used to test `_ref` alone —
+ * so the first query to expand an image for the renderer would have dropped that
+ * image from the structured data, with nothing failing and nothing to see. WP12
+ * chunk 4 expands `mainImage` for exactly that reason. */
 type ImageInput = {
-  readonly asset?: { readonly _ref?: string } | null
+  readonly asset?: { readonly _ref?: string; readonly _id?: string } | null
   readonly hotspot?: unknown
   readonly crop?: unknown
 } | null
@@ -58,7 +66,7 @@ function imageObject(
   width: number,
   height: number,
 ): ImageObject | undefined {
-  if (!image?.asset?._ref) return undefined
+  if (!image?.asset?._ref && !image?.asset?._id) return undefined
 
   return {
     '@type': 'ImageObject',
