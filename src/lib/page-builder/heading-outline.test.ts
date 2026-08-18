@@ -70,11 +70,37 @@ describe('headingOutline — who supplies the h1', () => {
     /* Sanity hides click-to-edit metadata in these characters. A heading made
        only of them is visually empty but not string-empty, so a naive check
        makes every heading look present in draft mode and nowhere else — a bug
-       that appears only for the editor, which is the worst kind. */
-    const outline = headingOutline([section('a', '\u{E0001}\u{E0020}'), section('b')])
+       that appears only for the editor, which is the worst kind.
+
+       ⚠️ **The characters below were wrong until WP12**, and this is the one
+       fixture in this file that changed. It used to read `\u{E0001}\u{E0020}` —
+       the Unicode Tags block, which Sanity's encoder never emits. The test
+       passed because the implementation stripped the same invented range, so
+       the two agreed with each other and both disagreed with the encoder.
+
+       These are the real ones: `@sanity/client` encodes via `@vercel/stega`,
+       whose alphabet is U+200B, U+200C, U+200D and U+FEFF, matched in runs of
+       four or more. Written as escapes because they are zero-width and would
+       otherwise be invisible here — which is exactly what made the original
+       mistake survive review. */
+    const stega = '​‌‍﻿'
+    const outline = headingOutline([section('a', stega), section('b')])
 
     expect(outline.documentTitleIsPageHeading).toBe(true)
     expect(outline.levels.a?.section).toBeNull()
+  })
+
+  it('treats a whitespace heading carrying stega metadata as no heading', () => {
+    /* The case the wrong character range actually broke: in Presentation this
+       section claimed the page's h1, rendered it empty, and left the document
+       title as ordinary text. Neither of the two tests above catches it —
+       whitespace alone is not encoded, and a stega-only string is not what an
+       editor produces. A half-filled heading in draft mode is. */
+    const outline = headingOutline([section('a', `   ​‌‍﻿`), section('b', 'Second')])
+
+    expect(outline.documentTitleIsPageHeading).toBe(true)
+    expect(outline.levels.a?.section).toBeNull()
+    expect(outline.levels.b?.section).toBe(2)
   })
 
   it('has the document supply the h1 when there are no sections at all', () => {
