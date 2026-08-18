@@ -40,6 +40,39 @@ meaningfully between Safari and Chrome; Safari is the better-supported pairing o
 
 ---
 
+## When this runs — per client, not per commit
+
+**This is a launch step for a client site, not a standing obligation on the starter.**
+It is triggered by one thing: **publishing an accessibility statement.**
+`docs/templates/accessibility-statement.md` opens by saying it must not be published
+until the audit has run, and this protocol is half of that audit. A statement is a dated,
+public claim; running this is what makes it true rather than aspirational. WP9's launch
+checklist carries the trigger.
+
+It is deliberately **not** part of CI and not owed by the starter, for a reason worth
+stating so nobody re-adds it as a blocker:
+
+- The starter's interactive surface is small and entirely native — links, buttons, and a
+  `<details>` disclosure. The barriers automation misses are mostly *custom widget*
+  barriers: focus traps in modals, live-region announcements, invented ARIA. Almost none
+  of that exists here, so the automated share of coverage is far higher than the usual
+  "30–40%" average implies.
+- What this protocol would surface on the starter is mostly **content judgement** — is
+  that alt text accurate, does that heading describe what follows, does that link make
+  sense out of context. On the starter those are placeholder words no client will ever
+  have, so the result does not transfer.
+- On a **client** site all of that inverts. Real copy, real navigation, possibly forms,
+  and someone whose reputation is attached to the claim.
+
+**Already verified mechanically on the starter (2026-08-18), so do not spend the session
+re-doing it:** every interactive element is keyboard focusable, focus order follows the
+DOM with no positive `tabindex` anywhere, the disclosure toggles from the keyboard, a
+visible focus indicator appears on both styled controls and bare links, reflow at 320px
+loses nothing, and target sizes pass. Start from the tasks below, which are the part that
+needs a person.
+
+---
+
 ## What you can run today
 
 **All five tasks are runnable.** They were not until WP12: the page-builder sections had
