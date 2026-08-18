@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
+import { datasetIsEmpty, SCAFFOLD_SKIP_REASON } from './dataset'
 import { GONE_ROUTE, SCANNED_ROUTES } from './routes'
 
 /** The automated half of WCAG 2.2 AA.
@@ -49,8 +50,13 @@ for (const route of SCANNED_ROUTES) {
   }) => {
     const response = await page.goto(route.path)
 
-    /* A 404 scans clean and proves nothing. Without this, emptying the dataset
-       turns the whole suite green. */
+    /* A 404 scans clean and proves nothing, so the status is asserted rather
+       than assumed. The skip above it separates "nothing published yet" from
+       "a published page has gone missing" — see `dataset.ts`. */
+    if (response?.status() !== 200) {
+      test.skip(await datasetIsEmpty(page.request), SCAFFOLD_SKIP_REASON)
+    }
+
     expect(
       response?.status(),
       `${route.path} did not load — is the seeded content still in the dataset?`,
@@ -66,6 +72,12 @@ test(`${GONE_ROUTE.name} (${GONE_ROUTE.path}) has no WCAG 2.2 AA violations`, as
   page,
 }) => {
   const response = await page.goto(GONE_ROUTE.path)
+
+  /* The 410 comes from a `redirect` document, so this route needs content in
+     the same way the others do. */
+  if (response?.status() !== 410) {
+    test.skip(await datasetIsEmpty(page.request), SCAFFOLD_SKIP_REASON)
+  }
 
   /* The status is the point of this route — see `src/app/api/gone/route.ts`.
      Asserting it here means the accessibility suite also guards the redirect
@@ -95,7 +107,10 @@ for (const route of SCANNED_ROUTES) {
   test(`${route.name} (${route.path}) has exactly one h1 and one main`, async ({
     page,
   }) => {
-    await page.goto(route.path)
+    const response = await page.goto(route.path)
+    if (response?.status() !== 200) {
+      test.skip(await datasetIsEmpty(page.request), SCAFFOLD_SKIP_REASON)
+    }
 
     await expect(page.locator('h1')).toHaveCount(1)
     await expect(page.locator('main')).toHaveCount(1)
@@ -127,7 +142,10 @@ for (const route of SCANNED_ROUTES) {
   test(`${route.name} (${route.path}) has no skipped heading levels`, async ({
     page,
   }) => {
-    await page.goto(route.path)
+    const response = await page.goto(route.path)
+    if (response?.status() !== 200) {
+      test.skip(await datasetIsEmpty(page.request), SCAFFOLD_SKIP_REASON)
+    }
 
     const levels = await page
       .locator('main :is(h1, h2, h3, h4, h5, h6)')

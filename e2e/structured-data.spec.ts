@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 
+import { datasetIsEmpty, SCAFFOLD_SKIP_REASON } from './dataset'
 import { FAQ_ROUTES, ROUTES_WITHOUT_FAQS } from './routes'
 
 /** Structured data has to describe what the page actually shows.
@@ -24,7 +25,10 @@ for (const route of FAQ_ROUTES) {
   test(`${route.name} (${route.path}) states only answers the page contains`, async ({
     page,
   }) => {
-    await page.goto(route.path)
+    const response = await page.goto(route.path)
+    if (response?.status() !== 200) {
+      test.skip(await datasetIsEmpty(page.request), SCAFFOLD_SKIP_REASON)
+    }
 
     const faq = await page
       .locator('script[type="application/ld+json"]')
@@ -60,7 +64,10 @@ for (const route of FAQ_ROUTES) {
 
 for (const path of ROUTES_WITHOUT_FAQS) {
   test(`${path} emits no FAQPage, because it renders no questions`, async ({ page }) => {
-    await page.goto(path)
+    const response = await page.goto(path)
+    if (response?.status() !== 200) {
+      test.skip(await datasetIsEmpty(page.request), SCAFFOLD_SKIP_REASON)
+    }
 
     const types = await page
       .locator('script[type="application/ld+json"]')
