@@ -10,6 +10,18 @@ import { defineQuery } from 'next-sanity'
  *
  * Queries must be wrapped in `defineQuery` or TypeGen cannot see them at all —
  * a plain template literal generates no type and fails silently.
+ *
+ * ⚠️ **Never put a `/* … *\/` comment inside a query string.** GROQ's only
+ * comment syntax is `//`. A block comment makes the query unparseable, and
+ * TypeGen's response is to skip **the entire file** — it still exits zero, still
+ * says "Successfully generated types", and simply reports one fewer file
+ * processed. Every query here loses its result type at once, and the only
+ * outward sign is that `sanityFetch` results stop being typed. Caught during
+ * WP12 chunk 3 by noticing the file count drop from 2 to 1.
+ *
+ * The `/* groq *\/` markers below sit *outside* the template literals, where
+ * they are ordinary JavaScript comments that editors use for syntax
+ * highlighting. That is the difference.
  */
 
 /** The SEO projection every routable document shares.
@@ -135,6 +147,49 @@ const PAGE_BUILDER_PROJECTION = /* groq */ `pageBuilder[]{
 
     _type == "textSection" => {
       content ${RICH_TEXT_PROJECTION}
+    },
+
+    _type == "features" => {
+      intro,
+      items[]{
+        _key,
+        heading,
+        body,
+        image ${IMAGE_PROJECTION},
+        link{
+          label,
+          destination ${LINK_PROJECTION}
+        }
+      }
+    },
+
+    _type == "faqs" => {
+      intro,
+      items[]{
+        _key,
+        question,
+        answer ${RICH_TEXT_PROJECTION}
+      }
+    },
+
+    _type == "testimonials" => {
+      intro,
+      items[]{
+        _key,
+        quote,
+        name,
+        context,
+        portrait ${IMAGE_PROJECTION}
+      }
+    },
+
+    _type == "callToAction" => {
+      body,
+      actions[]{
+        _key,
+        label,
+        destination ${LINK_PROJECTION}
+      }
     }
   }`
 

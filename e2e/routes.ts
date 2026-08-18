@@ -34,3 +34,13 @@ export const SCANNED_ROUTES = [
  *  page load and Playwright treats the response differently. Still a page a
  *  person can land on, so it is still held to the same standard. */
 export const GONE_ROUTE = { path: '/2019-catalogue', name: 'removed page (410)' } as const
+
+/** The route whose page-builder holds a `faqs` block, and the ones that do not.
+ *
+ *  `FAQPage` markup is emitted by the block rendering, never by the route, so
+ *  these two lists are what prove the coupling in both directions: present where
+ *  the questions are on the page, absent everywhere else. Both depend on the
+ *  seeded dataset in the same way every path in this file does. */
+export const FAQ_ROUTE = { path: '/pricing', name: 'page with an FAQ block' } as const
+
+export const ROUTES_WITHOUT_FAQS = ['/', '/about', '/why-flat-roofs-fail'] as const
