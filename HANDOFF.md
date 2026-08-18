@@ -51,7 +51,30 @@ it from a file is not enough — it survives in git history.
   it also auto-updates itself with Sanity's fixes.
 - **Rollback:** Vercel → Deployments → the last known-good one → *Promote to Production*.
   Faster and safer than reverting and rebuilding.
-- **Runbooks:** `docs/runbooks/`.
+- **Runbooks:** `docs/runbooks/deploy.md` and `rollback.md`. Launch day is
+  `pre-launch-checklist.md` then `dns-cutover.md`. Site down is `incident.md`.
+
+## Content backups — read this before you need it
+
+| | |
+|---|---|
+| Sanity history retention | **[3 days on Free · 90 on Growth · 365 on Enterprise — state which]** |
+| Automatic dataset backup | **[None unless the plan is Enterprise — state plainly]** |
+| Scheduled export | **[None / cron / GitHub Action — say which, and where the file goes]** |
+| Last manual export | **[date, and where it is kept]** |
+
+⚠️ **Do not leave this table with its defaults.** On the Free plan there is a three-day
+window and no automatic backup, which is enough for "an editor broke a page this morning"
+and nothing else. A client who believes their content is backed up when it is not has been
+told something false, and this is the table where that gets corrected.
+
+Confirm the real number rather than copying this one:
+
+```bash
+pnpm --dir studio exec sanity documents get _.retention._maximum_project
+```
+
+Procedure, including taking an export and restoring from one: `docs/runbooks/content-restore.md`.
 
 ## Content model
 

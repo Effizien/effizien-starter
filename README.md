@@ -152,6 +152,7 @@ Sanity release into a dependency bump and a redeploy on every site.
 | SEO/GEO: metadata, typed JSON-LD, sitemap, robots with an AI-crawler policy, `llms.txt`, IndexNow, and the redirect map with 410s | WP5 |
 | Accessibility and performance gates: axe-core over Playwright, Lighthouse CWV budgets, unit tests, and four **required status checks** that block a merge | WP6 |
 | **Page-builder rendering.** All six base blocks plus the archetype's, article bodies with byline and date, the blog index, and `FAQPage` structured data wired to the block that renders it | WP12 |
+| Launch and handoff kit: pre-launch checklist, and runbooks for deploy, rollback, DNS cutover, content restore and incidents | WP9 |
 
 ## What it does not include yet
 
@@ -160,7 +161,7 @@ Built in later work packages, so a site scaffolded today does not have them:
 | | |
 |---|---|
 | Statsig experimentation, and the GA4 component that reads `NEXT_PUBLIC_GA_MEASUREMENT_ID` | WP7 |
-| Launch checklist, DNS cutover and rollback runbooks | WP9 |
+| Client CMS training material, retainer scope options, and a reporting dashboard template — deferred until there is a client to write them against | WP9 |
 | Catalogue page-builder blocks — `productList` and `enquiryForm` are modelled in the schema but have no components, and the enquiry form has no submission path. They are a catalogue site's work; see `src/components/page-builder/archetype-blocks.tsx` | — |
 
 **Two per-site steps fail silently** and belong on a launch checklist rather than in
