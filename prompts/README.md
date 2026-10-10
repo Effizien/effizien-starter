@@ -1,10 +1,10 @@
 # Prompts
 
-Reusable prompts, versioned with the code so they evolve alongside the site rather than
-drifting in someone's notes app.
+Reusable prompts, versioned with the code, so they change alongside the site instead of drifting in
+someone's notes.
 
-These are **site-level** prompts. Cross-project prompt masters live in the operator's
-Obsidian vault; when one here proves itself across several sites, promote it there.
+These are **site-level** prompts. A prompt that proves itself across several sites is promoted to
+`effizien-system`, the playbook of the Effizien system.
 
 | File | Use |
 |---|---|
@@ -14,12 +14,12 @@ Obsidian vault; when one here proves itself across several sites, promote it the
 ## Conventions
 
 - One prompt per file, kebab-case, with a short note at the top saying when to use it.
-- Edit in place and note significant changes — the git history is the version log.
-- Prompts that only ever get used once belong in the conversation, not in here.
+- Edit in place: the git history is the version log.
+- A prompt used only once belongs in the conversation, not here.
 
 ## Why these two exist
 
-They bracket a session, and both failure modes they prevent are expensive. A session that
-starts without context produces confident work against stale assumptions. A session that
-ends without a handoff note loses everything that was learned but not written down —
-which is usually the reasoning, not the code.
+They bracket a session, and the failure each one prevents is expensive. A session that starts
+without context produces confident work against stale assumptions. A session that ends without a
+handoff note loses everything that was learned but not written down, which is usually the
+reasoning, not the code.
