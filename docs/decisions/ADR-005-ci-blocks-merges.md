@@ -32,8 +32,8 @@ Core Web Vitals (Lighthouse)
 `strict: true` — a branch must be up to date with `main` before merging, so two PRs that
 are individually green cannot merge into a combination neither tested.
 
-**`enforce_admins` is deliberately off.** A solo operator locked out of his own `main`
-branch during a launch is a worse failure than a skipped check. This is the one remaining
+**`enforce_admins` is deliberately off.** An administrator locked out of `main` during a
+launch is a worse failure than a skipped check. This is the one remaining
 way past the gate, and it is an escape hatch by design rather than a hole. It becomes the
 wrong setting the moment a second person has write access — the same threshold ADR-003's
 trigger 2 named.
@@ -63,8 +63,8 @@ public repositories, which now watches every future push.
 ## Revisit trigger
 
 **A second person gains write access.** At that point turn `enforce_admins` on: the
-override exists because one person's judgment is the only thing behind it, and that stops
-being true the moment it is not one person.
+override exists because a single committer's judgment is the only thing behind it, and that
+stops being true the moment there is a second.
 
 Also revisit if **a required check becomes flaky**. The temptation will be to drop it from
 the required list, which silently returns that gate to ADR-003's world. Fix the flake, or

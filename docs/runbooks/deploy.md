@@ -27,8 +27,8 @@ enforcement, not a report — ADR-005 records the day that changed.
 | Core Web Vitals (Lighthouse) | Budgets from ADR-004, three runs, median |
 
 **There is exactly one way past them, and it is deliberate:** `enforce_admins` is off, so
-an administrator can merge a red branch. That exists so a solo operator is never locked
-out of his own `main` mid-launch. If you use it, you have skipped every check above —
+an administrator can merge a red branch. That exists so an administrator is never locked
+out of `main` mid-launch. If you use it, you have skipped every check above —
 write down which one was red and why you overrode it.
 
 ---
