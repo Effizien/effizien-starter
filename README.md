@@ -238,7 +238,7 @@ into a dependency bump and a redeploy on every site.
 | Accessibility and performance checks: axe-core through Playwright, Lighthouse budgets and unit tests, run by CI on every pull request | WP6 |
 | Page-builder rendering: the six base blocks plus the archetype's, article bodies with byline and date, the blog index, and `FAQPage` structured data from the block that renders it | WP12 |
 | The launch kit: a pre-launch checklist, and runbooks for deploying, rollback, the DNS cutover, restoring content and incidents | WP9 |
-| Security headers, and a hook that stops a credential before it reaches git | WP2 |
+| Security headers, and a Claude Code hook that stops an AI agent writing a credential into a file git would track (it does not check a person's own commits) | WP2 |
 
 ## What it does not include yet
 
